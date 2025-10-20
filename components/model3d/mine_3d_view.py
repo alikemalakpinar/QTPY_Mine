@@ -93,7 +93,7 @@ class Advanced3DMineVisualization(QWebEngineView):
             
             createMineStructure() {
                 // Mine terrain
-                const terrainGeometry = new THREE.PlaneGeometry(1000, 1000, 50, 50);
+                const terrainGeometrsdadsasdy = new THREE.PlaneGeometry(1000, 1000, 50, 50);
                 const terrainMaterial = new THREE.MeshLambertMaterial({ 
                     color: 0x4a4a2a,
                     wireframe: false 
