@@ -21,10 +21,6 @@ from app.app import MineTrackerApp
 
 def main():
     """Ana başlangıç noktası"""
-    # High DPI support
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps, True)
-    
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
     
