@@ -1,38 +1,32 @@
-"""Modern koyu tema - Professional Dark Theme for Mining"""
+"""Enterprise Grade Theme - Professional Design System"""
 
 class MineTrackerTheme:
-    """Modern, profesyonel maden teması - Gelişmiş renk paleti"""
+    """Professional design system - Enterprise grade"""
     
-    # Ana renkler - Maden temasına uygun
-    BACKGROUND = "#0a0a0f"          # Daha derin siyah
-    SURFACE = "#1a1a20"             # Koyu gri-mavi
-    SURFACE_LIGHT = "#252530"       # Orta ton
-    SURFACE_HOVER = "#2f2f3a"       # Hover efekti
+    # Core Colors - Professional Palette
+    BACKGROUND = "#0a0b0d"          # Deep space
+    SURFACE = "#111827"             # Elevated surface
+    SURFACE_LIGHT = "#1f2937"       # Light surface
+    SURFACE_HOVER = "#374151"       # Hover state
     
-    # Vurgu renkleri - Parlak ve net
-    PRIMARY = "#00D4FF"             # Cyan - Güvenlik ışığı
-    PRIMARY_DARK = "#0099CC"        # Koyu cyan
-    PRIMARY_LIGHT = "#33DDFF"       # Açık cyan
+    # Brand Colors - Modern & Clean
+    PRIMARY = "#3B82F6"             # Professional blue
+    PRIMARY_DARK = "#2563EB"        # Darker blue
+    PRIMARY_LIGHT = "#60A5FA"       # Light blue
     
-    SUCCESS = "#00FF88"             # Neon yeşil - Güvenli
-    WARNING = "#FFB800"             # Amber - Dikkat
-    DANGER = "#FF3366"              # Kırmızı - Tehlike
-    INFO = "#9966FF"                # Mor - Bilgi
+    SUCCESS = "#10B981"             # Modern green
+    WARNING = "#F59E0B"             # Amber
+    DANGER = "#EF4444"              # Clean red
+    INFO = "#8B5CF6"                # Purple
     
-    # Metin renkleri
-    TEXT_PRIMARY = "#FFFFFF"        # Beyaz
-    TEXT_SECONDARY = "#B0B0B0"      # Açık gri
-    TEXT_MUTED = "#707070"          # Soluk gri
+    # Text Colors - Accessible
+    TEXT_PRIMARY = "#F9FAFB"        # Almost white
+    TEXT_SECONDARY = "#9CA3AF"      # Gray 400
+    TEXT_MUTED = "#6B7280"          # Gray 500
     
-    # Kenarlıklar
-    BORDER = "#2f2f3a"              # Koyu kenarlık
-    BORDER_LIGHT = "#3f3f4a"        # Açık kenarlık
-    
-    # Ekstra - Maden renkleri
-    GOLD = "#FFD700"                # Altın
-    SILVER = "#C0C0C0"              # Gümüş
-    COPPER = "#B87333"              # Bakır
-    COAL = "#1a1a1a"                # Kömür
+    # Borders - Subtle
+    BORDER = "#1f2937"              # Match surface
+    BORDER_LIGHT = "#374151"        # Subtle borders
     
     @staticmethod
     def get_app_style():
