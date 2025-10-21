@@ -43,11 +43,10 @@ class NavigationBar(QWidget):
             ('🎯', 'dashboard', 0),
             ('🗺️', 'live_map', 1),
             ('👥', 'personnel', 2),
-            ('🚜', 'equipment', 3),
-            ('🚨', 'emergency', 4),
-            ('📋', 'reports', 5),
-            ('📍', 'zones', 6),
-            ('⚙️', 'settings', 7)
+            ('🚨', 'emergency', 3),
+            ('📋', 'reports', 4),
+            ('📍', 'zones', 5),
+            ('⚙️', 'settings', 6)
         ]
         
         for icon, key, index in self.nav_items:
