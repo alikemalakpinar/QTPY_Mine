@@ -2,16 +2,13 @@
 """
 MineTracker - Professional Underground Mining Personnel & Device Tracking System
 Real-time location tracking with 3D visualization
+Modular Architecture with Turkish/English Support
 """
 
 import sys
-import json
-import random
-from datetime import datetime, timedelta
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
-from PyQt6.QtGui import *
-from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import Qt
+from app.app import MineTrackerApp
 
 class ModernTheme:
     """Modern dark theme with professional colors"""
