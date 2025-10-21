@@ -89,14 +89,14 @@ class DashboardScreen(QWidget):
         stats = self.tracking.get_statistics()
         
         self.cards_data = [
-            ('active_personnel', '👥', str(stats['personnel']['active']), 
+            ('active_personnel', '👷', str(stats['personnel']['active']), 
              self.i18n.t('underground'), MineTrackerTheme.PRIMARY),
-            ('equipment_online', '🚜', f"{stats['equipment']['online']}/{stats['equipment']['total']}",
-             self.i18n.t('operational'), MineTrackerTheme.SUCCESS),
+            ('total_personnel', '👥', f"{stats['personnel']['total']}", 
+             'Total Personnel', MineTrackerTheme.SUCCESS),
+            ('gateways_online', '📡', f"{stats['gateways']['online']}/{stats['gateways']['total']}",
+             'Gateway Status', MineTrackerTheme.SUCCESS),
             ('safety_incidents', '🛡️', '0', 
-             '24 ' + self.i18n.t('incident_free'), MineTrackerTheme.SUCCESS),
-            ('zone_temperature', '🌡️', '22°C',
-             self.i18n.t('within_limits'), MineTrackerTheme.WARNING)
+             '24 ' + self.i18n.t('incident_free'), MineTrackerTheme.SUCCESS)
         ]
         
         self.cards = []
