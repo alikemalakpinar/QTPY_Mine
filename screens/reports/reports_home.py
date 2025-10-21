@@ -1,6 +1,7 @@
 """Raporlar ekranı"""
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
+from PyQt6.QtGui import QFont
 from theme.theme import MineTrackerTheme
 from datetime import datetime
 
