@@ -445,6 +445,9 @@ class Mine3DView(BaseClass):
     
     def update_position(self, data):
         """Konum güncellemesi"""
+        if not WEBENGINE_AVAILABLE:
+            return  # WebEngine yoksa hiçbir şey yapma
+            
         entity_type = data['type']
         entity_data = data['data']
         
@@ -461,6 +464,9 @@ class Mine3DView(BaseClass):
     
     def load_all_positions(self):
         """Tüm konumları yükle"""
+        if not WEBENGINE_AVAILABLE:
+            return  # WebEngine yoksa hiçbir şey yapma
+            
         # Personel
         for person in self.tracking.get_personnel():
             self.update_position({'type': 'personnel', 'data': person})
