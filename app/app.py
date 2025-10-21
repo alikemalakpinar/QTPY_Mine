@@ -1,5 +1,14 @@
 """Ana uygulama sınıfı - Modular Architecture"""
 import sys
+
+# ⚠️ CRITICAL: Import QtWebEngine components FIRST!
+try:
+    from PyQt6.QtWebEngineWidgets import QWebEngineView
+    WEBENGINE_AVAILABLE = True
+except ImportError:
+    WEBENGINE_AVAILABLE = False
+    QWebEngineView = None
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
