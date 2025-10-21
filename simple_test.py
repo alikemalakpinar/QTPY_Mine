@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """Simple MineTracker Test"""
 import sys
+
+# ⚠️ CRITICAL: Import QtWebEngine BEFORE creating QApplication!
+try:
+    from PyQt6.QtWebEngineWidgets import QWebEngineView
+    WEBENGINE_AVAILABLE = True
+except ImportError:
+    WEBENGINE_AVAILABLE = False
+    print("⚠️ QtWebEngine not available. 3D features will be limited.")
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
