@@ -445,13 +445,15 @@ class Mine3DView(BaseClass):
             body.castShadow = true;
             gateway.add(body);
             
-            // LED
+            // LED - Parlayan gösterge
             const led = new THREE.Mesh(
                 new THREE.SphereGeometry(2, 16, 16),
-                new THREE.MeshBasicMaterial({
+                new THREE.MeshStandardMaterial({
                     color: zone.color,
                     emissive: zone.color,
-                    emissiveIntensity: 1.0
+                    emissiveIntensity: 1.0,
+                    metalness: 0.3,
+                    roughness: 0.4
                 })
             );
             led.position.y = 8;
