@@ -151,10 +151,10 @@ class ReportsScreen(QWidget):
         stats_data = [
             ('Toplam Personel', str(stats['personnel']['total']), MineTrackerTheme.PRIMARY),
             ('Aktif Personel', str(stats['personnel']['active']), MineTrackerTheme.SUCCESS),
-            ('Toplam Ekipman', str(stats['equipment']['total']), MineTrackerTheme.PRIMARY),
-            ('Çalışan Ekipman', str(stats['equipment']['online']), MineTrackerTheme.SUCCESS),
-            ('Bakımdaki Ekipman', str(stats['equipment']['maintenance']), MineTrackerTheme.WARNING),
-            ('Düşük Batarya', str(stats['personnel']['low_battery'] + stats['equipment']['low_battery']), MineTrackerTheme.DANGER)
+            ('Molada', str(stats['personnel']['on_break']), MineTrackerTheme.WARNING),
+            ('Gateway Online', str(stats['gateways']['online']), MineTrackerTheme.SUCCESS),
+            ('Gateway Offline', str(stats['gateways']['offline']), MineTrackerTheme.DANGER),
+            ('Düşük Batarya', str(stats['personnel']['low_battery']), MineTrackerTheme.DANGER)
         ]
         
         for i, (label, value, color) in enumerate(stats_data):
