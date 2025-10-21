@@ -1,8 +1,15 @@
 """3D Maden Görselleştirme Component'i"""
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PyQt6.QtCore import QTimer
 import json
+
+# WebEngine kontrolü
+try:
+    from PyQt6.QtWebEngineWidgets import QWebEngineView
+    WEBENGINE_AVAILABLE = True
+except ImportError:
+    WEBENGINE_AVAILABLE = False
+    QWebEngineView = QWidget  # Fallback to regular widget
 
 class Mine3DView(QWebEngineView):
     """3D maden harita görünümü - Three.js ile"""
