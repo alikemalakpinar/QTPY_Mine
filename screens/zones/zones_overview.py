@@ -213,18 +213,14 @@ class ZonesScreen(QWidget):
             personnel_count = sum(1 for p in self.tracking.get_personnel() if p['zone_id'] == zone['id'])
             self.zones_table.setItem(row, 1, QTableWidgetItem(str(personnel_count)))
             
-            # Ekipman sayısı
-            equipment_count = sum(1 for e in self.tracking.get_equipment() if e['zone_id'] == zone['id'])
-            self.zones_table.setItem(row, 2, QTableWidgetItem(str(equipment_count)))
-            
             # Durum
-            status = '✅ Aktif' if personnel_count > 0 or equipment_count > 0 else '⚫ İnaktif'
+            status = '✅ Aktif' if personnel_count > 0 else '⚫ İnaktif'
             status_item = QTableWidgetItem(status)
             status_item.setForeground(QBrush(QColor(
-                MineTrackerTheme.SUCCESS if personnel_count > 0 or equipment_count > 0 
+                MineTrackerTheme.SUCCESS if personnel_count > 0 
                 else MineTrackerTheme.TEXT_MUTED
             )))
-            self.zones_table.setItem(row, 3, status_item)
+            self.zones_table.setItem(row, 2, status_item)
             
             self.zones_table.setRowHeight(row, 45)
     
