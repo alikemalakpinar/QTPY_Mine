@@ -1,17 +1,19 @@
 """3D Maden Görselleştirme Component'i"""
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtGui import QFont
 import json
 
 # WebEngine kontrolü
 try:
     from PyQt6.QtWebEngineWidgets import QWebEngineView
     WEBENGINE_AVAILABLE = True
+    BaseClass = QWebEngineView
 except ImportError:
     WEBENGINE_AVAILABLE = False
-    QWebEngineView = QWidget  # Fallback to regular widget
+    BaseClass = QWidget
 
-class Mine3DView(QWebEngineView):
+class Mine3DView(BaseClass):
     """3D maden harita görünümü - Three.js ile"""
     
     def __init__(self, tracking_service):
@@ -19,14 +21,37 @@ class Mine3DView(QWebEngineView):
         self.tracking = tracking_service
         self.setMinimumSize(800, 600)
         
-        # 3D sahneyi yükle
-        self.load_3d_scene()
+        if not WEBENGINE_AVAILABLE:
+            # WebEngine yoksa basit placeholder göster
+            self.show_placeholder()
+        else:
+            # 3D sahneyi yükle
+            self.load_3d_scene()
+            
+            # Tracking güncellemelerini dinle
+            self.tracking.location_updated.connect(self.update_position)
+            
+            # İlk yüklemede tüm konumları gönder
+            QTimer.singleShot(2000, self.load_all_positions)
+    
+    def show_placeholder(self):
+        """WebEngine yoksa placeholder göster"""
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        # Tracking güncellemelerini dinle
-        self.tracking.location_updated.connect(self.update_position)
-        
-        # İlk yüklemede tüm konumları gönder
-        QTimer.singleShot(2000, self.load_all_positions)
+        label = QLabel("🗺️ 3D Harita\n\n⚠️ QtWebEngine bulunamadı!\n\nPip ile yükleyin:\npip install PyQt6-WebEngine")
+        label.setStyleSheet("""
+            QLabel {
+                color: #FFB800;
+                font-size: 18px;
+                padding: 40px;
+                background: #1A1A1A;
+                border: 2px dashed #FFB800;
+                border-radius: 12px;
+            }
+        """)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(label)
     
     def load_3d_scene(self):
         """Three.js 3D sahnesini yükle"""
