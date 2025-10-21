@@ -127,35 +127,12 @@ class TrackingService(QObject):
                     'type': 'personnel',
                     'data': person
                 })
-        
-        # Ekipman konumlarını güncelle
-        for equip in self.equipment:
-            if equip['status'] == 'online' and random.random() < 0.3:
-                equip['location']['x'] += random.uniform(-3, 3)
-                equip['location']['y'] += random.uniform(-3, 3)
-                
-                equip['location']['x'] = max(-500, min(500, equip['location']['x']))
-                equip['location']['y'] = max(-400, min(400, equip['location']['y']))
-                
-                equip['zone_id'], equip['zone_name'] = self.determine_zone(equip['location'])
-                
-                # Yakıt ve batarya düşür
-                if random.random() < 0.03:
-                    equip['fuel'] = max(0, equip['fuel'] - random.randint(1, 2))
-                    equip['battery'] = max(0, equip['battery'] - random.randint(1, 2))
-                
-                equip['last_update'] = datetime.now()
-                
-                self.location_updated.emit({
-                    'type': 'equipment',
-                    'data': equip
-                })
     
     def determine_zone(self, location):
-        """Koordinatlara göre bölge belirle"""
+        """Koordinatlara göre bölge belirle - Gateway sinyaline göre"""
         x, y = location['x'], location['y']
         
-        # En yakın bölgeyi bul
+        # En yakın gateway'i bul
         min_dist = float('inf')
         closest_zone = self.zones[0]
         
@@ -171,9 +148,9 @@ class TrackingService(QObject):
         """Tüm personeli al"""
         return self.personnel
     
-    def get_equipment(self):
-        """Tüm ekipmanı al"""
-        return self.equipment
+    def get_gateways(self):
+        """Tüm gateway'leri al"""
+        return self.gateways
     
     def get_zones(self):
         """Tüm bölgeleri al"""
@@ -186,56 +163,31 @@ class TrackingService(QObject):
                 return person
         return None
     
-    def get_equipment_by_id(self, equipment_id):
-        """ID'ye göre ekipman bul"""
-        for equip in self.equipment:
-            if equip['id'] == equipment_id:
-                return equip
-        return None
-    
     def trigger_emergency(self, entity_id, entity_type='personnel'):
-        """Acil durum tetikle"""
-        if entity_type == 'personnel':
-            entity = self.get_person_by_id(entity_id)
-            if entity:
-                entity['status'] = 'emergency'
-                self.emergency_signal.emit({
-                    'type': 'personnel',
-                    'id': entity_id,
-                    'name': entity['full_name'],
-                    'position': entity['position'],
-                    'location': entity['location'],
-                    'zone': entity['zone_name'],
-                    'timestamp': datetime.now().isoformat()
-                })
-        else:
-            entity = self.get_equipment_by_id(entity_id)
-            if entity:
-                entity['status'] = 'emergency'
-                self.emergency_signal.emit({
-                    'type': 'equipment',
-                    'id': entity_id,
-                    'name': entity['name'],
-                    'location': entity['location'],
-                    'zone': entity['zone_name'],
-                    'timestamp': datetime.now().isoformat()
-                })
+        """Acil durum tetikle - Personel için"""
+        entity = self.get_person_by_id(entity_id)
+        if entity:
+            entity['status'] = 'emergency'
+            self.emergency_signal.emit({
+                'type': 'personnel',
+                'id': entity_id,
+                'name': entity['full_name'],
+                'position': entity['position'],
+                'location': entity['location'],
+                'zone': entity['zone_name'],
+                'timestamp': datetime.now().isoformat()
+            })
     
     def get_statistics(self):
-        """İstatistikleri al"""
+        """İstatistikleri al - Personel ve Gateway"""
         active_personnel = sum(1 for p in self.personnel if p['status'] == 'active')
         on_break = sum(1 for p in self.personnel if p['status'] == 'break')
         emergency_count = sum(1 for p in self.personnel if p['status'] == 'emergency')
         
-        online_equipment = sum(1 for e in self.equipment if e['status'] == 'online')
-        maintenance_equipment = sum(1 for e in self.equipment if e['status'] == 'maintenance')
-        offline_equipment = sum(1 for e in self.equipment if e['status'] == 'offline')
-        
         avg_battery_personnel = sum(p['battery'] for p in self.personnel) / len(self.personnel) if self.personnel else 0
-        avg_battery_equipment = sum(e['battery'] for e in self.equipment) / len(self.equipment) if self.equipment else 0
-        
         low_battery_personnel = sum(1 for p in self.personnel if p['battery'] < 20)
-        low_battery_equipment = sum(1 for e in self.equipment if e['battery'] < 20)
+        
+        online_gateways = sum(1 for g in self.gateways if g['status'] == 'online')
         
         return {
             'personnel': {
@@ -246,12 +198,10 @@ class TrackingService(QObject):
                 'avg_battery': round(avg_battery_personnel, 1),
                 'low_battery': low_battery_personnel
             },
-            'equipment': {
-                'total': len(self.equipment),
-                'online': online_equipment,
-                'maintenance': maintenance_equipment,
-                'offline': offline_equipment,
-                'avg_battery': round(avg_battery_equipment, 1),
-                'low_battery': low_battery_equipment
+            'gateways': {
+                'total': len(self.gateways),
+                'online': online_gateways,
+                'offline': len(self.gateways) - online_gateways
             }
         }
+
