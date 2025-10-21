@@ -1,425 +1,443 @@
-# components/model3d/advanced_3d_twin.py - WebGL + Three.js Integration
-import json
-from PyQt6.QtWidgets import *
+"""3D Maden Görselleştirme Component'i"""
+from PyQt6.QtWidgets import QWidget
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import *
+from PyQt6.QtCore import QTimer
+import json
 
-class Advanced3DMineVisualization(QWebEngineView):
-    """Advanced 3D visualization using Three.js"""
+class Mine3DView(QWebEngineView):
+    """3D maden harita görünümü - Three.js ile"""
     
-    def __init__(self):
+    def __init__(self, tracking_service):
         super().__init__()
+        self.tracking = tracking_service
         self.setMinimumSize(800, 600)
-        self.personnel_data = []
-        self.equipment_data = []
+        
+        # 3D sahneyi yükle
         self.load_3d_scene()
         
+        # Tracking güncellemelerini dinle
+        self.tracking.location_updated.connect(self.update_position)
+        
+        # İlk yüklemede tüm konumları gönder
+        QTimer.singleShot(2000, self.load_all_positions)
+    
     def load_3d_scene(self):
-        """Load Three.js 3D scene"""
+        """Three.js 3D sahnesini yükle"""
         html_content = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MineGuard 3D Digital Twin</title>
+    <title>MineTracker 3D</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; padding: 0; background: #0a0a0a; overflow: hidden; }
-        #container { width: 100vw; height: 100vh; }
-        #ui-overlay {
+        body { margin: 0; padding: 0; background: #0F0F0F; overflow: hidden; }
+        #container { width: 100%; height: 100%; }
+        #info {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 20px;
+            left: 20px;
             color: white;
-            font-family: 'Segoe UI', sans-serif;
-            background: rgba(0,0,0,0.7);
+            font-family: -apple-system, sans-serif;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            min-width: 250px;
+        }
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .stat-label {
+            color: #B0B0B0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-value {
+            color: #00D4FF;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #B0B0B0;
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
             padding: 15px;
-            border-radius: 10px;
-            z-index: 1000;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: white;
+            font-family: -apple-system, sans-serif;
+            font-size: 12px;
         }
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
-            margin-right: 5px;
+            margin-right: 10px;
         }
-        .active { background-color: #28a745; }
-        .warning { background-color: #ffc107; }
-        .danger { background-color: #dc3545; }
     </style>
 </head>
 <body>
     <div id="container"></div>
-    <div id="ui-overlay">
-        <h3>🏔️ MineGuard Digital Twin</h3>
-        <div><span class="status-indicator active"></span>Personnel: <span id="personnel-count">147</span></div>
-        <div><span class="status-indicator active"></span>Equipment: <span id="equipment-count">58</span></div>
-        <div><span class="status-indicator warning"></span>Alerts: <span id="alert-count">3</span></div>
-        <br>
-        <div>🎮 Controls:</div>
-        <div>• Mouse: Rotate view</div>
-        <div>• Wheel: Zoom</div>
-        <div>• Arrow keys: Move</div>
+    <div id="info">
+        <h3 style="margin: 0 0 15px 0; color: #00D4FF;">⛏️ MineTracker 3D</h3>
+        <div class="stat">
+            <span class="stat-label">Personel</span>
+            <span class="stat-value" id="personnel-count">0</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Ekipman</span>
+            <span class="stat-value" id="equipment-count">0</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Aktif Bölge</span>
+            <span class="stat-value" id="zones-count">6</span>
+        </div>
+    </div>
+    <div class="legend">
+        <div style="font-weight: bold; margin-bottom: 10px; color: #00D4FF;">📍 Semboller</div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #00FF88;"></div>
+            <span>👤 Personel</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #FFB800;"></div>
+            <span>🚜 Ekipman</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #FF3366;"></div>
+            <span>⚠️ Acil Durum</span>
+        </div>
+    </div>
+    <div class="controls">
+        🖊️ Fare: Döndür | Kaydırma: Yakınlaştır | Ok Tuşları: Hareket
     </div>
 
     <script>
-        class MineGuard3D {
-            constructor() {
-                this.scene = new THREE.Scene();
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-                this.renderer = new THREE.WebGLRenderer({ antialias: true });
-                this.personnel = [];
-                this.equipment = [];
-                
-                this.init();
-                this.createMineStructure();
-                this.createLighting();
-                this.addPersonnel();
-                this.addEquipment();
-                this.animate();
-                this.addControls();
-            }
-            
-            init() {
-                this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.renderer.setClearColor(0x001122);
-                this.renderer.shadowMap.enabled = true;
-                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-                document.getElementById('container').appendChild(this.renderer.domElement);
-                
-                this.camera.position.set(0, 200, 300);
-                this.camera.lookAt(0, 0, 0);
-            }
-            
-            createMineStructure() {
-                // Mine terrain
-                const terrainGeometrsdadsasdy = new THREE.PlaneGeometry(1000, 1000, 50, 50);
-                const terrainMaterial = new THREE.MeshLambertMaterial({ 
-                    color: 0x4a4a2a,
-                    wireframe: false 
-                });
-                
-                // Add height variations
-                const vertices = terrainGeometry.attributes.position.array;
-                for (let i = 0; i < vertices.length; i += 3) {
-                    vertices[i + 2] = Math.sin(vertices[i] * 0.01) * Math.cos(vertices[i + 1] * 0.01) * 20;
-                }
-                terrainGeometry.attributes.position.needsUpdate = true;
-                terrainGeometry.computeVertexNormals();
-                
-                const terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
-                terrain.rotation.x = -Math.PI / 2;
-                terrain.receiveShadow = true;
-                this.scene.add(terrain);
-                
-                // Mine tunnels
-                this.createTunnels();
-                
-                // Processing buildings
-                this.createBuildings();
-                
-                // Safety zones
-                this.createSafetyZones();
-            }
-            
-            createTunnels() {
-                const tunnelMaterial = new THREE.MeshPhongMaterial({ 
-                    color: 0x666666,
-                    transparent: true,
-                    opacity: 0.8 
-                });
-                
-                // Main horizontal tunnels
-                const tunnelGeometry = new THREE.CylinderGeometry(5, 5, 400, 16);
-                
-                for (let i = 0; i < 5; i++) {
-                    const tunnel = new THREE.Mesh(tunnelGeometry, tunnelMaterial);
-                    tunnel.rotation.z = Math.PI / 2;
-                    tunnel.position.set(0, 10, (i - 2) * 100);
-                    tunnel.castShadow = true;
-                    this.scene.add(tunnel);
-                }
-                
-                // Vertical shafts
-                const shaftGeometry = new THREE.CylinderGeometry(8, 8, 100, 16);
-                const shaft = new THREE.Mesh(shaftGeometry, tunnelMaterial);
-                shaft.position.set(0, -40, 0);
-                shaft.castShadow = true;
-                this.scene.add(shaft);
-            }
-            
-            createBuildings() {
-                // Processing plant
-                const buildingGeometry = new THREE.BoxGeometry(60, 40, 40);
-                const buildingMaterial = new THREE.MeshPhongMaterial({ color: 0x8b4513 });
-                
-                const processingPlant = new THREE.Mesh(buildingGeometry, buildingMaterial);
-                processingPlant.position.set(-200, 20, 100);
-                processingPlant.castShadow = true;
-                processingPlant.receiveShadow = true;
-                this.scene.add(processingPlant);
-                
-                // Workshop
-                const workshop = new THREE.Mesh(buildingGeometry, buildingMaterial);
-                workshop.position.set(200, 20, 150);
-                workshop.castShadow = true;
-                workshop.receiveShadow = true;
-                this.scene.add(workshop);
-                
-                // Control tower
-                const towerGeometry = new THREE.CylinderGeometry(8, 12, 60, 12);
-                const towerMaterial = new THREE.MeshPhongMaterial({ color: 0x4682b4 });
-                const controlTower = new THREE.Mesh(towerGeometry, towerMaterial);
-                controlTower.position.set(0, 30, 0);
-                controlTower.castShadow = true;
-                this.scene.add(controlTower);
-            }
-            
-            createSafetyZones() {
-                const zones = [
-                    { name: 'Safe Zone', color: 0x00ff00, position: [0, 1, 0], radius: 80 },
-                    { name: 'Caution Zone', color: 0xffff00, position: [-150, 1, -100], radius: 60 },
-                    { name: 'Restricted Zone', color: 0xff0000, position: [150, 1, 100], radius: 50 }
-                ];
-                
-                zones.forEach(zone => {
-                    const geometry = new THREE.RingGeometry(zone.radius - 5, zone.radius, 32);
-                    const material = new THREE.MeshBasicMaterial({ 
-                        color: zone.color,
-                        transparent: true,
-                        opacity: 0.3,
-                        side: THREE.DoubleSide
-                    });
-                    
-                    const ring = new THREE.Mesh(geometry, material);
-                    ring.rotation.x = -Math.PI / 2;
-                    ring.position.set(...zone.position);
-                    this.scene.add(ring);
-                });
-            }
-            
-            createLighting() {
-                // Ambient light
-                const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
-                this.scene.add(ambientLight);
-                
-                // Directional light (sun)
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-                directionalLight.position.set(200, 300, 100);
-                directionalLight.castShadow = true;
-                directionalLight.shadow.mapSize.width = 2048;
-                directionalLight.shadow.mapSize.height = 2048;
-                directionalLight.shadow.camera.near = 0.5;
-                directionalLight.shadow.camera.far = 1000;
-                directionalLight.shadow.camera.left = -300;
-                directionalLight.shadow.camera.right = 300;
-                directionalLight.shadow.camera.top = 300;
-                directionalLight.shadow.camera.bottom = -300;
-                this.scene.add(directionalLight);
-                
-                // Spotlights for dramatic effect
-                const spotlight = new THREE.SpotLight(0xffffff, 0.5);
-                spotlight.position.set(0, 200, 0);
-                spotlight.target.position.set(0, 0, 0);
-                spotlight.castShadow = true;
-                this.scene.add(spotlight);
-                this.scene.add(spotlight.target);
-            }
-            
-            addPersonnel() {
-                const personnelGeometry = new THREE.SphereGeometry(2, 8, 6);
-                
-                for (let i = 0; i < 147; i++) {
-                    const status = Math.random();
-                    let color = 0x00ff00; // Green for active
-                    
-                    if (status > 0.8) color = 0xffff00; // Yellow for break
-                    if (status > 0.9) color = 0xff0000; // Red for emergency
-                    
-                    const material = new THREE.MeshPhongMaterial({ color: color });
-                    const person = new THREE.Mesh(personnelGeometry, material);
-                    
-                    // Random positions within mine area
-                    person.position.set(
-                        (Math.random() - 0.5) * 400,
-                        5 + Math.random() * 10,
-                        (Math.random() - 0.5) * 400
-                    );
-                    
-                    person.castShadow = true;
-                    person.userData = {
-                        type: 'personnel',
-                        id: `W-${String(i + 1).padStart(3, '0')}`,
-                        status: status > 0.9 ? 'emergency' : status > 0.8 ? 'break' : 'active'
-                    };
-                    
-                    this.personnel.push(person);
-                    this.scene.add(person);
-                }
-            }
-            
-            addEquipment() {
-                const equipmentTypes = [
-                    { geometry: new THREE.BoxGeometry(12, 8, 20), color: 0xffa500, name: 'Excavator' },
-                    { geometry: new THREE.BoxGeometry(10, 6, 16), color: 0x4169e1, name: 'Loader' },
-                    { geometry: new THREE.BoxGeometry(8, 10, 24), color: 0x32cd32, name: 'Truck' },
-                    { geometry: new THREE.ConeGeometry(4, 15, 8), color: 0xff4500, name: 'Drill' }
-                ];
-                
-                for (let i = 0; i < 58; i++) {
-                    const type = equipmentTypes[i % equipmentTypes.length];
-                    const material = new THREE.MeshPhongMaterial({ color: type.color });
-                    const equipment = new THREE.Mesh(type.geometry, material);
-                    
-                    equipment.position.set(
-                        (Math.random() - 0.5) * 600,
-                        10,
-                        (Math.random() - 0.5) * 600
-                    );
-                    
-                    equipment.rotation.y = Math.random() * Math.PI * 2;
-                    equipment.castShadow = true;
-                    equipment.receiveShadow = true;
-                    
-                    equipment.userData = {
-                        type: 'equipment',
-                        id: `EQ-${String(i + 1).padStart(3, '0')}`,
-                        name: type.name,
-                        status: Math.random() > 0.1 ? 'operational' : 'maintenance'
-                    };
-                    
-                    this.equipment.push(equipment);
-                    this.scene.add(equipment);
-                }
-            }
-            
-            addControls() {
-                this.mouseX = 0;
-                this.mouseY = 0;
-                this.isMouseDown = false;
-                
-                const container = this.renderer.domElement;
-                
-                container.addEventListener('mousedown', (e) => {
-                    this.isMouseDown = true;
-                    this.mouseX = e.clientX;
-                    this.mouseY = e.clientY;
-                });
-                
-                container.addEventListener('mouseup', () => {
-                    this.isMouseDown = false;
-                });
-                
-                container.addEventListener('mousemove', (e) => {
-                    if (this.isMouseDown) {
-                        const deltaX = e.clientX - this.mouseX;
-                        const deltaY = e.clientY - this.mouseY;
-                        
-                        // Rotate camera around center
-                        const spherical = new THREE.Spherical();
-                        spherical.setFromVector3(this.camera.position);
-                        spherical.theta -= deltaX * 0.01;
-                        spherical.phi += deltaY * 0.01;
-                        spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
-                        
-                        this.camera.position.setFromSpherical(spherical);
-                        this.camera.lookAt(0, 0, 0);
-                        
-                        this.mouseX = e.clientX;
-                        this.mouseY = e.clientY;
-                    }
-                });
-                
-                container.addEventListener('wheel', (e) => {
-                    const scale = e.deltaY > 0 ? 1.1 : 0.9;
-                    this.camera.position.multiplyScalar(scale);
-                });
-                
-                // Keyboard controls
-                window.addEventListener('keydown', (e) => {
-                    const speed = 10;
-                    switch(e.code) {
-                        case 'ArrowUp':
-                            this.camera.position.z -= speed;
-                            break;
-                        case 'ArrowDown':
-                            this.camera.position.z += speed;
-                            break;
-                        case 'ArrowLeft':
-                            this.camera.position.x -= speed;
-                            break;
-                        case 'ArrowRight':
-                            this.camera.position.x += speed;
-                            break;
-                    }
-                    this.camera.lookAt(0, 0, 0);
-                });
-            }
-            
-            animate() {
-                requestAnimationFrame(() => this.animate());
-                
-                // Animate personnel movement
-                this.personnel.forEach((person, index) => {
-                    if (Math.random() < 0.01) { // 1% chance to move each frame
-                        person.position.x += (Math.random() - 0.5) * 2;
-                        person.position.z += (Math.random() - 0.5) * 2;
-                        
-                        // Keep within bounds
-                        person.position.x = Math.max(-400, Math.min(400, person.position.x));
-                        person.position.z = Math.max(-400, Math.min(400, person.position.z));
-                    }
-                    
-                    // Subtle animation
-                    person.position.y = 5 + Math.sin(Date.now() * 0.001 + index) * 0.5;
-                });
-                
-                // Animate equipment
-                this.equipment.forEach((equipment, index) => {
-                    if (equipment.userData.status === 'operational') {
-                        equipment.rotation.y += 0.01;
-                    }
-                });
-                
-                this.renderer.render(this.scene, this.camera);
-            }
-            
-            updateData(personnelData, equipmentData) {
-                // Update real-time data from Python backend
-                document.getElementById('personnel-count').textContent = personnelData.length;
-                document.getElementById('equipment-count').textContent = equipmentData.length;
-            }
-        }
+        // Sahne ayarları
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0x0F0F0F, 200, 1500);
         
-        // Initialize the 3D scene
-        window.mineGuard3D = new MineGuard3D();
+        const camera = new THREE.PerspectiveCamera(
+            75, window.innerWidth / window.innerHeight, 0.1, 2000
+        );
+        camera.position.set(400, 500, 600);
+        camera.lookAt(0, 0, 0);
         
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            window.mineGuard3D.camera.aspect = window.innerWidth / window.innerHeight;
-            window.mineGuard3D.camera.updateProjectionMatrix();
-            window.mineGuard3D.renderer.setSize(window.innerWidth, window.innerHeight);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x0F0F0F);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('container').appendChild(renderer.domElement);
+        
+        // Işıklandırma
+        const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        directionalLight.position.set(200, 400, 200);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.camera.left = -600;
+        directionalLight.shadow.camera.right = 600;
+        directionalLight.shadow.camera.top = 600;
+        directionalLight.shadow.camera.bottom = -600;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        scene.add(directionalLight);
+        
+        // Nokta ışıklar (bölge amaçlı)
+        const colors = [0x00D4FF, 0x00FF88, 0xFFB800, 0xFF3366, 0x9966FF, 0x00CCFF];
+        colors.forEach((color, i) => {
+            const light = new THREE.PointLight(color, 0.5, 150);
+            const angle = (i / colors.length) * Math.PI * 2;
+            light.position.set(
+                Math.cos(angle) * 250,
+                50,
+                Math.sin(angle) * 250
+            );
+            scene.add(light);
         });
         
-        // Expose functions for Python communication
-        window.updateMineData = function(data) {
-            window.mineGuard3D.updateData(data.personnel, data.equipment);
+        // Maden zemin
+        const gridHelper = new THREE.GridHelper(1200, 60, 0x00D4FF, 0x1A1A1A);
+        scene.add(gridHelper);
+        
+        const floorGeometry = new THREE.PlaneGeometry(1200, 1000);
+        const floorMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x1A1A1A,
+            roughness: 0.8,
+            metalness: 0.2
+        });
+        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.y = -2;
+        floor.receiveShadow = true;
+        scene.add(floor);
+        
+        // Maden tünelleri
+        const tunnelMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x2A2A2A,
+            transparent: true,
+            opacity: 0.7,
+            roughness: 0.9
+        });
+        
+        // Ana tünel
+        const mainTunnel = new THREE.Mesh(
+            new THREE.BoxGeometry(700, 60, 40),
+            tunnelMaterial
+        );
+        mainTunnel.position.set(0, 30, 0);
+        mainTunnel.castShadow = true;
+        scene.add(mainTunnel);
+        
+        // Yan tüneller
+        [-250, 0, 250].forEach(x => {
+            const tunnel = new THREE.Mesh(
+                new THREE.BoxGeometry(40, 60, 500),
+                tunnelMaterial
+            );
+            tunnel.position.set(x, 30, 0);
+            tunnel.castShadow = true;
+            scene.add(tunnel);
+        });
+        
+        // Bölge işaretleri
+        const zones = [
+            { name: 'Ana Şaft', x: 0, z: 0, color: 0x00D4FF },
+            { name: 'Sektör A', x: -300, z: -150, color: 0x00FF88 },
+            { name: 'Sektör B', x: 300, z: -150, color: 0xFFB800 },
+            { name: 'Sektör C', x: 0, z: 200, color: 0xFF3366 },
+            { name: 'İşleme', x: -200, z: 300, color: 0x9966FF },
+            { name: 'Atölye', x: 200, z: 300, color: 0x00CCFF }
+        ];
+        
+        zones.forEach(zone => {
+            // Platform
+            const platform = new THREE.Mesh(
+                new THREE.CylinderGeometry(45, 45, 4, 32),
+                new THREE.MeshStandardMaterial({ 
+                    color: zone.color,
+                    emissive: zone.color,
+                    emissiveIntensity: 0.3,
+                    roughness: 0.5
+                })
+            );
+            platform.position.set(zone.x, 2, zone.z);
+            platform.castShadow = true;
+            scene.add(platform);
+            
+            // Parlayan halka
+            const ring = new THREE.Mesh(
+                new THREE.RingGeometry(40, 50, 32),
+                new THREE.MeshBasicMaterial({ 
+                    color: zone.color,
+                    transparent: true,
+                    opacity: 0.4,
+                    side: THREE.DoubleSide
+                })
+            );
+            ring.position.set(zone.x, 3, zone.z);
+            ring.rotation.x = -Math.PI / 2;
+            scene.add(ring);
+        });
+        
+        // Takip nesneleri
+        const entities = new Map();
+        
+        // Cihaz markeri oluştur
+        function createMarker(type, color) {
+            const group = new THREE.Group();
+            
+            const geometry = type === 'personnel' 
+                ? new THREE.SphereGeometry(6, 16, 16)
+                : new THREE.BoxGeometry(12, 12, 12);
+            
+            const material = new THREE.MeshStandardMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.4,
+                roughness: 0.3,
+                metalness: 0.5
+            });
+            
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.castShadow = true;
+            group.add(mesh);
+            
+            // Parlama efekti
+            const glowGeom = type === 'personnel'
+                ? new THREE.SphereGeometry(9, 16, 16)
+                : new THREE.BoxGeometry(16, 16, 16);
+            
+            const glowMat = new THREE.MeshBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: 0.3
+            });
+            
+            const glow = new THREE.Mesh(glowGeom, glowMat);
+            group.add(glow);
+            
+            return group;
+        }
+        
+        // Konum güncelle
+        window.updateEntity = function(data) {
+            const { id, type, location, battery, status } = data;
+            
+            if (!entities.has(id)) {
+                let color;
+                if (status === 'emergency') {
+                    color = 0xFF3366;
+                } else if (type === 'personnel') {
+                    color = 0x00FF88;
+                } else {
+                    color = 0xFFB800;
+                }
+                
+                const marker = createMarker(type, color);
+                entities.set(id, marker);
+                scene.add(marker);
+            }
+            
+            const marker = entities.get(id);
+            
+            // Yumuşak geçiş
+            marker.position.x = location.x;
+            marker.position.y = Math.abs(location.z) + 15;
+            marker.position.z = location.y;
+            
+            // Durum rengini güncelle
+            if (status === 'emergency') {
+                marker.children[0].material.color.setHex(0xFF3366);
+                marker.children[0].material.emissive.setHex(0xFF3366);
+                marker.children[0].material.emissiveIntensity = 0.8;
+            }
+            
+            // Batarya düşükse titret
+            if (battery < 20) {
+                marker.position.y += Math.sin(Date.now() * 0.01) * 2;
+            }
         };
+        
+        // Sayıları güncelle
+        window.updateCounts = function(personnel, equipment) {
+            document.getElementById('personnel-count').textContent = personnel;
+            document.getElementById('equipment-count').textContent = equipment;
+        };
+        
+        // Kamera kontrolü
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+        let isMouseDown = false;
+        
+        document.addEventListener('mousedown', () => isMouseDown = true);
+        document.addEventListener('mouseup', () => isMouseDown = false);
+        
+        document.addEventListener('mousemove', (event) => {
+            if (isMouseDown) {
+                mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
+                mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+                targetRotationY += mouseX;
+                targetRotationX += mouseY;
+                targetRotationX = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, targetRotationX));
+            }
+        });
+        
+        // Zoom
+        document.addEventListener('wheel', (event) => {
+            const distance = camera.position.length();
+            const newDistance = distance + event.deltaY * 0.5;
+            const clampedDistance = Math.max(300, Math.min(1200, newDistance));
+            const scale = clampedDistance / distance;
+            camera.position.multiplyScalar(scale);
+        });
+        
+        // Animasyon döngüsü
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Kamera döndürme
+            const distance = 700;
+            camera.position.x = Math.sin(targetRotationY) * distance * Math.cos(targetRotationX);
+            camera.position.z = Math.cos(targetRotationY) * distance * Math.cos(targetRotationX);
+            camera.position.y = 500 + Math.sin(targetRotationX) * 300;
+            camera.lookAt(0, 0, 0);
+            
+            // Halka animasyonu
+            const time = Date.now() * 0.001;
+            scene.children.forEach(child => {
+                if (child.geometry && child.geometry.type === 'RingGeometry') {
+                    child.material.opacity = 0.3 + Math.sin(time * 2) * 0.15;
+                }
+            });
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Pencere yeniden boyutlandırma
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
         """
-        
         self.setHtml(html_content)
+    
+    def update_position(self, data):
+        """Konum güncellemesi"""
+        entity_type = data['type']
+        entity_data = data['data']
         
-    def update_mine_data(self, personnel_data, equipment_data):
-        """Update 3D visualization with real-time data"""
-        data = {
-            'personnel': personnel_data,
-            'equipment': equipment_data
+        update_info = {
+            'id': entity_data['id'],
+            'type': entity_type,
+            'location': entity_data['location'],
+            'battery': entity_data['battery'],
+            'status': entity_data.get('status', 'active')
         }
         
-        # Execute JavaScript to update the 3D scene
-        self.page().runJavaScript(
-            f"window.updateMineData({json.dumps(data)});"
-        )
+        js_code = f"window.updateEntity({json.dumps(update_info)});"
+        self.page().runJavaScript(js_code)
+    
+    def load_all_positions(self):
+        """Tüm konumları yükle"""
+        # Personel
+        for person in self.tracking.get_personnel():
+            self.update_position({'type': 'personnel', 'data': person})
+        
+        # Ekipman
+        for equipment in self.tracking.get_equipment():
+            self.update_position({'type': 'equipment', 'data': equipment})
+        
+        # Sayıları güncelle
+        stats = self.tracking.get_statistics()
+        js_code = f"window.updateCounts({stats['personnel']['total']}, {stats['equipment']['total']});"
+        self.page().runJavaScript(js_code)
