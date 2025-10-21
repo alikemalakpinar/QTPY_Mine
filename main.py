@@ -8,6 +8,14 @@ Modular Architecture with Turkish/English Support
 import sys
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
+
+# ⚠️ IMPORTANT: QtWebEngineWidgets MUST be imported BEFORE QApplication is created
+try:
+    from PyQt6.QtWebEngineWidgets import QWebEngineView
+except ImportError:
+    print("⚠️ Warning: QtWebEngineWidgets not available. 3D map may not work.")
+    QWebEngineView = None
+
 from app.app import MineTrackerApp
 
 
