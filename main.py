@@ -1287,18 +1287,27 @@ class MineTrackerApp(QMainWindow):
 
 
 def main():
-    """Main entry point"""
+    """Ana başlangıç noktası"""
+    # High DPI support
+    QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps, True)
+    
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
     
-    # Set application metadata
+    # Uygulama bilgileri
     app.setApplicationName("MineTracker")
-    app.setOrganizationName("MineGuard Technologies")
-    app.setApplicationDisplayName("MineTracker - Underground Safety System")
+    app.setOrganizationName("MineTracker Technologies")
+    app.setApplicationDisplayName("MineTracker - Yeraltı Güvenlik Sistemi")
     
-    # Create and show main window
+    # Ana pencereyi oluştur ve göster
     window = MineTrackerApp()
     window.show()
+    
+    print("✅ MineTracker başlatıldı!")
+    print("🗺️  3D Harita aktif")
+    print("📡 Real-time tracking aktif")
+    print("🌍 Türkçe/English dil desteği hazır")
     
     sys.exit(app.exec())
 
