@@ -314,8 +314,10 @@ class DashboardScreen(QWidget):
                 if child.property('value_label'):
                     if title_key == 'active_personnel':
                         child.setText(str(stats['personnel']['active']))
-                    elif title_key == 'equipment_online':
-                        child.setText(f"{stats['equipment']['online']}/{stats['equipment']['total']}")
+                    elif title_key == 'total_personnel':
+                        child.setText(str(stats['personnel']['total']))
+                    elif title_key == 'gateways_online':
+                        child.setText(f"{stats['gateways']['online']}/{stats['gateways']['total']}")
         
         # Aktiviteleri güncelle
         self.populate_activities()
