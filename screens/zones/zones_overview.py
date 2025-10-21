@@ -177,8 +177,8 @@ class ZonesScreen(QWidget):
         
         # Bölge detay tablosu
         self.zones_table = QTableWidget()
-        self.zones_table.setColumnCount(4)
-        self.zones_table.setHorizontalHeaderLabels(['Bölge', 'Personel', 'Ekipman', 'Durum'])
+        self.zones_table.setColumnCount(3)
+        self.zones_table.setHorizontalHeaderLabels(['Bölge', 'Personel', 'Durum'])
         
         self.zones_table.setStyleSheet(f"""
             QTableWidget {{
