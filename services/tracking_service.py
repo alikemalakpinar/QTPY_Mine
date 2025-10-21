@@ -88,50 +88,9 @@ class TrackingService(QObject):
             }
             self.personnel.append(person)
     
-    def init_equipment(self):
-        """Demo ekipman verisi oluştur"""
-        equipment_list = [
-            ('Ekskavatör #1', 'Ağır Ekipman', 'Heavy'),
-            ('Yükleyici #2', 'Ağır Ekipman', 'Heavy'),
-            ('Matkap #3', 'Delme', 'Drilling'),
-            ('Kamyon #4', 'Taşıma', 'Transport'),
-            ('Vinç #5', 'Destek', 'Support'),
-            ('Konveyör #6', 'Taşıma', 'Transport'),
-            ('Kompresör #7', 'Destek', 'Support'),
-            ('Jeneratör #8', 'Destek', 'Support'),
-            ('Pompa #9', 'Destek', 'Support'),
-            ('Kırıcı #10', 'İşleme', 'Processing')
-        ]
-        
-        for i, (name, type_tr, type_en) in enumerate(equipment_list, 1):
-            zone = random.choice(self.zones)
-            equipment = {
-                'id': f'E{i:03d}',
-                'name': name,
-                'type': type_tr,
-                'type_en': type_en,
-                'zone_id': zone['id'],
-                'zone_name': zone['name'],
-                'location': {
-                    'x': zone['x'] + random.uniform(-60, 60),
-                    'y': zone['y'] + random.uniform(-60, 60),
-                    'z': random.uniform(-30, -2)
-                },
-                'status': random.choice(['online', 'online', 'online', 'maintenance', 'offline']),
-                'battery': random.randint(40, 100),
-                'fuel': random.randint(20, 100),
-                'signal': random.randint(75, 100),
-                'health_score': random.randint(70, 100),
-                'operator': random.choice([p['full_name'] for p in self.personnel[:5]]),
-                'last_maintenance': '2024-12-01',
-                'operating_hours': random.randint(500, 5000),
-                'last_update': datetime.now()
-            }
-            self.equipment.append(equipment)
-    
     def update_locations(self):
-        """Konumları güncelle (simulasyon)"""
-        # Personel konumlarını güncelle
+        """Konumları güncelle (Gateway simülasyonu)"""
+        # Personel konumlarını güncelle - Gateway sinyalleriyle
         for person in self.personnel:
             if person['status'] == 'active' and random.random() < 0.4:
                 # Hareket simülasyonu
