@@ -229,10 +229,10 @@ class SettingsScreen(QWidget):
         # Durum bilgileri
         status_items = [
             ('✅ Takip Servisi', self.i18n.t('connected')),
-            ('✅ Veritabanı', self.i18n.t('connected')),
             ('✅ 3D Görselleştirme', 'Aktif'),
             ('📈 Personel Takibi', f"{len(self.tracking.get_personnel())} Aktif"),
-            ('🚜 Ekipman Takibi', f"{len(self.tracking.get_equipment())} Aktif"),
+            ('📡 Gateway Sistemi', f"{len(self.tracking.get_gateways())} Online"),
+            ('📍 Bölge Takibi', f"{len(self.tracking.get_zones())} Bölge"),
         ]
         
         for label, value in status_items:
