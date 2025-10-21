@@ -1,25 +1,38 @@
-"""Modern koyu tema - Professional Dark Theme"""
+"""Modern koyu tema - Professional Dark Theme for Mining"""
 
 class MineTrackerTheme:
-    """Modern, profesyonel koyu tema"""
+    """Modern, profesyonel maden teması - Gelişmiş renk paleti"""
     
-    # Renk paleti
-    BACKGROUND = "#0F0F0F"
-    SURFACE = "#1A1A1A"
-    SURFACE_LIGHT = "#252525"
-    SURFACE_HOVER = "#2A2A2A"
-    PRIMARY = "#00D4FF"
-    PRIMARY_DARK = "#0099CC"
-    PRIMARY_LIGHT = "#33DDFF"
-    SUCCESS = "#00FF88"
-    WARNING = "#FFB800"
-    DANGER = "#FF3366"
-    INFO = "#6C5CE7"
-    TEXT_PRIMARY = "#FFFFFF"
-    TEXT_SECONDARY = "#B0B0B0"
-    TEXT_MUTED = "#707070"
-    BORDER = "#2A2A2A"
-    BORDER_LIGHT = "#3A3A3A"
+    # Ana renkler - Maden temasına uygun
+    BACKGROUND = "#0a0a0f"          # Daha derin siyah
+    SURFACE = "#1a1a20"             # Koyu gri-mavi
+    SURFACE_LIGHT = "#252530"       # Orta ton
+    SURFACE_HOVER = "#2f2f3a"       # Hover efekti
+    
+    # Vurgu renkleri - Parlak ve net
+    PRIMARY = "#00D4FF"             # Cyan - Güvenlik ışığı
+    PRIMARY_DARK = "#0099CC"        # Koyu cyan
+    PRIMARY_LIGHT = "#33DDFF"       # Açık cyan
+    
+    SUCCESS = "#00FF88"             # Neon yeşil - Güvenli
+    WARNING = "#FFB800"             # Amber - Dikkat
+    DANGER = "#FF3366"              # Kırmızı - Tehlike
+    INFO = "#9966FF"                # Mor - Bilgi
+    
+    # Metin renkleri
+    TEXT_PRIMARY = "#FFFFFF"        # Beyaz
+    TEXT_SECONDARY = "#B0B0B0"      # Açık gri
+    TEXT_MUTED = "#707070"          # Soluk gri
+    
+    # Kenarlıklar
+    BORDER = "#2f2f3a"              # Koyu kenarlık
+    BORDER_LIGHT = "#3f3f4a"        # Açık kenarlık
+    
+    # Ekstra - Maden renkleri
+    GOLD = "#FFD700"                # Altın
+    SILVER = "#C0C0C0"              # Gümüş
+    COPPER = "#B87333"              # Bakır
+    COAL = "#1a1a1a"                # Kömür
     
     @staticmethod
     def get_app_style():
