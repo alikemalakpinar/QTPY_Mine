@@ -1,10 +1,10 @@
-"""Gerçek zamanlı personel ve ekipman takip servisi"""
+"""Gerçek zamanlı personel takip servisi - Gateway & Tag tabanlı"""
 from PyQt6.QtCore import QObject, pyqtSignal, QTimer
 import random
 from datetime import datetime
 
 class TrackingService(QObject):
-    """Personel ve ekipman takip servisi"""
+    """Gateway tabanlı personel tag takip servisi"""
     
     # Signals
     location_updated = pyqtSignal(dict)  # Konum güncellemesi
@@ -15,20 +15,30 @@ class TrackingService(QObject):
     def __init__(self):
         super().__init__()
         self.personnel = []
-        self.equipment = []
+        
+        # Gateway'ler - Maden bölgelerinde yerleştirilmiş
+        self.gateways = [
+            {'id': 'GW001', 'name': 'Ana Şaft Gateway', 'zone': 'Ana Şaft', 'color': '#00D4FF', 'x': 0, 'y': 0, 'status': 'online'},
+            {'id': 'GW002', 'name': 'Sektör A Gateway', 'zone': 'Sektör A', 'color': '#00FF88', 'x': -350, 'y': -200, 'status': 'online'},
+            {'id': 'GW003', 'name': 'Sektör B Gateway', 'zone': 'Sektör B', 'color': '#FFB800', 'x': 350, 'y': -200, 'status': 'online'},
+            {'id': 'GW004', 'name': 'Sektör C Gateway', 'zone': 'Sektör C', 'color': '#9966FF', 'x': 0, 'y': 280, 'status': 'online'},
+            {'id': 'GW005', 'name': 'İşleme Gateway', 'zone': 'İşleme', 'color': '#FF3366', 'x': -250, 'y': 350, 'status': 'online'},
+            {'id': 'GW006', 'name': 'Atölye Gateway', 'zone': 'Atölye', 'color': '#00CCFF', 'x': 250, 'y': 350, 'status': 'online'}
+        ]
+        
+        # Bölgeler (Gateway konumlarıyla aynı)
         self.zones = [
             {'id': 'ZONE_A', 'name': 'Ana Şaft', 'color': '#00D4FF', 'x': 0, 'y': 0},
-            {'id': 'ZONE_B', 'name': 'Sektör A', 'color': '#00FF88', 'x': -300, 'y': -150},
-            {'id': 'ZONE_C', 'name': 'Sektör B', 'color': '#FFB800', 'x': 300, 'y': -150},
-            {'id': 'ZONE_D', 'name': 'Sektör C', 'color': '#FF3366', 'x': 0, 'y': 200},
-            {'id': 'ZONE_E', 'name': 'İşleme', 'color': '#9966FF', 'x': -200, 'y': 300},
-            {'id': 'ZONE_F', 'name': 'Atölye', 'color': '#00CCFF', 'x': 200, 'y': 300}
+            {'id': 'ZONE_B', 'name': 'Sektör A', 'color': '#00FF88', 'x': -350, 'y': -200},
+            {'id': 'ZONE_C', 'name': 'Sektör B', 'color': '#FFB800', 'x': 350, 'y': -200},
+            {'id': 'ZONE_D', 'name': 'Sektör C', 'color': '#9966FF', 'x': 0, 'y': 280},
+            {'id': 'ZONE_E', 'name': 'İşleme', 'color': '#FF3366', 'x': -250, 'y': 350},
+            {'id': 'ZONE_F', 'name': 'Atölye', 'color': '#00CCFF', 'x': 250, 'y': 350}
         ]
         
         self.init_personnel()
-        self.init_equipment()
         
-        # Gerçek zamanlı güncelleme timer'ı
+        # Gerçek zamanlı güncelleme
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self.update_locations)
         self.update_timer.start(2000)  # Her 2 saniyede bir güncelle
