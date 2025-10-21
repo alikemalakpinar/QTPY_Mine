@@ -99,7 +99,6 @@ class ZonesScreen(QWidget):
         
         # İstatistikler
         personnel_count = sum(1 for p in self.tracking.get_personnel() if p['zone_id'] == zone['id'])
-        equipment_count = sum(1 for e in self.tracking.get_equipment() if e['zone_id'] == zone['id'])
         
         # Personel
         personnel_layout = QHBoxLayout()
@@ -111,18 +110,18 @@ class ZonesScreen(QWidget):
         personnel_layout.addWidget(personnel_label)
         personnel_layout.addStretch()
         
-        # Ekipman
-        equipment_layout = QHBoxLayout()
-        equipment_icon = QLabel('🚜')
-        equipment_icon.setFont(QFont('Arial', 16))
-        equipment_label = QLabel(f"{equipment_count} Ekipman")
-        equipment_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 13px;")
-        equipment_layout.addWidget(equipment_icon)
-        equipment_layout.addWidget(equipment_label)
-        equipment_layout.addStretch()
+        # Gateway
+        gateway_layout = QHBoxLayout()
+        gateway_icon = QLabel('📡')
+        gateway_icon.setFont(QFont('Arial', 16))
+        gateway_label = QLabel(f"Gateway Active")
+        gateway_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 13px;")
+        gateway_layout.addWidget(gateway_icon)
+        gateway_layout.addWidget(gateway_label)
+        gateway_layout.addStretch()
         
         layout.addLayout(personnel_layout)
-        layout.addLayout(equipment_layout)
+        layout.addLayout(gateway_layout)
         
         # Koordinatlar
         coords_label = QLabel(f"X: {zone['x']}, Y: {zone['y']}")
