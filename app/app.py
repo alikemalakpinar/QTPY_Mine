@@ -98,10 +98,6 @@ class MineTrackerApp(QMainWindow):
         self.personnel = PeopleListScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.personnel)
         
-        # Equipment
-        self.equipment = EquipmentMapScreen(self.i18n, self.tracking, self.store)
-        self.stacked_widget.addWidget(self.equipment)
-        
         # Emergency
         self.emergency = EmergencyScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.emergency)
