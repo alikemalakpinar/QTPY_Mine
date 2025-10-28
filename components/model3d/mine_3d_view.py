@@ -1,4 +1,4 @@
-"""Ultra Profesyonel 3D Harita - Enterprise Grade Design"""
+"""Gerçekçi 3D Maden Haritası - Ana Şaft, Galeriler ve Odalar"""
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QFont
@@ -13,7 +13,7 @@ except ImportError:
     BaseClass = QWidget
 
 class Mine3DView(BaseClass):
-    """Enterprise grade 3D visualization"""
+    """Gerçekçi maden yapısı ile 3D görselleştirme"""
     
     def __init__(self, tracking_service):
         super().__init__()
@@ -41,338 +41,190 @@ class Mine3DView(BaseClass):
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MineTracker Pro</title>
+    <title>MineTracker 3D - Realistic Mine</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: #0a0b0d;
-            overflow: hidden;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #0a0b0d; 
+            overflow: hidden; 
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
+        #container { width: 100vw; height: 100vh; }
         
-        #container {
-            width: 100vw;
-            height: 100vh;
-        }
-        
-        /* Stats Panel - Clean & Minimal */
-        .stats-panel {
+        .info-panel {
             position: absolute;
-            top: 32px;
-            left: 32px;
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: saturate(180%) blur(20px);
+            top: 20px;
+            left: 20px;
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(20px);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
             min-width: 280px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            color: white;
         }
         
-        .stats-header {
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        
-        .stats-title {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: #9CA3AF;
-            margin-bottom: 4px;
-        }
-        
-        .stats-subtitle {
-            font-size: 20px;
+        .panel-title {
+            font-size: 18px;
             font-weight: 700;
-            color: #F9FAFB;
-            letter-spacing: -0.5px;
+            margin-bottom: 15px;
+            color: #3B82F6;
         }
         
-        .stat-item {
+        .stat-row {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .stat-item:last-child {
-            border-bottom: none;
-        }
+        .stat-label { color: #9CA3AF; font-size: 13px; }
+        .stat-value { color: #F9FAFB; font-size: 18px; font-weight: 700; }
         
-        .stat-label {
-            font-size: 13px;
-            color: #9CA3AF;
-            font-weight: 500;
-        }
-        
-        .stat-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: #F9FAFB;
-            letter-spacing: -0.5px;
-        }
-        
-        .stat-unit {
-            font-size: 12px;
-            font-weight: 500;
-            color: #6B7280;
-            margin-left: 4px;
-        }
-        
-        .status-dot {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10B981;
-            margin-right: 8px;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        /* Legend - Minimal */
         .legend {
             position: absolute;
-            top: 32px;
-            right: 32px;
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: saturate(180%) blur(20px);
+            top: 20px;
+            right: 20px;
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(20px);
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            color: white;
         }
         
         .legend-item {
             display: flex;
             align-items: center;
             padding: 8px 0;
+            font-size: 13px;
         }
         
         .legend-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin-right: 12px;
-            box-shadow: 0 0 12px currentColor;
+            margin-right: 10px;
+            box-shadow: 0 0 10px currentColor;
         }
         
-        .legend-text {
-            font-size: 13px;
-            color: #E5E7EB;
-            font-weight: 500;
-        }
-        
-        /* Controls - Bottom */
         .controls {
             position: absolute;
-            bottom: 32px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: saturate(180%) blur(20px);
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(20px);
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 12px 24px;
-            display: flex;
-            gap: 32px;
-        }
-        
-        .control-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
             color: #9CA3AF;
-            font-weight: 500;
+            font-size: 12px;
+            display: flex;
+            gap: 20px;
         }
         
         .control-key {
-            background: rgba(255, 255, 255, 0.08);
-            color: #E5E7EB;
+            background: rgba(255, 255, 255, 0.1);
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 11px;
+            color: white;
             font-weight: 600;
-            font-family: 'SF Mono', 'Courier New', monospace;
-        }
-        
-        /* Gateway Status */
-        .gateway-status {
-            position: absolute;
-            bottom: 32px;
-            right: 32px;
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .gateway-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #9CA3AF;
-        }
-        
-        .gateway-indicators {
-            display: flex;
-            gap: 6px;
-        }
-        
-        .gateway-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #10B981;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
     <div id="container"></div>
     
-    <!-- Stats Panel -->
-    <div class="stats-panel">
-        <div class="stats-header">
-            <div class="stats-title">Live Tracking</div>
-            <div class="stats-subtitle">MineTracker Pro</div>
+    <div class="info-panel">
+        <div class="panel-title">⛏️ Maden Durumu</div>
+        <div class="stat-row">
+            <span class="stat-label">Personel (Yer Altı)</span>
+            <span class="stat-value" id="personnel-count">0</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-label">
-                <span class="status-dot"></span>Personnel
-            </span>
-            <div>
-                <span class="stat-value" id="personnel-count">0</span>
-                <span class="stat-unit">active</span>
-            </div>
+        <div class="stat-row">
+            <span class="stat-label">Anchor Cihazları</span>
+            <span class="stat-value">6</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-label">Gateways</span>
-            <div>
-                <span class="stat-value">6</span>
-                <span class="stat-unit">online</span>
-            </div>
+        <div class="stat-row">
+            <span class="stat-label">Aktif Galeriler</span>
+            <span class="stat-value">12</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-label">Coverage</span>
-            <div>
-                <span class="stat-value">100</span>
-                <span class="stat-unit">%</span>
-            </div>
+        <div class="stat-row">
+            <span class="stat-label">İşletme Odaları</span>
+            <span class="stat-value">6</span>
         </div>
     </div>
     
-    <!-- Legend -->
     <div class="legend">
         <div class="legend-item">
             <div class="legend-dot" style="background: #10B981; color: #10B981;"></div>
-            <span class="legend-text">Personnel</span>
+            <span>Personel</span>
         </div>
         <div class="legend-item">
             <div class="legend-dot" style="background: #3B82F6; color: #3B82F6;"></div>
-            <span class="legend-text">Gateway</span>
+            <span>Anchor</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background: #8B5CF6; color: #8B5CF6;"></div>
+            <span>Ana Galeri</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background: #F59E0B; color: #F59E0B;"></div>
+            <span>İşletme Odası</span>
         </div>
         <div class="legend-item">
             <div class="legend-dot" style="background: #EF4444; color: #EF4444;"></div>
-            <span class="legend-text">Alert</span>
+            <span>Acil Durum</span>
         </div>
     </div>
     
-    <!-- Controls -->
     <div class="controls">
-        <div class="control-item">
-            <span class="control-key">Mouse</span>
-            <span>Rotate</span>
-        </div>
-        <div class="control-item">
-            <span class="control-key">Scroll</span>
-            <span>Zoom</span>
-        </div>
-        <div class="control-item">
-            <span class="control-key">WASD</span>
-            <span>Move</span>
-        </div>
-    </div>
-    
-    <!-- Gateway Status -->
-    <div class="gateway-status">
-        <span class="gateway-label">Gateway Status</span>
-        <div class="gateway-indicators" id="gateway-indicators"></div>
+        <span><span class="control-key">🖱️ Mouse</span>Döndür</span>
+        <span><span class="control-key">⚲ Scroll</span>Yakınlaş/Uzaklaş</span>
+        <span><span class="control-key">WASD</span>Hareket</span>
     </div>
 
     <script>
-        // Scene Setup
+        // Scene setup
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x0a0b0d);
-        scene.fog = new THREE.FogExp2(0x0a0b0d, 0.0005);
+        scene.fog = new THREE.FogExp2(0x0a0b0d, 0.0008);
         
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 3000);
-        camera.position.set(350, 300, 500);
+        camera.position.set(0, 400, 600);
         
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.1;
         document.getElementById('container').appendChild(renderer.domElement);
         
-        // Lighting - Professional
-        const ambientLight = new THREE.AmbientLight(0x3a4556, 0.6);
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x3a4556, 0.5);
         scene.add(ambientLight);
         
-        const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
         mainLight.position.set(200, 400, 200);
         mainLight.castShadow = true;
         mainLight.shadow.mapSize.width = 2048;
         mainLight.shadow.mapSize.height = 2048;
-        mainLight.shadow.camera.left = -500;
-        mainLight.shadow.camera.right = 500;
-        mainLight.shadow.camera.top = 500;
-        mainLight.shadow.camera.bottom = -500;
         scene.add(mainLight);
         
-        const fillLight = new THREE.DirectionalLight(0x5a6f8a, 0.4);
-        fillLight.position.set(-200, 200, -200);
-        scene.add(fillLight);
-        
-        // Floor - Clean & Minimal
-        const floorGeometry = new THREE.PlaneGeometry(1600, 1400, 60, 60);
+        // Floor
+        const floorGeometry = new THREE.PlaneGeometry(2000, 2000, 50, 50);
         const vertices = floorGeometry.attributes.position.array;
-        
         for (let i = 0; i < vertices.length; i += 3) {
-            vertices[i + 2] = Math.random() * 2;
+            vertices[i + 2] = Math.random() * 3;
         }
-        floorGeometry.attributes.position.needsUpdate = true;
         floorGeometry.computeVertexNormals();
         
         const floorMaterial = new THREE.MeshStandardMaterial({ 
             color: 0x1a1f2e,
-            roughness: 0.85,
-            metalness: 0.15
+            roughness: 0.9,
+            metalness: 0.1
         });
         
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -380,88 +232,299 @@ class Mine3DView(BaseClass):
         floor.receiveShadow = true;
         scene.add(floor);
         
-        // Grid - Subtle
-        const gridHelper = new THREE.GridHelper(1600, 32, 0x2a3142, 0x1f2430);
+        // Grid
+        const gridHelper = new THREE.GridHelper(2000, 40, 0x2a3142, 0x1f2430);
         gridHelper.position.y = 0.1;
-        gridHelper.material.transparent = true;
         gridHelper.material.opacity = 0.3;
+        gridHelper.material.transparent = true;
         scene.add(gridHelper);
         
-        // Zones & Gateways - Professional
-        const zones = [
-            { name: 'Main Shaft', x: 0, z: 0, color: 0x3B82F6 },
-            { name: 'Sector A', x: -350, z: -200, color: 0x10B981 },
-            { name: 'Sector B', x: 350, z: -200, color: 0x8B5CF6 },
-            { name: 'Sector C', x: 0, z: 280, color: 0xF59E0B },
-            { name: 'Processing', x: -250, z: 350, color: 0xEC4899 },
-            { name: 'Workshop', x: 250, z: 350, color: 0x06B6D4 }
-        ];
+        // ===============================
+        // MADEN YAPISI - Ana Şaft (Giriş)
+        // ===============================
         
-        const gatewayIndicators = document.getElementById('gateway-indicators');
-        
-        zones.forEach((zone, index) => {
-            // Platform - Minimalist
-            const platform = new THREE.Mesh(
-                new THREE.CylinderGeometry(40, 45, 4, 32),
+        function createMainShaft() {
+            const shaftGroup = new THREE.Group();
+            
+            // Ana Şaft Platformu (yüzeyde)
+            const shaftPlatform = new THREE.Mesh(
+                new THREE.CylinderGeometry(60, 60, 8, 32),
                 new THREE.MeshStandardMaterial({ 
-                    color: zone.color,
-                    emissive: zone.color,
-                    emissiveIntensity: 0.15,
-                    roughness: 0.5,
+                    color: 0x2d3748,
+                    roughness: 0.6,
                     metalness: 0.4
                 })
             );
-            platform.position.set(zone.x, 2, zone.z);
-            platform.castShadow = true;
-            platform.receiveShadow = true;
-            scene.add(platform);
+            shaftPlatform.position.y = 4;
+            shaftPlatform.castShadow = true;
+            shaftPlatform.receiveShadow = true;
+            shaftGroup.add(shaftPlatform);
             
-            // Ring - Subtle
-            const ring = new THREE.Mesh(
-                new THREE.RingGeometry(43, 46, 32),
-                new THREE.MeshBasicMaterial({ 
-                    color: zone.color,
-                    transparent: true,
-                    opacity: 0.25,
-                    side: THREE.DoubleSide
+            // Şaft Çemberi
+            const shaftRing = new THREE.Mesh(
+                new THREE.TorusGeometry(58, 4, 16, 100),
+                new THREE.MeshStandardMaterial({
+                    color: 0x3B82F6,
+                    emissive: 0x3B82F6,
+                    emissiveIntensity: 0.3,
+                    metalness: 0.8,
+                    roughness: 0.2
                 })
             );
-            ring.position.set(zone.x, 4.5, zone.z);
-            ring.rotation.x = -Math.PI / 2;
-            scene.add(ring);
+            shaftRing.position.y = 4;
+            shaftRing.rotation.x = Math.PI / 2;
+            shaftGroup.add(shaftRing);
             
-            // Gateway Device - Clean Design
-            const gateway = new THREE.Group();
+            // Işık
+            const shaftLight = new THREE.PointLight(0x3B82F6, 1.5, 150);
+            shaftLight.position.y = 40;
+            shaftGroup.add(shaftLight);
             
-            // Body
-            const body = new THREE.Mesh(
-                new THREE.CylinderGeometry(6, 7, 20, 16),
+            // "ANA ŞAFT" yazısı için marker
+            const labelGeometry = new THREE.CylinderGeometry(3, 3, 80, 8);
+            const labelMaterial = new THREE.MeshStandardMaterial({
+                color: 0x3B82F6,
+                emissive: 0x3B82F6,
+                emissiveIntensity: 0.5
+            });
+            const label = new THREE.Mesh(labelGeometry, labelMaterial);
+            label.position.y = 40;
+            shaftGroup.add(label);
+            
+            return shaftGroup;
+        }
+        
+        const mainShaft = createMainShaft();
+        scene.add(mainShaft);
+        
+        // ===============================
+        // GALERİLER (Tüneller)
+        // ===============================
+        
+        function createGallery(startX, startZ, endX, endZ, width = 20, color = 0x8B5CF6) {
+            const gallery = new THREE.Group();
+            
+            const length = Math.sqrt((endX - startX)**2 + (endZ - startZ)**2);
+            const angle = Math.atan2(endZ - startZ, endX - startX);
+            
+            // Galeri taban
+            const galleryFloor = new THREE.Mesh(
+                new THREE.BoxGeometry(length, 2, width),
+                new THREE.MeshStandardMaterial({
+                    color: 0x2a3344,
+                    roughness: 0.8
+                })
+            );
+            galleryFloor.position.set(
+                (startX + endX) / 2,
+                1,
+                (startZ + endZ) / 2
+            );
+            galleryFloor.rotation.y = angle;
+            galleryFloor.receiveShadow = true;
+            gallery.add(galleryFloor);
+            
+            // Galeri kenarları (raylar)
+            const railMaterial = new THREE.MeshStandardMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.2,
+                metalness: 0.8,
+                roughness: 0.3
+            });
+            
+            for (let side of [-1, 1]) {
+                const rail = new THREE.Mesh(
+                    new THREE.BoxGeometry(length, 3, 1.5),
+                    railMaterial
+                );
+                rail.position.set(
+                    (startX + endX) / 2,
+                    2.5,
+                    (startZ + endZ) / 2 + side * (width / 2 - 0.75)
+                );
+                rail.rotation.y = angle;
+                gallery.add(rail);
+            }
+            
+            // Galeri ışıkları
+            const numLights = Math.floor(length / 60);
+            for (let i = 0; i <= numLights; i++) {
+                const t = i / numLights;
+                const x = startX + (endX - startX) * t;
+                const z = startZ + (endZ - startZ) * t;
+                
+                const light = new THREE.PointLight(color, 0.6, 80);
+                light.position.set(x, 20, z);
+                gallery.add(light);
+                
+                // Işık kaynağı göstergesi
+                const bulb = new THREE.Mesh(
+                    new THREE.SphereGeometry(1.5, 16, 16),
+                    new THREE.MeshStandardMaterial({
+                        color: color,
+                        emissive: color,
+                        emissiveIntensity: 1
+                    })
+                );
+                bulb.position.set(x, 20, z);
+                gallery.add(bulb);
+            }
+            
+            return gallery;
+        }
+        
+        // Ana galeriler (Ana Şaft'tan çıkan)
+        const galleries = [
+            // Sektör A'ya (sol üst)
+            { start: [0, 0], end: [-350, -200], color: 0x10B981 },
+            // Sektör B'ye (sağ üst)
+            { start: [0, 0], end: [350, -200], color: 0xF59E0B },
+            // Sektör C'ye (alt)
+            { start: [0, 0], end: [0, 280], color: 0x8B5CF6 },
+            // İşleme'ye (sol alt)
+            { start: [0, 0], end: [-250, 350], color: 0xEC4899 },
+            // Atölye'ye (sağ alt)
+            { start: [0, 0], end: [250, 350], color: 0x06B6D4 }
+        ];
+        
+        galleries.forEach(g => {
+            const gallery = createGallery(g.start[0], g.start[1], g.end[0], g.end[1], 22, g.color);
+            scene.add(gallery);
+        });
+        
+        // Ara bağlantı galerileri
+        const connectionGalleries = [
+            { start: [-350, -200], end: [350, -200], color: 0x6366F1 }, // A-B arası
+            { start: [-250, 350], end: [250, 350], color: 0x06B6D4 },  // İşleme-Atölye arası
+        ];
+        
+        connectionGalleries.forEach(g => {
+            const gallery = createGallery(g.start[0], g.start[1], g.end[0], g.end[1], 18, g.color);
+            scene.add(gallery);
+        });
+        
+        // ===============================
+        // İŞLETME ODALARI (Çalışma Alanları)
+        // ===============================
+        
+        function createWorkingChamber(x, z, size, color, name) {
+            const chamber = new THREE.Group();
+            
+            // Oda platformu
+            const platform = new THREE.Mesh(
+                new THREE.BoxGeometry(size, 4, size),
                 new THREE.MeshStandardMaterial({
                     color: 0x2d3748,
-                    metalness: 0.7,
+                    roughness: 0.7,
+                    metalness: 0.3
+                })
+            );
+            platform.position.set(x, 2, z);
+            platform.castShadow = true;
+            platform.receiveShadow = true;
+            chamber.add(platform);
+            
+            // Oda sınırları
+            const borderMaterial = new THREE.MeshStandardMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.3,
+                metalness: 0.7,
+                roughness: 0.3
+            });
+            
+            const borderHeight = 6;
+            const borderWidth = 2;
+            
+            // 4 kenar
+            const borders = [
+                { pos: [x, borderHeight/2, z - size/2 + borderWidth/2], size: [size, borderHeight, borderWidth] },
+                { pos: [x, borderHeight/2, z + size/2 - borderWidth/2], size: [size, borderHeight, borderWidth] },
+                { pos: [x - size/2 + borderWidth/2, borderHeight/2, z], size: [borderWidth, borderHeight, size] },
+                { pos: [x + size/2 - borderWidth/2, borderHeight/2, z], size: [borderWidth, borderHeight, size] }
+            ];
+            
+            borders.forEach(b => {
+                const border = new THREE.Mesh(
+                    new THREE.BoxGeometry(...b.size),
+                    borderMaterial
+                );
+                border.position.set(...b.pos);
+                chamber.add(border);
+            });
+            
+            // Oda ışığı
+            const light = new THREE.PointLight(color, 1.2, 100);
+            light.position.set(x, 30, z);
+            chamber.add(light);
+            
+            // İsim etiketi için tall marker
+            const marker = new THREE.Mesh(
+                new THREE.CylinderGeometry(2, 2, 50, 8),
+                new THREE.MeshStandardMaterial({
+                    color: color,
+                    emissive: color,
+                    emissiveIntensity: 0.6
+                })
+            );
+            marker.position.set(x, 25, z);
+            chamber.add(marker);
+            
+            return chamber;
+        }
+        
+        // İşletme odaları oluştur
+        const workingChambers = [
+            { name: 'Ana Şaft', x: 0, z: 0, size: 80, color: 0x3B82F6 },
+            { name: 'Sektör A', x: -350, z: -200, size: 70, color: 0x10B981 },
+            { name: 'Sektör B', x: 350, z: -200, size: 70, color: 0xF59E0B },
+            { name: 'Sektör C', x: 0, z: 280, size: 70, color: 0x8B5CF6 },
+            { name: 'İşleme', x: -250, z: 350, size: 65, color: 0xEC4899 },
+            { name: 'Atölye', x: 250, z: 350, size: 65, color: 0x06B6D4 }
+        ];
+        
+        workingChambers.forEach(c => {
+            const chamber = createWorkingChamber(c.x, c.z, c.size, c.color, c.name);
+            scene.add(chamber);
+        });
+        
+        // ===============================
+        // ANCHOR CİHAZLARI
+        // ===============================
+        
+        function createAnchor(x, z, color) {
+            const anchor = new THREE.Group();
+            
+            // Ana gövde
+            const body = new THREE.Mesh(
+                new THREE.CylinderGeometry(5, 6, 18, 16),
+                new THREE.MeshStandardMaterial({
+                    color: 0x2d3748,
+                    metalness: 0.8,
                     roughness: 0.3
                 })
             );
             body.castShadow = true;
-            gateway.add(body);
+            anchor.add(body);
             
-            // LED - Parlayan gösterge
+            // LED gösterge
             const led = new THREE.Mesh(
-                new THREE.SphereGeometry(2, 16, 16),
+                new THREE.SphereGeometry(2.5, 16, 16),
                 new THREE.MeshStandardMaterial({
-                    color: zone.color,
-                    emissive: zone.color,
-                    emissiveIntensity: 1.0,
+                    color: color,
+                    emissive: color,
+                    emissiveIntensity: 1,
                     metalness: 0.3,
                     roughness: 0.4
                 })
             );
-            led.position.y = 8;
-            gateway.add(led);
+            led.position.y = 7;
+            anchor.add(led);
             
-            // Antenna
+            // Anten
             const antenna = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.3, 0.3, 12, 8),
+                new THREE.CylinderGeometry(0.4, 0.4, 14, 8),
                 new THREE.MeshStandardMaterial({
                     color: 0x4a5568,
                     metalness: 0.9,
@@ -469,49 +532,48 @@ class Mine3DView(BaseClass):
                 })
             );
             antenna.position.y = 16;
-            gateway.add(antenna);
+            anchor.add(antenna);
             
-            // Signal waves - Subtle
-            for (let i = 1; i <= 2; i++) {
+            // Sinyal dalgaları
+            for (let i = 1; i <= 3; i++) {
                 const wave = new THREE.Mesh(
-                    new THREE.TorusGeometry(12 * i, 0.3, 8, 32),
+                    new THREE.TorusGeometry(10 * i, 0.4, 8, 32),
                     new THREE.MeshBasicMaterial({
-                        color: zone.color,
+                        color: color,
                         transparent: true,
-                        opacity: 0.15 / i
+                        opacity: 0.2 / i
                     })
                 );
                 wave.position.y = 16;
                 wave.rotation.x = Math.PI / 2;
-                gateway.add(wave);
+                anchor.add(wave);
             }
             
-            gateway.position.set(zone.x, 12, zone.z);
-            scene.add(gateway);
-            
-            // Zone light - Subtle
-            const light = new THREE.PointLight(zone.color, 0.6, 100);
-            light.position.set(zone.x, 30, zone.z);
-            scene.add(light);
-            
-            // Gateway indicator
-            const dot = document.createElement('div');
-            dot.className = 'gateway-dot';
-            gatewayIndicators.appendChild(dot);
+            anchor.position.set(x, 10, z);
+            return anchor;
+        }
+        
+        // Anchor'ları odaların köşelerine yerleştir
+        workingChambers.forEach(c => {
+            const anchor = createAnchor(c.x, c.z, c.color);
+            scene.add(anchor);
         });
         
-        // Personnel Tags - Clean & Simple
+        // ===============================
+        // PERSONEL TAGLERİ
+        // ===============================
+        
         const personnel = new Map();
         
         function createPersonnelTag(color) {
             const group = new THREE.Group();
             
             const tag = new THREE.Mesh(
-                new THREE.SphereGeometry(5, 20, 20),
+                new THREE.SphereGeometry(4, 20, 20),
                 new THREE.MeshStandardMaterial({
                     color: color,
                     emissive: color,
-                    emissiveIntensity: 0.4,
+                    emissiveIntensity: 0.5,
                     roughness: 0.4,
                     metalness: 0.3
                 })
@@ -520,22 +582,22 @@ class Mine3DView(BaseClass):
             group.add(tag);
             
             const glow = new THREE.Mesh(
-                new THREE.SphereGeometry(7, 20, 20),
+                new THREE.SphereGeometry(6, 20, 20),
                 new THREE.MeshBasicMaterial({
                     color: color,
                     transparent: true,
-                    opacity: 0.15,
-                    blending: THREE.AdditiveBlending
+                    opacity: 0.2
                 })
             );
             group.add(glow);
             
+            // Işın
             const beam = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.3, 0.3, 40, 8),
                 new THREE.MeshBasicMaterial({
                     color: color,
                     transparent: true,
-                    opacity: 0.15
+                    opacity: 0.2
                 })
             );
             beam.position.y = 20;
@@ -545,7 +607,7 @@ class Mine3DView(BaseClass):
         }
         
         window.updateEntity = function(data) {
-            const { id, type, location, battery, status } = data;
+            const { id, type, location, status } = data;
             
             if (type !== 'personnel') return;
             
@@ -557,7 +619,7 @@ class Mine3DView(BaseClass):
             }
             
             const tag = personnel.get(id);
-            tag.position.set(location.x, Math.abs(location.z) + 12, location.y);
+            tag.position.set(location.x, Math.abs(location.z) + 10, location.y);
             
             if (status === 'emergency') {
                 tag.children[0].material.color.setHex(0xEF4444);
@@ -569,32 +631,38 @@ class Mine3DView(BaseClass):
             document.getElementById('personnel-count').textContent = count;
         };
         
-        // Camera Controls - Smooth
-        let targetRotation = 0.3;
-        let targetElevation = 0.4;
+        // ===============================
+        // KAMERA KONTROLÜ
+        // ===============================
+        
+        let targetRotation = 0;
+        let targetElevation = 0.5;
         let isMouseDown = false;
-        let cameraDistance = 600;
+        let cameraDistance = 700;
         
         document.addEventListener('mousedown', () => isMouseDown = true);
         document.addEventListener('mouseup', () => isMouseDown = false);
         
         document.addEventListener('mousemove', (e) => {
             if (isMouseDown) {
-                targetRotation += e.movementX * 0.003;
-                targetElevation = Math.max(0.1, Math.min(0.7, targetElevation + e.movementY * 0.003));
+                targetRotation += e.movementX * 0.005;
+                targetElevation = Math.max(0.1, Math.min(0.8, targetElevation + e.movementY * 0.003));
             }
         });
         
         document.addEventListener('wheel', (e) => {
-            cameraDistance += e.deltaY * 0.3;
-            cameraDistance = Math.max(300, Math.min(1000, cameraDistance));
+            cameraDistance += e.deltaY * 0.5;
+            cameraDistance = Math.max(300, Math.min(1200, cameraDistance));
         });
         
         const keys = {};
         document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
         document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
         
-        // Animation Loop
+        // ===============================
+        // ANİMASYON
+        // ===============================
+        
         let time = 0;
         
         function animate() {
@@ -603,25 +671,18 @@ class Mine3DView(BaseClass):
             
             const cameraX = Math.sin(targetRotation) * cameraDistance;
             const cameraZ = Math.cos(targetRotation) * cameraDistance;
-            const cameraY = 150 + targetElevation * 350;
+            const cameraY = 100 + targetElevation * 400;
             
             camera.position.x += (cameraX - camera.position.x) * 0.05;
             camera.position.z += (cameraZ - camera.position.z) * 0.05;
             camera.position.y += (cameraY - camera.position.y) * 0.05;
             
-            if (keys['w']) camera.position.z -= 3;
-            if (keys['s']) camera.position.z += 3;
-            if (keys['a']) camera.position.x -= 3;
-            if (keys['d']) camera.position.x += 3;
+            if (keys['w']) camera.position.z -= 5;
+            if (keys['s']) camera.position.z += 5;
+            if (keys['a']) camera.position.x -= 5;
+            if (keys['d']) camera.position.x += 5;
             
-            camera.lookAt(0, 20, 0);
-            
-            // Subtle animations
-            scene.children.forEach(child => {
-                if (child.geometry && child.geometry.type === 'RingGeometry') {
-                    child.material.opacity = 0.2 + Math.sin(time) * 0.05;
-                }
-            });
+            camera.lookAt(0, 0, 0);
             
             renderer.render(scene, camera);
         }
@@ -634,7 +695,7 @@ class Mine3DView(BaseClass):
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log('MineTracker Pro - Enterprise Ready');
+        console.log('✅ Gerçekçi Maden 3D Haritası Hazır!');
     </script>
 </body>
 </html>
