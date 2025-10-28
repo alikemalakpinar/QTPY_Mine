@@ -45,7 +45,7 @@ class AicoMadenTakipApp(QMainWindow):
         
     def init_ui(self):
         """UI'yi başlat"""
-        self.setWindowTitle("AicoMadenTakip - Underground Safety System")
+        self.setWindowTitle("Aico Maden Takip - Yeraltı Güvenlik Sistemi")
         self.setGeometry(100, 100, 1600, 900)
         
         # Tema uygula
