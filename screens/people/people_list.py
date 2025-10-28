@@ -1,25 +1,23 @@
-"""Personel takip ekranı"""
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from theme.theme import MineTrackerTheme
 from datetime import datetime
+from screens.people.person_detail import PersonDetailScreen
 
 class PeopleListScreen(QWidget):
-    """Personel listesi ve takibi"""
     
     def __init__(self, i18n, tracking, store):
         super().__init__()
         self.i18n = i18n
         self.tracking = tracking
         self.store = store
+        self.detail_screen = None
         self.init_ui()
         
-        # Güncellemeleri dinle
         self.tracking.location_updated.connect(self.refresh_table)
         self.i18n.language_changed.connect(self.update_texts)
         
-        # Periyodik güncelleme
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self.refresh_table)
         self.update_timer.start(3000)
