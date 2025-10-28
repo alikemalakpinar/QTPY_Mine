@@ -140,6 +140,7 @@ class I18nService(QObject):
                 'dashboard': 'Dashboard',
                 'live_map': 'Live 3D Map',
                 'personnel': 'Personnel',
+                'equipment': 'Equipment',
                 'emergency': 'Emergency',
                 'reports': 'Reports',
                 'zones': 'Zones',
