@@ -259,6 +259,6 @@ This will:
     def update_window_title(self):
         """Pencere başlığını güncelle"""
         if self.i18n.current_language == 'tr':
-            self.setWindowTitle("MineTracker - Yer Altı Güvenlik Sistemi")
+            self.setWindowTitle("AICO Maden Takip Sistemi - Yer Altı Güvenlik Sistemi")
         else:
-            self.setWindowTitle("MineTracker - Underground Safety System")
+            self.setWindowTitle("AICO Maden Tracker System - Underground Safety System")

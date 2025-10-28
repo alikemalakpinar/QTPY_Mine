@@ -14,7 +14,7 @@ class I18nService(QObject):
         self.translations = {
             'tr': {
                 # Navigasyon
-                'app_title': 'MineTracker',
+                'app_title': 'AICO MadenTakip',
                 'app_subtitle': 'Yer Altı Güvenlik ve Takip Sistemi',
                 'dashboard': 'Kontrol Paneli',
                 'live_map': 'Canlı 3D Harita',
@@ -135,7 +135,7 @@ class I18nService(QObject):
             },
             'en': {
                 # Navigation
-                'app_title': 'MineTracker',
+                'app_title': 'AICO MineTracker',
                 'app_subtitle': 'Underground Safety & Tracking System',
                 'dashboard': 'Dashboard',
                 'live_map': 'Live 3D Map',

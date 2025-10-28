@@ -25,15 +25,15 @@ def main():
     app.setStyle("Fusion")
     
     # Uygulama bilgileri
-    app.setApplicationName("MineTracker")
-    app.setOrganizationName("MineTracker Technologies")
-    app.setApplicationDisplayName("MineTracker - Yeraltı Güvenlik Sistemi")
+    app.setApplicationName("AICO - MineTracker")
+    app.setOrganizationName("AICO Technologies")
+    app.setApplicationDisplayName("AICO Maden Takip Sistemi - Yeraltı Güvenlik Sistemi")
     
     # Ana pencereyi oluştur ve göster
     window = MineTrackerApp()
     window.show()
     
-    print("✅ MineTracker başlatıldı!")
+    print("✅ AICO Maden Takip Sistemi başlatıldı!")
     print("🗺️  3D Harita aktif")
     print("📡 Real-time tracking aktif")
     print("🌍 Türkçe/English dil desteği hazır")
