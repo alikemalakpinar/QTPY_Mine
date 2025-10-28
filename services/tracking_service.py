@@ -107,8 +107,12 @@ class TrackingService(QObject):
         
         for i, (first_name, last_name, position) in enumerate(turkish_names, 1):
             zone = random.choice(self.zones)
+            tag_id = f'TAG{i:03d}'
+            person_id = f'P{i:03d}'
+            
+            # Create person
             person = {
-                'id': f'P{i:03d}',
+                'id': person_id,
                 'first_name': first_name,
                 'last_name': last_name,
                 'full_name': f'{first_name} {last_name}',
@@ -126,9 +130,26 @@ class TrackingService(QObject):
                 'signal': random.randint(80, 100),
                 'last_update': datetime.now(),
                 'shift': random.choice(['Gündüz', 'Gece']),
-                'entry_time': '08:00'
+                'entry_time': '08:00',
+                'tag_id': tag_id,
+                'phone': f'+90 555 {random.randint(100, 999)} {random.randint(10, 99)} {random.randint(10, 99)}',
+                'email': f'{first_name.lower()}.{last_name.lower()}@minetracker.com'
             }
             self.personnel.append(person)
+            
+            # Create corresponding tag
+            tag = {
+                'id': tag_id,
+                'person_id': person_id,
+                'person_name': f'{first_name} {last_name}',
+                'battery': random.randint(30, 100),
+                'signal_strength': random.randint(80, 100),
+                'firmware_version': random.choice(['1.8.2', '1.9.0', '2.0.0']),
+                'status': 'active' if person['status'] == 'active' else 'inactive',
+                'last_seen': datetime.now(),
+                'type': 'tag'
+            }
+            self.tags.append(tag)
     
     def update_locations(self):
         """Konumları güncelle (Gateway simülasyonu)"""
