@@ -83,7 +83,6 @@ class PeopleListScreen(QWidget):
         return layout
     
     def create_stat_card(self, title_key, icon, value, color):
-        """Tek bir istatistik kartı"""
         card = QWidget()
         card.setFixedHeight(100)
         card.setStyleSheet(MineTrackerTheme.get_card_style(hover=True))
@@ -92,25 +91,11 @@ class PeopleListScreen(QWidget):
         layout.setContentsMargins(20, 12, 20, 12)
         layout.setSpacing(5)
         
-        # Başlık
         title = QLabel(f"{icon}  {self.i18n.t(title_key)}")
-        title.setStyleSheet(f"""
-            QLabel {{
-                color: {MineTrackerTheme.TEXT_SECONDARY};
-                font-size: 12px;
-                text-transform: uppercase;
-            }}
-        """)
+        title.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 12px; text-transform: uppercase;")
         
-        # Değer
         value_label = QLabel(value)
-        value_label.setStyleSheet(f"""
-            QLabel {{
-                color: {color};
-                font-size: 32px;
-                font-weight: 700;
-            }}
-        """)
+        value_label.setStyleSheet(f"color: {color}; font-size: 32px; font-weight: 700;")
         value_label.setProperty('value_label', True)
         value_label.setProperty('title_key', title_key)
         
