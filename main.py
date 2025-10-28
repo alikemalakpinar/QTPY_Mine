@@ -26,8 +26,8 @@ def main():
     
     # Uygulama bilgileri
     app.setApplicationName("AicoMadenTakip")
-    app.setOrganizationName("AicoMadenTakip Technologies")
-    app.setApplicationDisplayName("AicoMadenTakip - Yeraltı Güvenlik Sistemi")
+    app.setOrganizationName("Aico Teknoloji")
+    app.setApplicationDisplayName("Aico Maden Takip - Yeraltı Güvenlik Sistemi")
     
     # Ana pencereyi oluştur ve göster
     window = AicoMadenTakipApp()
