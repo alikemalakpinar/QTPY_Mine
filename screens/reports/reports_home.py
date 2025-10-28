@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from theme.theme import AicoMadenTakipTheme
+from theme.theme import AicoTheme
 from datetime import datetime, timedelta
 import random
 
@@ -49,7 +49,7 @@ class ReportsScreen(QWidget):
             QLabel {{
                 font-size: 28px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         
@@ -57,7 +57,7 @@ class ReportsScreen(QWidget):
         subtitle.setStyleSheet(f"""
             QLabel {{
                 font-size: 13px;
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
             }}
         """)
         
@@ -66,7 +66,7 @@ class ReportsScreen(QWidget):
         
         # Export Button
         export_btn = QPushButton("📥 Export All")
-        export_btn.setStyleSheet(AicoMadenTakipTheme.get_button_style('primary'))
+        export_btn.setStyleSheet(AicoTheme.get_button_style('primary'))
         export_btn.setFixedHeight(40)
         export_btn.setFixedWidth(140)
         export_btn.clicked.connect(self.export_all_reports)
@@ -85,10 +85,10 @@ class ReportsScreen(QWidget):
         stats = self.tracking.get_statistics()
         
         quick_stats = [
-            ("Total Personnel", str(stats['personnel']['total']), "👥", AicoMadenTakipTheme.PRIMARY),
-            ("Active Now", str(stats['personnel']['active']), "✅", AicoMadenTakipTheme.SUCCESS),
-            ("Gateways", f"{stats['gateways']['online']}/6", "📡", AicoMadenTakipTheme.INFO),
-            ("Incidents", "0", "🛡️", AicoMadenTakipTheme.SUCCESS)
+            ("Total Personnel", str(stats['personnel']['total']), "👥", AicoTheme.PRIMARY),
+            ("Active Now", str(stats['personnel']['active']), "✅", AicoTheme.SUCCESS),
+            ("Gateways", f"{stats['gateways']['online']}/6", "📡", AicoTheme.INFO),
+            ("Incidents", "0", "🛡️", AicoTheme.SUCCESS)
         ]
         
         for label, value, icon, color in quick_stats:
@@ -103,13 +103,13 @@ class ReportsScreen(QWidget):
         card.setFixedHeight(90)
         card.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border-radius: 12px;
-                border: 1px solid {AicoMadenTakipTheme.BORDER};
+                border: 1px solid {AicoTheme.BORDER};
             }}
             QWidget:hover {{
                 border-color: {color};
-                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
+                background: {AicoTheme.SURFACE_LIGHT};
             }}
         """)
         
@@ -125,7 +125,7 @@ class ReportsScreen(QWidget):
         label_text = QLabel(label)
         label_text.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 11px;
                 font-weight: 600;
                 text-transform: uppercase;
@@ -168,42 +168,42 @@ class ReportsScreen(QWidget):
                 'title': 'Shift Report',
                 'description': 'Daily shift activities and personnel attendance',
                 'type': 'shift',
-                'color': AicoMadenTakipTheme.PRIMARY
+                'color': AicoTheme.PRIMARY
             },
             {
                 'icon': '📈',
                 'title': 'Performance Report',
                 'description': 'Personnel and zone performance metrics',
                 'type': 'performance',
-                'color': AicoMadenTakipTheme.SUCCESS
+                'color': AicoTheme.SUCCESS
             },
             {
                 'icon': '⚠️',
                 'title': 'Incident Report',
                 'description': 'Safety incidents and emergency responses',
                 'type': 'incident',
-                'color': AicoMadenTakipTheme.WARNING
+                'color': AicoTheme.WARNING
             },
             {
                 'icon': '🔋',
                 'title': 'Battery Status Report',
                 'description': 'Tag battery levels and maintenance schedule',
                 'type': 'battery',
-                'color': AicoMadenTakipTheme.DANGER
+                'color': AicoTheme.DANGER
             },
             {
                 'icon': '📍',
                 'title': 'Location Analytics',
                 'description': 'Zone-based activity and movement patterns',
                 'type': 'location',
-                'color': AicoMadenTakipTheme.INFO
+                'color': AicoTheme.INFO
             },
             {
                 'icon': '📊',
                 'title': 'Summary Report',
                 'description': 'Complete overview of all mining operations',
                 'type': 'summary',
-                'color': AicoMadenTakipTheme.PRIMARY
+                'color': AicoTheme.PRIMARY
             }
         ]
         
@@ -221,13 +221,13 @@ class ReportsScreen(QWidget):
         card.setCursor(Qt.CursorShape.PointingHandCursor)
         card.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border-radius: 12px;
-                border: 1px solid {AicoMadenTakipTheme.BORDER};
+                border: 1px solid {AicoTheme.BORDER};
             }}
             QWidget:hover {{
                 border-color: {report['color']};
-                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
+                background: {AicoTheme.SURFACE_LIGHT};
             }}
         """)
         
@@ -258,7 +258,7 @@ class ReportsScreen(QWidget):
         title = QLabel(report['title'])
         title.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 16px;
                 font-weight: 600;
             }}
@@ -267,7 +267,7 @@ class ReportsScreen(QWidget):
         description = QLabel(report['description'])
         description.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 12px;
             }}
         """)
@@ -304,7 +304,7 @@ class ReportsScreen(QWidget):
                 font-weight: 600;
             }}
             QPushButton:hover {{
-                background: {AicoMadenTakipTheme.PRIMARY_LIGHT};
+                background: {AicoTheme.PRIMARY_LIGHT};
             }}
         """)
         view_btn.clicked.connect(lambda: self.open_report_detail(report))
@@ -314,8 +314,8 @@ class ReportsScreen(QWidget):
         export_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent;
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
-                border: 1px solid {AicoMadenTakipTheme.BORDER};
+                color: {AicoTheme.TEXT_SECONDARY};
+                border: 1px solid {AicoTheme.BORDER};
                 border-radius: 6px;
                 font-size: 11px;
                 font-weight: 600;
@@ -430,7 +430,7 @@ class ReportDetailDialog(QDialog):
         self.setMinimumSize(900, 700)
         self.setStyleSheet(f"""
             QDialog {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
+                background: {AicoTheme.BACKGROUND};
             }}
         """)
         
@@ -465,7 +465,7 @@ class ReportDetailDialog(QDialog):
             QLabel {{
                 font-size: 24px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         
@@ -473,7 +473,7 @@ class ReportDetailDialog(QDialog):
         date_range.setStyleSheet(f"""
             QLabel {{
                 font-size: 12px;
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
             }}
         """)
         
@@ -553,9 +553,9 @@ class ReportDetailDialog(QDialog):
         card = QWidget()
         card.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border-radius: 12px;
-                border: 2px solid {AicoMadenTakipTheme.SUCCESS};
+                border: 2px solid {AicoTheme.SUCCESS};
                 padding: 30px;
             }}
         """)
@@ -571,13 +571,13 @@ class ReportDetailDialog(QDialog):
             QLabel {{
                 font-size: 20px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.SUCCESS};
+                color: {AicoTheme.SUCCESS};
             }}
         """)
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         subtitle = QLabel("No incidents in the last 30 days")
-        subtitle.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 14px;")
+        subtitle.setStyleSheet(f"color: {AicoTheme.TEXT_SECONDARY}; font-size: 14px;")
         subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         card_layout.addWidget(icon)
@@ -597,7 +597,7 @@ class ReportDetailDialog(QDialog):
         table.setHorizontalHeaderLabels(['Personnel', 'Tag ID', 'Battery', 'Status'])
         table.setStyleSheet(f"""
             QTableWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border: none;
                 border-radius: 12px;
             }}
@@ -657,7 +657,7 @@ class ReportDetailDialog(QDialog):
         widget = QWidget()
         widget.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border-radius: 12px;
                 padding: 15px;
             }}
@@ -670,14 +670,14 @@ class ReportDetailDialog(QDialog):
             value_label = QLabel(value)
             value_label.setStyleSheet(f"""
                 QLabel {{
-                    color: {AicoMadenTakipTheme.PRIMARY};
+                    color: {AicoTheme.PRIMARY};
                     font-size: 24px;
                     font-weight: 700;
                 }}
             """)
             
             label_widget = QLabel(label)
-            label_widget.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 11px;")
+            label_widget.setStyleSheet(f"color: {AicoTheme.TEXT_SECONDARY}; font-size: 11px;")
             
             stat_layout.addWidget(value_label)
             stat_layout.addWidget(label_widget)
@@ -695,7 +695,7 @@ class ReportDetailDialog(QDialog):
         table.setHorizontalHeaderLabels(['ID', 'Name', 'Position', 'Zone', 'Status'])
         table.setStyleSheet(f"""
             QTableWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border: none;
                 border-radius: 12px;
             }}
@@ -723,7 +723,7 @@ class ReportDetailDialog(QDialog):
         table.setHorizontalHeaderLabels(['Zone', 'Personnel', 'Efficiency', 'Score'])
         table.setStyleSheet(f"""
             QTableWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border: none;
                 border-radius: 12px;
             }}
@@ -750,7 +750,7 @@ class ReportDetailDialog(QDialog):
         card.setFixedHeight(80)
         card.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border-radius: 12px;
                 border-left: 4px solid {zone['color']};
             }}
@@ -762,7 +762,7 @@ class ReportDetailDialog(QDialog):
         name = QLabel(zone['name'])
         name.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 16px;
                 font-weight: 600;
             }}
@@ -770,7 +770,7 @@ class ReportDetailDialog(QDialog):
         
         personnel_count = sum(1 for p in self.tracking.get_personnel() if p['zone_id'] == zone['id'])
         count = QLabel(f"{personnel_count} Personnel")
-        count.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 13px;")
+        count.setStyleSheet(f"color: {AicoTheme.TEXT_SECONDARY}; font-size: 13px;")
         
         layout.addWidget(name)
         layout.addStretch()
@@ -784,7 +784,7 @@ class ReportDetailDialog(QDialog):
         widget.setFixedHeight(60)
         widget.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
                 border-radius: 8px;
                 padding: 15px;
             }}
@@ -795,7 +795,7 @@ class ReportDetailDialog(QDialog):
         label_widget = QLabel(label)
         label_widget.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 14px;
                 font-weight: 500;
             }}
@@ -804,7 +804,7 @@ class ReportDetailDialog(QDialog):
         value_widget = QLabel(value)
         value_widget.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.PRIMARY};
+                color: {AicoTheme.PRIMARY};
                 font-size: 18px;
                 font-weight: 700;
             }}
@@ -826,14 +826,14 @@ class ReportDetailDialog(QDialog):
         close_btn.setFixedWidth(120)
         close_btn.setStyleSheet(f"""
             QPushButton {{
-                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
-                border: 1px solid {AicoMadenTakipTheme.BORDER};
+                background: {AicoTheme.SURFACE_LIGHT};
+                color: {AicoTheme.TEXT_PRIMARY};
+                border: 1px solid {AicoTheme.BORDER};
                 border-radius: 8px;
                 font-weight: 600;
             }}
             QPushButton:hover {{
-                background: {AicoMadenTakipTheme.SURFACE_HOVER};
+                background: {AicoTheme.SURFACE_HOVER};
             }}
         """)
         close_btn.clicked.connect(self.accept)
@@ -841,7 +841,7 @@ class ReportDetailDialog(QDialog):
         export_btn = QPushButton("📥 Export PDF")
         export_btn.setFixedHeight(40)
         export_btn.setFixedWidth(140)
-        export_btn.setStyleSheet(AicoMadenTakipTheme.get_button_style('primary'))
+        export_btn.setStyleSheet(AicoTheme.get_button_style('primary'))
         export_btn.clicked.connect(self.export_pdf)
         
         layout.addStretch()

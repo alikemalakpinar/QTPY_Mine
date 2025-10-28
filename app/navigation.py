@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from theme.theme import AicoMadenTakipTheme
+from theme.theme import AicoTheme
 
 class NavigationBar(QWidget):
     """Sol navigasyon sidebar"""
@@ -25,8 +25,8 @@ class NavigationBar(QWidget):
         self.setFixedWidth(260)
         self.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE};
-                border-right: 1px solid {AicoMadenTakipTheme.BORDER};
+                background: {AicoTheme.SURFACE};
+                border-right: 1px solid {AicoTheme.BORDER};
             }}
         """)
         
@@ -71,8 +71,8 @@ class NavigationBar(QWidget):
         header.setFixedHeight(100)
         header.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
-                border-bottom: 1px solid {AicoMadenTakipTheme.BORDER};
+                background: {AicoTheme.SURFACE_LIGHT};
+                border-bottom: 1px solid {AicoTheme.BORDER};
                 border-right: none;
             }}
         """)
@@ -87,7 +87,7 @@ class NavigationBar(QWidget):
             QLabel {{
                 font-size: 24px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.PRIMARY};
+                color: {AicoTheme.PRIMARY};
             }}
         """)
         
@@ -96,7 +96,7 @@ class NavigationBar(QWidget):
         self.subtitle.setStyleSheet(f"""
             QLabel {{
                 font-size: 11px;
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
             }}
         """)
         self.subtitle.setWordWrap(True)
@@ -118,20 +118,20 @@ class NavigationBar(QWidget):
                 background: transparent;
                 border: none;
                 border-left: 3px solid transparent;
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 15px;
                 font-weight: 500;
                 text-align: left;
                 padding-left: 25px;
             }}
             QPushButton:hover {{
-                background: {AicoMadenTakipTheme.SURFACE_HOVER};
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                background: {AicoTheme.SURFACE_HOVER};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
             QPushButton:checked {{
-                background: {AicoMadenTakipTheme.SURFACE_HOVER};
-                border-left-color: {AicoMadenTakipTheme.PRIMARY};
-                color: {AicoMadenTakipTheme.PRIMARY};
+                background: {AicoTheme.SURFACE_HOVER};
+                border-left-color: {AicoTheme.PRIMARY};
+                color: {AicoTheme.PRIMARY};
                 font-weight: 600;
             }}
         """)
@@ -145,7 +145,7 @@ class NavigationBar(QWidget):
         self.emergency_btn.setFixedHeight(60)
         self.emergency_btn.setStyleSheet(f"""
             QPushButton {{
-                background: {AicoMadenTakipTheme.DANGER};
+                background: {AicoTheme.DANGER};
                 border: none;
                 color: white;
                 font-size: 16px;

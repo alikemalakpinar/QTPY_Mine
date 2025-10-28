@@ -1,7 +1,7 @@
 """Canlı 3D harita ekranı"""
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
-from theme.theme import AicoMadenTakipTheme
+from theme.theme import AicoTheme
 from components.model3d.mine_3d_view import Mine3DView
 
 class LiveMapScreen(QWidget):
@@ -42,7 +42,7 @@ class LiveMapScreen(QWidget):
             QLabel {{
                 font-size: 28px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         
@@ -52,7 +52,7 @@ class LiveMapScreen(QWidget):
         
         # Tam ekran butonu
         fullscreen_btn = QPushButton('🔲 ' + self.i18n.t('fullscreen'))
-        fullscreen_btn.setStyleSheet(AicoMadenTakipTheme.get_button_style('primary'))
+        fullscreen_btn.setStyleSheet(AicoTheme.get_button_style('primary'))
         fullscreen_btn.setFixedHeight(40)
         fullscreen_btn.clicked.connect(self.toggle_fullscreen)
         

@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from app.navigation import NavigationBar
-from theme.theme import AicoMadenTakipTheme
+from theme.theme import AicoTheme
 from services.i18n import I18nService
 from services.tracking_service import TrackingService
 from store.store import Store
@@ -49,7 +49,7 @@ class AicoMadenTakipApp(QMainWindow):
         self.setGeometry(100, 100, 1600, 900)
         
         # Tema uygula
-        self.setStyleSheet(AicoMadenTakipTheme.get_app_style())
+        self.setStyleSheet(AicoTheme.get_app_style())
         
         # Ana widget
         central_widget = QWidget()
@@ -70,7 +70,7 @@ class AicoMadenTakipApp(QMainWindow):
         self.stacked_widget = QStackedWidget()
         self.stacked_widget.setStyleSheet(f"""
             QStackedWidget {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
+                background: {AicoTheme.BACKGROUND};
             }}
         """)
         
@@ -135,9 +135,9 @@ class AicoMadenTakipApp(QMainWindow):
         status = self.statusBar()
         status.setStyleSheet(f"""
             QStatusBar {{
-                background: {AicoMadenTakipTheme.SURFACE};
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
-                border-top: 1px solid {AicoMadenTakipTheme.BORDER};
+                background: {AicoTheme.SURFACE};
+                color: {AicoTheme.TEXT_SECONDARY};
+                border-top: 1px solid {AicoTheme.BORDER};
                 font-size: 12px;
                 padding: 5px;
             }}
@@ -149,7 +149,7 @@ class AicoMadenTakipApp(QMainWindow):
         
         # Saat
         self.time_label = QLabel()
-        self.time_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY};")
+        self.time_label.setStyleSheet(f"color: {AicoTheme.TEXT_SECONDARY};")
         status.addPermanentWidget(self.time_label)
         
         # Zaman güncelleyici
@@ -210,7 +210,7 @@ Time: {data['timestamp']}
         
         msg.setText(text)
         msg.setIcon(QMessageBox.Icon.Critical)
-        msg.setStyleSheet(AicoMadenTakipTheme.get_app_style())
+        msg.setStyleSheet(AicoTheme.get_app_style())
         msg.exec()
     
     def handle_battery_alert(self, data):

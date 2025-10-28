@@ -1,7 +1,7 @@
 """Ayarlar ekranı"""
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
-from theme.theme import AicoMadenTakipTheme
+from theme.theme import AicoTheme
 
 class SettingsScreen(QWidget):
     """Uygulama ayarları"""
@@ -52,7 +52,7 @@ class SettingsScreen(QWidget):
             QLabel {{
                 font-size: 28px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         
@@ -60,7 +60,7 @@ class SettingsScreen(QWidget):
         subtitle.setStyleSheet(f"""
             QLabel {{
                 font-size: 14px;
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
             }}
         """)
         
@@ -72,7 +72,7 @@ class SettingsScreen(QWidget):
     def create_general_settings(self):
         """Genel ayarlar"""
         section = QWidget()
-        section.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
+        section.setStyleSheet(AicoTheme.get_card_style(hover=False))
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(25, 25, 25, 25)
@@ -92,7 +92,7 @@ class SettingsScreen(QWidget):
         # Kaydet butonu
         save_btn = QPushButton('💾 ' + self.i18n.t('save'))
         save_btn.setFixedHeight(45)
-        save_btn.setStyleSheet(AicoMadenTakipTheme.get_button_style('success'))
+        save_btn.setStyleSheet(AicoTheme.get_button_style('success'))
         save_btn.clicked.connect(self.save_settings)
         layout.addWidget(save_btn)
         
@@ -107,7 +107,7 @@ class SettingsScreen(QWidget):
         self.language_label = QLabel('🌍 ' + self.i18n.t('language'))
         self.language_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 16px;
                 font-weight: 600;
             }}
@@ -142,7 +142,7 @@ class SettingsScreen(QWidget):
         self.notifications_label = QLabel('🔔 ' + self.i18n.t('notifications'))
         self.notifications_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 16px;
                 font-weight: 600;
             }}
@@ -153,20 +153,20 @@ class SettingsScreen(QWidget):
         self.sound_checkbox.setChecked(True)
         self.sound_checkbox.setStyleSheet(f"""
             QCheckBox {{
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 14px;
                 spacing: 10px;
             }}
             QCheckBox::indicator {{
                 width: 20px;
                 height: 20px;
-                border: 2px solid {AicoMadenTakipTheme.BORDER};
+                border: 2px solid {AicoTheme.BORDER};
                 border-radius: 4px;
-                background: {AicoMadenTakipTheme.SURFACE};
+                background: {AicoTheme.SURFACE};
             }}
             QCheckBox::indicator:checked {{
-                background: {AicoMadenTakipTheme.PRIMARY};
-                border-color: {AicoMadenTakipTheme.PRIMARY};
+                background: {AicoTheme.PRIMARY};
+                border-color: {AicoTheme.PRIMARY};
             }}
         """)
         
@@ -190,7 +190,7 @@ class SettingsScreen(QWidget):
         self.theme_label = QLabel('🎨 ' + self.i18n.t('theme'))
         self.theme_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 16px;
                 font-weight: 600;
             }}
@@ -210,7 +210,7 @@ class SettingsScreen(QWidget):
     def create_system_status(self):
         """Sistem durumu"""
         section = QWidget()
-        section.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
+        section.setStyleSheet(AicoTheme.get_card_style(hover=False))
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(25, 25, 25, 25)
@@ -219,7 +219,7 @@ class SettingsScreen(QWidget):
         title = QLabel('📊 ' + self.i18n.t('system_status'))
         title.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 18px;
                 font-weight: 600;
             }}
@@ -245,7 +245,7 @@ class SettingsScreen(QWidget):
         version_label = QLabel(f"{self.i18n.t('version')}: 1.0.0")
         version_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_MUTED};
+                color: {AicoTheme.TEXT_MUTED};
                 font-size: 11px;
                 text-align: center;
             }}
@@ -260,7 +260,7 @@ class SettingsScreen(QWidget):
         widget = QWidget()
         widget.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
+                background: {AicoTheme.BACKGROUND};
                 border-radius: 8px;
                 padding: 12px;
             }}
@@ -272,7 +272,7 @@ class SettingsScreen(QWidget):
         label_widget = QLabel(label)
         label_widget.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 13px;
             }}
         """)
@@ -280,7 +280,7 @@ class SettingsScreen(QWidget):
         value_widget = QLabel(value)
         value_widget.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.SUCCESS};
+                color: {AicoTheme.SUCCESS};
                 font-size: 12px;
                 font-weight: 600;
             }}

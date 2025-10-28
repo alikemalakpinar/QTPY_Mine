@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from theme.theme import AicoMadenTakipTheme
+from theme.theme import AicoTheme
 from datetime import datetime
 
 class DashboardScreen(QWidget):
@@ -64,7 +64,7 @@ class DashboardScreen(QWidget):
             QLabel {{
                 font-size: 32px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         
@@ -72,7 +72,7 @@ class DashboardScreen(QWidget):
         self.subtitle.setStyleSheet(f"""
             QLabel {{
                 font-size: 14px;
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
             }}
         """)
         
@@ -90,13 +90,13 @@ class DashboardScreen(QWidget):
         
         self.cards_data = [
             ('active_personnel', '👷', str(stats['personnel']['active']), 
-             self.i18n.t('underground'), AicoMadenTakipTheme.PRIMARY),
+             self.i18n.t('underground'), AicoTheme.PRIMARY),
             ('total_personnel', '👥', f"{stats['personnel']['total']}", 
-             'Total Personnel', AicoMadenTakipTheme.SUCCESS),
+             'Total Personnel', AicoTheme.SUCCESS),
             ('gateways_online', '📡', f"{stats['gateways']['online']}/{stats['gateways']['total']}",
-             'Gateway Status', AicoMadenTakipTheme.SUCCESS),
+             'Gateway Status', AicoTheme.SUCCESS),
             ('safety_incidents', '🛡️', '0', 
-             '24 ' + self.i18n.t('incident_free'), AicoMadenTakipTheme.SUCCESS)
+             '24 ' + self.i18n.t('incident_free'), AicoTheme.SUCCESS)
         ]
         
         self.cards = []
@@ -111,7 +111,7 @@ class DashboardScreen(QWidget):
         """Tek bir istatistik kartı"""
         card = QWidget()
         card.setFixedHeight(130)
-        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=True))
+        card.setStyleSheet(AicoTheme.get_card_style(hover=True))
         
         layout = QVBoxLayout(card)
         layout.setContentsMargins(20, 15, 20, 15)
@@ -126,7 +126,7 @@ class DashboardScreen(QWidget):
         title_label = QLabel(self.i18n.t(title_key))
         title_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 12px;
                 font-weight: 500;
                 text-transform: uppercase;
@@ -152,7 +152,7 @@ class DashboardScreen(QWidget):
         subtitle_label = QLabel(subtitle)
         subtitle_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 11px;
             }}
         """)
@@ -166,7 +166,7 @@ class DashboardScreen(QWidget):
     def create_activity_section(self):
         """Son aktiviteler bölümü"""
         section = QWidget()
-        section.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
+        section.setStyleSheet(AicoTheme.get_card_style(hover=False))
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -178,7 +178,7 @@ class DashboardScreen(QWidget):
             QLabel {{
                 font-size: 18px;
                 font-weight: 600;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         layout.addWidget(self.activity_title)
@@ -192,15 +192,15 @@ class DashboardScreen(QWidget):
                 outline: none;
             }}
             QListWidget::item {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
+                background: {AicoTheme.BACKGROUND};
                 border-radius: 8px;
                 padding: 12px;
                 margin-bottom: 8px;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 13px;
             }}
             QListWidget::item:hover {{
-                background: {AicoMadenTakipTheme.SURFACE_HOVER};
+                background: {AicoTheme.SURFACE_HOVER};
             }}
         """)
         
@@ -232,7 +232,7 @@ class DashboardScreen(QWidget):
     def create_zones_section(self):
         """Bölgeler bölümü"""
         section = QWidget()
-        section.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
+        section.setStyleSheet(AicoTheme.get_card_style(hover=False))
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -243,7 +243,7 @@ class DashboardScreen(QWidget):
             QLabel {{
                 font-size: 18px;
                 font-weight: 600;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         layout.addWidget(title)
@@ -263,7 +263,7 @@ class DashboardScreen(QWidget):
         widget = QWidget()
         widget.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
+                background: {AicoTheme.BACKGROUND};
                 border-radius: 8px;
                 padding: 10px;
             }}
@@ -280,7 +280,7 @@ class DashboardScreen(QWidget):
         name_label = QLabel(zone['name'])
         name_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 13px;
                 font-weight: 500;
             }}
@@ -291,7 +291,7 @@ class DashboardScreen(QWidget):
         count_label = QLabel(f"{count} 👤")
         count_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 12px;
             }}
         """)

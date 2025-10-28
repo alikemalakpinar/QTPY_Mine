@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from theme.theme import AicoMadenTakipTheme
+from theme.theme import AicoTheme
 from datetime import datetime
 
 class EmergencyScreen(QWidget):
@@ -59,13 +59,13 @@ class EmergencyScreen(QWidget):
             QLabel {{
                 font-size: 28px;
                 font-weight: 700;
-                color: {AicoMadenTakipTheme.DANGER};
+                color: {AicoTheme.DANGER};
             }}
         """)
         
         # Test butonu
         test_btn = QPushButton('🚨 Test SOS')
-        test_btn.setStyleSheet(AicoMadenTakipTheme.get_button_style('danger'))
+        test_btn.setStyleSheet(AicoTheme.get_button_style('danger'))
         test_btn.setFixedHeight(45)
         test_btn.clicked.connect(self.test_emergency)
         
@@ -82,10 +82,10 @@ class EmergencyScreen(QWidget):
         
         self.stat_cards = []
         cards_data = [
-            ('active_emergencies', '🚨', '0', AicoMadenTakipTheme.DANGER),
-            ('response_time', '⏱️', '< 2 ' + self.i18n.t('min_ago'), AicoMadenTakipTheme.SUCCESS),
-            ('evacuation_status', '🚻', self.i18n.t('all_clear'), AicoMadenTakipTheme.SUCCESS),
-            ('emergency_contacts', '📞', '24/7', AicoMadenTakipTheme.PRIMARY)
+            ('active_emergencies', '🚨', '0', AicoTheme.DANGER),
+            ('response_time', '⏱️', '< 2 ' + self.i18n.t('min_ago'), AicoTheme.SUCCESS),
+            ('evacuation_status', '🚻', self.i18n.t('all_clear'), AicoTheme.SUCCESS),
+            ('emergency_contacts', '📞', '24/7', AicoTheme.PRIMARY)
         ]
         
         for title_key, icon, value, color in cards_data:
@@ -99,7 +99,7 @@ class EmergencyScreen(QWidget):
         """Stat kartı"""
         card = QWidget()
         card.setFixedHeight(110)
-        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=True))
+        card.setStyleSheet(AicoTheme.get_card_style(hover=True))
         
         layout = QVBoxLayout(card)
         layout.setContentsMargins(20, 12, 20, 12)
@@ -108,7 +108,7 @@ class EmergencyScreen(QWidget):
         title = QLabel(f"{icon}  {self.i18n.t(title_key)}")
         title.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                color: {AicoTheme.TEXT_SECONDARY};
                 font-size: 12px;
                 text-transform: uppercase;
             }}
@@ -133,7 +133,7 @@ class EmergencyScreen(QWidget):
     def create_emergencies_section(self):
         """Acil durumlar bölümü"""
         section = QWidget()
-        section.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
+        section.setStyleSheet(AicoTheme.get_card_style(hover=False))
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -144,7 +144,7 @@ class EmergencyScreen(QWidget):
             QLabel {{
                 font-size: 18px;
                 font-weight: 600;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         layout.addWidget(self.emergencies_title)
@@ -158,15 +158,15 @@ class EmergencyScreen(QWidget):
                 outline: none;
             }}
             QListWidget::item {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
-                border-left: 4px solid {AicoMadenTakipTheme.DANGER};
+                background: {AicoTheme.BACKGROUND};
+                border-left: 4px solid {AicoTheme.DANGER};
                 border-radius: 8px;
                 padding: 15px;
                 margin-bottom: 10px;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
             QListWidget::item:hover {{
-                background: {AicoMadenTakipTheme.SURFACE_HOVER};
+                background: {AicoTheme.SURFACE_HOVER};
             }}
         """)
         
@@ -183,7 +183,7 @@ class EmergencyScreen(QWidget):
     def create_contacts_section(self):
         """Kontaklar bölümü"""
         section = QWidget()
-        section.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
+        section.setStyleSheet(AicoTheme.get_card_style(hover=False))
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -194,7 +194,7 @@ class EmergencyScreen(QWidget):
             QLabel {{
                 font-size: 18px;
                 font-weight: 600;
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
             }}
         """)
         layout.addWidget(title)
@@ -218,7 +218,7 @@ class EmergencyScreen(QWidget):
         protocol_label = QLabel(
             f"""
             <b>📝 {self.i18n.t('emergency_protocol')}</b><br>
-            <span style='font-size: 11px; color: {AicoMadenTakipTheme.TEXT_SECONDARY};'>
+            <span style='font-size: 11px; color: {AicoTheme.TEXT_SECONDARY};'>
             1. Acil durum sinyali gönder<br>
             2. Güvenli bölgeye çekilin<br>
             3. Ekip liderini bilgilendirin<br>
@@ -226,7 +226,7 @@ class EmergencyScreen(QWidget):
             </span>
             """ if self.i18n.current_language == 'tr' else f"""
             <b>📝 {self.i18n.t('emergency_protocol')}</b><br>
-            <span style='font-size: 11px; color: {AicoMadenTakipTheme.TEXT_SECONDARY};'>
+            <span style='font-size: 11px; color: {AicoTheme.TEXT_SECONDARY};'>
             1. Send emergency signal<br>
             2. Move to safe zone<br>
             3. Inform team leader<br>
@@ -237,10 +237,10 @@ class EmergencyScreen(QWidget):
         protocol_label.setWordWrap(True)
         protocol_label.setStyleSheet(f"""
             QLabel {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
+                background: {AicoTheme.BACKGROUND};
                 border-radius: 8px;
                 padding: 15px;
-                border-left: 4px solid {AicoMadenTakipTheme.WARNING};
+                border-left: 4px solid {AicoTheme.WARNING};
             }}
         """)
         layout.addWidget(protocol_label)
@@ -252,12 +252,12 @@ class EmergencyScreen(QWidget):
         widget = QWidget()
         widget.setStyleSheet(f"""
             QWidget {{
-                background: {AicoMadenTakipTheme.BACKGROUND};
+                background: {AicoTheme.BACKGROUND};
                 border-radius: 8px;
                 padding: 10px;
             }}
             QWidget:hover {{
-                background: {AicoMadenTakipTheme.SURFACE_HOVER};
+                background: {AicoTheme.SURFACE_HOVER};
             }}
         """)
         
@@ -271,7 +271,7 @@ class EmergencyScreen(QWidget):
         name_label = QLabel(name)
         name_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
+                color: {AicoTheme.TEXT_PRIMARY};
                 font-size: 13px;
                 font-weight: 500;
             }}
@@ -280,7 +280,7 @@ class EmergencyScreen(QWidget):
         phone_label = QLabel(phone)
         phone_label.setStyleSheet(f"""
             QLabel {{
-                color: {AicoMadenTakipTheme.PRIMARY};
+                color: {AicoTheme.PRIMARY};
                 font-size: 12px;
                 font-weight: 600;
             }}
@@ -314,7 +314,7 @@ class EmergencyScreen(QWidget):
                     label.setText(str(len(self.emergencies)))
                     label.setStyleSheet(f"""
                         QLabel {{
-                            color: {AicoMadenTakipTheme.DANGER};
+                            color: {AicoTheme.DANGER};
                             font-size: 28px;
                             font-weight: 700;
                         }}
