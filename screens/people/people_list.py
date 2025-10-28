@@ -42,21 +42,13 @@ class PeopleListScreen(QWidget):
         self.main_layout.addWidget(self.list_widget)
     
     def create_header(self):
-        """Header oluştur"""
         header = QWidget()
         layout = QHBoxLayout(header)
         layout.setContentsMargins(0, 0, 0, 0)
         
         self.title = QLabel(self.i18n.t('personnel_tracking'))
-        self.title.setStyleSheet(f"""
-            QLabel {{
-                font-size: 28px;
-                font-weight: 700;
-                color: {MineTrackerTheme.TEXT_PRIMARY};
-            }}
-        """)
+        self.title.setStyleSheet(f"font-size: 28px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
         
-        # Arama kutusu
         self.search_box = QLineEdit()
         self.search_box.setPlaceholderText(self.i18n.t('search_personnel'))
         self.search_box.setMaximumWidth(300)
