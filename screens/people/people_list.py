@@ -258,11 +258,47 @@ class PeopleListScreen(QWidget):
         """)
         sos_btn.clicked.connect(lambda: self.tracking.trigger_emergency(person['id'], 'personnel'))
         
+        detail_btn = QPushButton('👁️')
+        detail_btn.setFixedSize(35, 35)
+        detail_btn.setToolTip('Detayları Gör')
+        detail_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {MineTrackerTheme.SUCCESS};
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+            }}
+            QPushButton:hover {{
+                background: #33FF99;
+            }}
+        """)
+        detail_btn.clicked.connect(lambda: self.show_person_detail(person['id']))
+        
         layout.addWidget(locate_btn)
+        layout.addWidget(detail_btn)
         layout.addWidget(sos_btn)
         layout.addStretch()
         
         return widget
+    
+    def on_row_double_clicked(self, row, column):
+        person_id_item = self.table.item(row, 0)
+        if person_id_item:
+            person_id = person_id_item.text()
+            self.show_person_detail(person_id)
+    
+    def show_person_detail(self, person_id):
+        self.detail_screen = PersonDetailScreen(self.i18n, self.tracking, self.store, person_id)
+        self.detail_screen.back_requested.connect(self.show_list)
+        self.main_layout.addWidget(self.detail_screen)
+        self.main_layout.setCurrentWidget(self.detail_screen)
+    
+    def show_list(self):
+        self.main_layout.setCurrentWidget(self.list_widget)
+        if self.detail_screen:
+            self.main_layout.removeWidget(self.detail_screen)
+            self.detail_screen.deleteLater()
+            self.detail_screen = None
     
     def filter_personnel(self, text):
         """Personel filtrele"""
