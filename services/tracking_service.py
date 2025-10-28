@@ -261,10 +261,10 @@ class TrackingService(QObject):
             })
     
     def determine_zone(self, location):
-        """Koordinatlara göre bölge belirle - Gateway sinyaline göre"""
+        """Koordinatlara göre bölge belirle - Anchor sinyaline göre"""
         x, y = location['x'], location['y']
         
-        # En yakın gateway'i bul
+        # En yakın anchor'ı bul
         min_dist = float('inf')
         closest_zone = self.zones[0]
         
@@ -281,8 +281,8 @@ class TrackingService(QObject):
         return self.personnel
     
     def get_gateways(self):
-        """Tüm gateway'leri al"""
-        return self.gateways
+        """Tüm gateway'leri al (backward compatibility)"""
+        return self.anchors
     
     def get_zones(self):
         """Tüm bölgeleri al"""
@@ -296,7 +296,7 @@ class TrackingService(QObject):
         return None
     
     def trigger_emergency(self, entity_id, entity_type='personnel'):
-        """Acil durum tetikle - Personel için"""
+        """Acil durum tetikle"""
         entity = self.get_person_by_id(entity_id)
         if entity:
             entity['status'] = 'emergency'
@@ -311,7 +311,7 @@ class TrackingService(QObject):
             })
     
     def get_statistics(self):
-        """İstatistikleri al - Personel ve Gateway"""
+        """İstatistikleri al - Personel, Anchor ve Tag"""
         active_personnel = sum(1 for p in self.personnel if p['status'] == 'active')
         on_break = sum(1 for p in self.personnel if p['status'] == 'break')
         emergency_count = sum(1 for p in self.personnel if p['status'] == 'emergency')
@@ -319,7 +319,15 @@ class TrackingService(QObject):
         avg_battery_personnel = sum(p['battery'] for p in self.personnel) / len(self.personnel) if self.personnel else 0
         low_battery_personnel = sum(1 for p in self.personnel if p['battery'] < 20)
         
-        online_gateways = sum(1 for g in self.gateways if g['status'] == 'online')
+        # Anchor stats
+        online_anchors = sum(1 for a in self.anchors if a['status'] == 'online')
+        avg_battery_anchors = sum(a['battery'] for a in self.anchors) / len(self.anchors) if self.anchors else 0
+        low_battery_anchors = sum(1 for a in self.anchors if a['battery'] < 70)
+        
+        # Tag stats
+        active_tags = sum(1 for t in self.tags if t['status'] == 'active')
+        avg_battery_tags = sum(t['battery'] for t in self.tags) / len(self.tags) if self.tags else 0
+        low_battery_tags = sum(1 for t in self.tags if t['battery'] < 20)
         
         return {
             'personnel': {
@@ -330,10 +338,24 @@ class TrackingService(QObject):
                 'avg_battery': round(avg_battery_personnel, 1),
                 'low_battery': low_battery_personnel
             },
-            'gateways': {
-                'total': len(self.gateways),
-                'online': online_gateways,
-                'offline': len(self.gateways) - online_gateways
+            'anchors': {
+                'total': len(self.anchors),
+                'online': online_anchors,
+                'offline': len(self.anchors) - online_anchors,
+                'avg_battery': round(avg_battery_anchors, 1),
+                'low_battery': low_battery_anchors
+            },
+            'tags': {
+                'total': len(self.tags),
+                'active': active_tags,
+                'inactive': len(self.tags) - active_tags,
+                'avg_battery': round(avg_battery_tags, 1),
+                'low_battery': low_battery_tags
+            },
+            'gateways': {  # Backward compatibility
+                'total': len(self.anchors),
+                'online': online_anchors,
+                'offline': len(self.anchors) - online_anchors
             }
         }
 
