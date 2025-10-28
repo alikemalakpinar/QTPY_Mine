@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-AicoMadenTakip - Professional Underground Mining Personnel & Device Tracking System
-Real-time location tracking with 3D visualization
-Modular Architecture with Turkish/English Support
+Aico Maden Takip - Profesyonel Yeraltı Madenci ve Cihaz Takip Sistemi
+Gerçek zamanlı konum takibi ve 3D görselleştirme
+Modüler mimari ile Türkçe/İngilizce destek
 """
 
 import sys
