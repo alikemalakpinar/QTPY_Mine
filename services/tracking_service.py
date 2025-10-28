@@ -152,8 +152,8 @@ class TrackingService(QObject):
             self.tags.append(tag)
     
     def update_locations(self):
-        """Konumları güncelle (Gateway simülasyonu)"""
-        # Personel konumlarını güncelle - Gateway sinyalleriyle
+        """Konumları güncelle (Anchor ve Tag simülasyonu)"""
+        # Personel konumlarını güncelle - Anchor sinyalleriyle
         for person in self.personnel:
             if person['status'] == 'active' and random.random() < 0.4:
                 # Hareket simülasyonu
@@ -172,7 +172,7 @@ class TrackingService(QObject):
                 # Kalp atışı güncelle
                 person['heart_rate'] = max(60, min(110, person['heart_rate'] + random.randint(-3, 3)))
                 
-                # Batarya düşür
+                # Batarya düşür (tag bataryası)
                 if random.random() < 0.05:
                     person['battery'] = max(0, person['battery'] - random.randint(1, 3))
                     if person['battery'] < 20:
@@ -183,6 +183,13 @@ class TrackingService(QObject):
                             'battery': person['battery']
                         })
                 
+                # Update tag info
+                tag = next((t for t in self.tags if t['person_id'] == person['id']), None)
+                if tag:
+                    tag['battery'] = person['battery']
+                    tag['signal_strength'] = person['signal']
+                    tag['last_seen'] = datetime.now()
+                
                 person['last_update'] = datetime.now()
                 
                 # Konum güncellemesi sinyali
@@ -190,6 +197,68 @@ class TrackingService(QObject):
                     'type': 'personnel',
                     'data': person
                 })
+        
+        # Anchor durumlarını güncelle (az sıklıkta)
+        if random.random() < 0.1:
+            for anchor in self.anchors:
+                # Batarya yavaş düşüş
+                if random.random() < 0.05:
+                    anchor['battery'] = max(50, anchor['battery'] - random.randint(0, 1))
+                    if anchor['battery'] < 70:
+                        self.battery_alert.emit({
+                            'type': 'anchor',
+                            'id': anchor['id'],
+                            'name': anchor['name'],
+                            'battery': anchor['battery']
+                        })
+                
+                # Sinyal gücü hafif değişim
+                anchor['signal_strength'] = max(85, min(100, 
+                    anchor['signal_strength'] + random.randint(-2, 2)))
+    
+    def get_anchors(self):
+        """Tüm anchor'ları al"""
+        return self.anchors
+    
+    def get_tags(self):
+        """Tüm tag'leri al"""
+        return self.tags
+    
+    def get_tag_by_id(self, tag_id):
+        """ID'ye göre tag bul"""
+        for tag in self.tags:
+            if tag['id'] == tag_id:
+                return tag
+        return None
+    
+    def get_anchor_by_id(self, anchor_id):
+        """ID'ye göre anchor bul"""
+        for anchor in self.anchors:
+            if anchor['id'] == anchor_id:
+                return anchor
+        return None
+    
+    def update_anchor_status(self, anchor_id, status):
+        """Anchor durumunu güncelle"""
+        anchor = self.get_anchor_by_id(anchor_id)
+        if anchor:
+            anchor['status'] = status
+            self.anchor_status_changed.emit({
+                'id': anchor_id,
+                'status': status,
+                'anchor': anchor
+            })
+    
+    def update_tag_status(self, tag_id, status):
+        """Tag durumunu güncelle"""
+        tag = self.get_tag_by_id(tag_id)
+        if tag:
+            tag['status'] = status
+            self.tag_status_changed.emit({
+                'id': tag_id,
+                'status': status,
+                'tag': tag
+            })
     
     def determine_zone(self, location):
         """Koordinatlara göre bölge belirle - Gateway sinyaline göre"""
