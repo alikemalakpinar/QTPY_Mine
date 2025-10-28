@@ -106,7 +106,6 @@ class PeopleListScreen(QWidget):
         return card
     
     def create_table(self):
-        """Personel tablosu oluştur"""
         self.table = QTableWidget()
         self.table.setColumnCount(9)
         self.table.setHorizontalHeaderLabels([
@@ -121,18 +120,14 @@ class PeopleListScreen(QWidget):
             self.i18n.t('actions')
         ])
         
-        # Tablo stili
-        self.table.setStyleSheet(f"""
-            QTableWidget {{
-                background: {MineTrackerTheme.SURFACE};
-                border: none;
-                border-radius: 12px;
-            }}
-        """)
+        self.table.setStyleSheet(f"QTableWidget {{ background: {MineTrackerTheme.SURFACE}; border: none; border-radius: 12px; }}")
         
-        # Kolon genişlikleri
         header = self.table.horizontalHeader()
         header.setStretchLastSection(True)
+        
+        self.table.cellDoubleClicked.connect(self.on_row_double_clicked)
+        self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setColumnWidth(0, 100)
         self.table.setColumnWidth(1, 150)
         self.table.setColumnWidth(2, 150)
