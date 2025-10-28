@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from app.navigation import NavigationBar
-from theme.theme import MineTrackerTheme
+from theme.theme import AicoMadenTakipTheme
 from services.i18n import I18nService
 from services.tracking_service import TrackingService
 from store.store import Store
@@ -28,8 +28,8 @@ from screens.reports.reports_home import ReportsScreen
 from screens.zones.zones_overview import ZonesScreen
 from screens.settings.settings import SettingsScreen
 
-class MineTrackerApp(QMainWindow):
-    """Ana MineTracker Uygulaması"""
+class AicoMadenTakipApp(QMainWindow):
+    """Ana AicoMadenTakip Uygulaması"""
     
     def __init__(self):
         super().__init__()
@@ -45,11 +45,11 @@ class MineTrackerApp(QMainWindow):
         
     def init_ui(self):
         """UI'yi başlat"""
-        self.setWindowTitle("MineTracker - Underground Safety System")
+        self.setWindowTitle("AicoMadenTakip - Underground Safety System")
         self.setGeometry(100, 100, 1600, 900)
         
         # Tema uygula
-        self.setStyleSheet(MineTrackerTheme.get_app_style())
+        self.setStyleSheet(AicoMadenTakipTheme.get_app_style())
         
         # Ana widget
         central_widget = QWidget()
@@ -70,7 +70,7 @@ class MineTrackerApp(QMainWindow):
         self.stacked_widget = QStackedWidget()
         self.stacked_widget.setStyleSheet(f"""
             QStackedWidget {{
-                background: {MineTrackerTheme.BACKGROUND};
+                background: {AicoMadenTakipTheme.BACKGROUND};
             }}
         """)
         
@@ -135,9 +135,9 @@ class MineTrackerApp(QMainWindow):
         status = self.statusBar()
         status.setStyleSheet(f"""
             QStatusBar {{
-                background: {MineTrackerTheme.SURFACE};
-                color: {MineTrackerTheme.TEXT_SECONDARY};
-                border-top: 1px solid {MineTrackerTheme.BORDER};
+                background: {AicoMadenTakipTheme.SURFACE};
+                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                border-top: 1px solid {AicoMadenTakipTheme.BORDER};
                 font-size: 12px;
                 padding: 5px;
             }}
@@ -149,7 +149,7 @@ class MineTrackerApp(QMainWindow):
         
         # Saat
         self.time_label = QLabel()
-        self.time_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY};")
+        self.time_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY};")
         status.addPermanentWidget(self.time_label)
         
         # Zaman güncelleyici
@@ -210,7 +210,7 @@ Time: {data['timestamp']}
         
         msg.setText(text)
         msg.setIcon(QMessageBox.Icon.Critical)
-        msg.setStyleSheet(MineTrackerTheme.get_app_style())
+        msg.setStyleSheet(AicoMadenTakipTheme.get_app_style())
         msg.exec()
     
     def handle_battery_alert(self, data):
@@ -259,6 +259,6 @@ This will:
     def update_window_title(self):
         """Pencere başlığını güncelle"""
         if self.i18n.current_language == 'tr':
-            self.setWindowTitle("MineTracker - Yer Altı Güvenlik Sistemi")
+            self.setWindowTitle("AicoMadenTakip - Yer Altı Güvenlik Sistemi")
         else:
-            self.setWindowTitle("MineTracker - Underground Safety System")
+            self.setWindowTitle("AicoMadenTakip - Underground Safety System")

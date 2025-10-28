@@ -41,7 +41,7 @@ class Mine3DView(BaseClass):
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MineTracker 3D - Realistic Mine</title>
+    <title>AicoMadenTakip 3D - Realistic Mine</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }

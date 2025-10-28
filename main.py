@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MineTracker - Professional Underground Mining Personnel & Device Tracking System
+AicoMadenTakip - Professional Underground Mining Personnel & Device Tracking System
 Real-time location tracking with 3D visualization
 Modular Architecture with Turkish/English Support
 """
@@ -16,7 +16,7 @@ except ImportError:
     print("⚠️ Warning: QtWebEngineWidgets not available. 3D map may not work.")
     QWebEngineView = None
 
-from app.app import MineTrackerApp
+from app.app import AicoMadenTakipApp
 
 
 def main():
@@ -25,15 +25,15 @@ def main():
     app.setStyle("Fusion")
     
     # Uygulama bilgileri
-    app.setApplicationName("MineTracker")
-    app.setOrganizationName("MineTracker Technologies")
-    app.setApplicationDisplayName("MineTracker - Yeraltı Güvenlik Sistemi")
+    app.setApplicationName("AicoMadenTakip")
+    app.setOrganizationName("AicoMadenTakip Technologies")
+    app.setApplicationDisplayName("AicoMadenTakip - Yeraltı Güvenlik Sistemi")
     
     # Ana pencereyi oluştur ve göster
-    window = MineTrackerApp()
+    window = AicoMadenTakipApp()
     window.show()
     
-    print("✅ MineTracker başlatıldı!")
+    print("✅ AicoMadenTakip başlatıldı!")
     print("🗺️  3D Harita aktif")
     print("📡 Real-time tracking aktif")
     print("🌍 Türkçe/English dil desteği hazır")

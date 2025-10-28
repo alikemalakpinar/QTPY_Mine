@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from datetime import datetime
-from theme.theme import MineTrackerTheme
+from theme.theme import AicoMadenTakipTheme
 
 class EquipmentScreen(QWidget):
     """Equipment management screen - Anchors & Tags"""
@@ -44,14 +44,14 @@ class EquipmentScreen(QWidget):
         self.tab_widget = QTabWidget()
         self.tab_widget.setStyleSheet(f"""
             QTabWidget::pane {{
-                border: 1px solid {MineTrackerTheme.BORDER};
+                border: 1px solid {AicoMadenTakipTheme.BORDER};
                 border-radius: 12px;
-                background: {MineTrackerTheme.SURFACE};
+                background: {AicoMadenTakipTheme.SURFACE};
             }}
             QTabBar::tab {{
-                background: {MineTrackerTheme.SURFACE};
-                color: {MineTrackerTheme.TEXT_SECONDARY};
-                border: 1px solid {MineTrackerTheme.BORDER};
+                background: {AicoMadenTakipTheme.SURFACE};
+                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
+                border: 1px solid {AicoMadenTakipTheme.BORDER};
                 padding: 12px 24px;
                 margin-right: 4px;
                 border-radius: 8px 8px 0 0;
@@ -59,12 +59,12 @@ class EquipmentScreen(QWidget):
                 font-weight: 500;
             }}
             QTabBar::tab:selected {{
-                background: {MineTrackerTheme.PRIMARY};
+                background: {AicoMadenTakipTheme.PRIMARY};
                 color: white;
                 font-weight: 600;
             }}
             QTabBar::tab:hover {{
-                background: {MineTrackerTheme.SURFACE_HOVER};
+                background: {AicoMadenTakipTheme.SURFACE_HOVER};
             }}
         """)
         
@@ -90,13 +90,13 @@ class EquipmentScreen(QWidget):
         title.setStyleSheet(f"""
             font-size: 28px;
             font-weight: 700;
-            color: {MineTrackerTheme.TEXT_PRIMARY};
+            color: {AicoMadenTakipTheme.TEXT_PRIMARY};
         """)
         
         subtitle = QLabel("Anchor ve Tag Cihazlarının Yönetimi ve İzlenmesi")
         subtitle.setStyleSheet(f"""
             font-size: 14px;
-            color: {MineTrackerTheme.TEXT_SECONDARY};
+            color: {AicoMadenTakipTheme.TEXT_SECONDARY};
             margin-top: 5px;
         """)
         
@@ -108,7 +108,7 @@ class EquipmentScreen(QWidget):
         
         # Refresh Button
         refresh_btn = QPushButton("🔄 Yenile")
-        refresh_btn.setStyleSheet(MineTrackerTheme.get_button_style('primary'))
+        refresh_btn.setStyleSheet(AicoMadenTakipTheme.get_button_style('primary'))
         refresh_btn.clicked.connect(self.refresh_data)
         header_layout.addWidget(refresh_btn)
         
@@ -126,7 +126,7 @@ class EquipmentScreen(QWidget):
             "⚓ Anchors",
             str(stats['anchors']['total']),
             f"{stats['anchors']['online']} Online • {stats['anchors']['offline']} Offline",
-            MineTrackerTheme.PRIMARY
+            AicoMadenTakipTheme.PRIMARY
         )
         layout.addWidget(anchor_card)
         
@@ -135,7 +135,7 @@ class EquipmentScreen(QWidget):
             "🏷️ Tags",
             str(stats['tags']['total']),
             f"{stats['tags']['active']} Active • {stats['tags']['inactive']} Inactive",
-            MineTrackerTheme.SUCCESS
+            AicoMadenTakipTheme.SUCCESS
         )
         layout.addWidget(tag_card)
         
@@ -145,7 +145,7 @@ class EquipmentScreen(QWidget):
             "🔋 Düşük Batarya",
             str(total_low),
             f"Anchors: {stats['anchors']['low_battery']} • Tags: {stats['tags']['low_battery']}",
-            MineTrackerTheme.WARNING if total_low > 0 else MineTrackerTheme.SUCCESS
+            AicoMadenTakipTheme.WARNING if total_low > 0 else AicoMadenTakipTheme.SUCCESS
         )
         layout.addWidget(battery_card)
         
@@ -155,7 +155,7 @@ class EquipmentScreen(QWidget):
             "📊 Ortalama Batarya",
             f"{avg_battery:.1f}%",
             f"Anchors: {stats['anchors']['avg_battery']:.1f}% • Tags: {stats['tags']['avg_battery']:.1f}%",
-            MineTrackerTheme.INFO
+            AicoMadenTakipTheme.INFO
         )
         layout.addWidget(avg_card)
         
@@ -166,14 +166,14 @@ class EquipmentScreen(QWidget):
         card = QWidget()
         card.setStyleSheet(f"""
             QWidget {{
-                background: {MineTrackerTheme.SURFACE};
+                background: {AicoMadenTakipTheme.SURFACE};
                 border-radius: 12px;
-                border: 1px solid {MineTrackerTheme.BORDER};
+                border: 1px solid {AicoMadenTakipTheme.BORDER};
                 padding: 20px;
             }}
             QWidget:hover {{
                 border-color: {color};
-                background: {MineTrackerTheme.SURFACE_HOVER};
+                background: {AicoMadenTakipTheme.SURFACE_HOVER};
             }}
         """)
         
@@ -184,7 +184,7 @@ class EquipmentScreen(QWidget):
         title_label = QLabel(title)
         title_label.setStyleSheet(f"""
             font-size: 13px;
-            color: {MineTrackerTheme.TEXT_SECONDARY};
+            color: {AicoMadenTakipTheme.TEXT_SECONDARY};
             font-weight: 500;
         """)
         
@@ -200,7 +200,7 @@ class EquipmentScreen(QWidget):
         subtitle_label = QLabel(subtitle)
         subtitle_label.setStyleSheet(f"""
             font-size: 12px;
-            color: {MineTrackerTheme.TEXT_MUTED};
+            color: {AicoMadenTakipTheme.TEXT_MUTED};
         """)
         
         layout.addWidget(title_label)
@@ -241,22 +241,22 @@ class EquipmentScreen(QWidget):
         self.anchors_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.anchors_table.setStyleSheet(f"""
             QTableWidget {{
-                background: {MineTrackerTheme.SURFACE};
+                background: {AicoMadenTakipTheme.SURFACE};
                 border: none;
                 border-radius: 12px;
-                gridline-color: {MineTrackerTheme.BORDER};
+                gridline-color: {AicoMadenTakipTheme.BORDER};
             }}
             QTableWidget::item {{
                 padding: 12px;
-                border-bottom: 1px solid {MineTrackerTheme.BORDER};
-                color: {MineTrackerTheme.TEXT_PRIMARY};
+                border-bottom: 1px solid {AicoMadenTakipTheme.BORDER};
+                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
             }}
             QTableWidget::item:selected {{
-                background: {MineTrackerTheme.PRIMARY_DARK};
+                background: {AicoMadenTakipTheme.PRIMARY_DARK};
             }}
             QHeaderView::section {{
-                background: {MineTrackerTheme.SURFACE_LIGHT};
-                color: {MineTrackerTheme.TEXT_SECONDARY};
+                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
+                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
                 border: none;
                 padding: 12px;
                 font-weight: 600;
@@ -301,22 +301,22 @@ class EquipmentScreen(QWidget):
         self.tags_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tags_table.setStyleSheet(f"""
             QTableWidget {{
-                background: {MineTrackerTheme.SURFACE};
+                background: {AicoMadenTakipTheme.SURFACE};
                 border: none;
                 border-radius: 12px;
-                gridline-color: {MineTrackerTheme.BORDER};
+                gridline-color: {AicoMadenTakipTheme.BORDER};
             }}
             QTableWidget::item {{
                 padding: 12px;
-                border-bottom: 1px solid {MineTrackerTheme.BORDER};
-                color: {MineTrackerTheme.TEXT_PRIMARY};
+                border-bottom: 1px solid {AicoMadenTakipTheme.BORDER};
+                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
             }}
             QTableWidget::item:selected {{
-                background: {MineTrackerTheme.PRIMARY_DARK};
+                background: {AicoMadenTakipTheme.PRIMARY_DARK};
             }}
             QHeaderView::section {{
-                background: {MineTrackerTheme.SURFACE_LIGHT};
-                color: {MineTrackerTheme.TEXT_SECONDARY};
+                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
+                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
                 border: none;
                 padding: 12px;
                 font-weight: 600;
@@ -354,11 +354,11 @@ class EquipmentScreen(QWidget):
             battery = anchor['battery']
             battery_item = QTableWidgetItem(f"{battery}%")
             if battery < 70:
-                battery_item.setForeground(QColor(MineTrackerTheme.DANGER))
+                battery_item.setForeground(QColor(AicoMadenTakipTheme.DANGER))
             elif battery < 85:
-                battery_item.setForeground(QColor(MineTrackerTheme.WARNING))
+                battery_item.setForeground(QColor(AicoMadenTakipTheme.WARNING))
             else:
-                battery_item.setForeground(QColor(MineTrackerTheme.SUCCESS))
+                battery_item.setForeground(QColor(AicoMadenTakipTheme.SUCCESS))
             self.anchors_table.setItem(row, 4, battery_item)
             
             # Signal
@@ -410,11 +410,11 @@ class EquipmentScreen(QWidget):
             battery = tag['battery']
             battery_item = QTableWidgetItem(f"{battery}%")
             if battery < 20:
-                battery_item.setForeground(QColor(MineTrackerTheme.DANGER))
+                battery_item.setForeground(QColor(AicoMadenTakipTheme.DANGER))
             elif battery < 40:
-                battery_item.setForeground(QColor(MineTrackerTheme.WARNING))
+                battery_item.setForeground(QColor(AicoMadenTakipTheme.WARNING))
             else:
-                battery_item.setForeground(QColor(MineTrackerTheme.SUCCESS))
+                battery_item.setForeground(QColor(AicoMadenTakipTheme.SUCCESS))
             self.tags_table.setItem(row, 3, battery_item)
             
             # Signal
@@ -470,7 +470,7 @@ class EquipmentScreen(QWidget):
 <b>Koordinatlar:</b> X:{anchor['x']}, Y:{anchor['y']}, Z:{anchor.get('z', 0)}<br>
 <b>Son Bakım:</b> {anchor.get('last_maintenance', 'N/A')}
         """)
-        msg.setStyleSheet(MineTrackerTheme.get_app_style())
+        msg.setStyleSheet(AicoMadenTakipTheme.get_app_style())
         msg.exec()
     
     def refresh_data(self):

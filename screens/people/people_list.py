@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from theme.theme import MineTrackerTheme
+from theme.theme import AicoMadenTakipTheme
 from datetime import datetime
 from screens.people.person_detail import PersonDetailScreen
 
@@ -47,7 +47,7 @@ class PeopleListScreen(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         
         self.title = QLabel(self.i18n.t('personnel_tracking'))
-        self.title.setStyleSheet(f"font-size: 28px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        self.title.setStyleSheet(f"font-size: 28px; font-weight: 700; color: {AicoMadenTakipTheme.TEXT_PRIMARY};")
         
         self.search_box = QLineEdit()
         self.search_box.setPlaceholderText(self.i18n.t('search_personnel'))
@@ -69,10 +69,10 @@ class PeopleListScreen(QWidget):
         
         self.stat_cards = []
         cards_data = [
-            ('total_underground', '👥', str(stats['total']), MineTrackerTheme.PRIMARY),
-            ('active_now', '✅', str(stats['active']), MineTrackerTheme.SUCCESS),
-            ('on_break', '⌛', str(stats['on_break']), MineTrackerTheme.WARNING),
-            ('critical_alerts', '🚨', str(stats['low_battery']), MineTrackerTheme.DANGER)
+            ('total_underground', '👥', str(stats['total']), AicoMadenTakipTheme.PRIMARY),
+            ('active_now', '✅', str(stats['active']), AicoMadenTakipTheme.SUCCESS),
+            ('on_break', '⌛', str(stats['on_break']), AicoMadenTakipTheme.WARNING),
+            ('critical_alerts', '🚨', str(stats['low_battery']), AicoMadenTakipTheme.DANGER)
         ]
         
         for title_key, icon, value, color in cards_data:
@@ -85,14 +85,14 @@ class PeopleListScreen(QWidget):
     def create_stat_card(self, title_key, icon, value, color):
         card = QWidget()
         card.setFixedHeight(100)
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=True))
+        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=True))
         
         layout = QVBoxLayout(card)
         layout.setContentsMargins(20, 12, 20, 12)
         layout.setSpacing(5)
         
         title = QLabel(f"{icon}  {self.i18n.t(title_key)}")
-        title.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 12px; text-transform: uppercase;")
+        title.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 12px; text-transform: uppercase;")
         
         value_label = QLabel(value)
         value_label.setStyleSheet(f"color: {color}; font-size: 32px; font-weight: 700;")
@@ -120,7 +120,7 @@ class PeopleListScreen(QWidget):
             self.i18n.t('actions')
         ])
         
-        self.table.setStyleSheet(f"QTableWidget {{ background: {MineTrackerTheme.SURFACE}; border: none; border-radius: 12px; }}")
+        self.table.setStyleSheet(f"QTableWidget {{ background: {AicoMadenTakipTheme.SURFACE}; border: none; border-radius: 12px; }}")
         
         header = self.table.horizontalHeader()
         header.setStretchLastSection(True)
@@ -151,7 +151,7 @@ class PeopleListScreen(QWidget):
         for row, person in enumerate(personnel):
             # ID
             id_item = QTableWidgetItem(person['id'])
-            id_item.setForeground(QBrush(QColor(MineTrackerTheme.PRIMARY)))
+            id_item.setForeground(QBrush(QColor(AicoMadenTakipTheme.PRIMARY)))
             self.table.setItem(row, 0, id_item)
             
             # İsim
@@ -163,7 +163,7 @@ class PeopleListScreen(QWidget):
             
             # Bölge
             zone_item = QTableWidgetItem(person['zone_name'])
-            zone_item.setForeground(QBrush(QColor(MineTrackerTheme.SUCCESS)))
+            zone_item.setForeground(QBrush(QColor(AicoMadenTakipTheme.SUCCESS)))
             self.table.setItem(row, 3, zone_item)
             
             # Durum
@@ -175,29 +175,29 @@ class PeopleListScreen(QWidget):
             
             status_item = QTableWidgetItem(status_text)
             status_color = {
-                'active': MineTrackerTheme.SUCCESS,
-                'break': MineTrackerTheme.WARNING,
-                'emergency': MineTrackerTheme.DANGER
-            }.get(person['status'], MineTrackerTheme.TEXT_PRIMARY)
+                'active': AicoMadenTakipTheme.SUCCESS,
+                'break': AicoMadenTakipTheme.WARNING,
+                'emergency': AicoMadenTakipTheme.DANGER
+            }.get(person['status'], AicoMadenTakipTheme.TEXT_PRIMARY)
             status_item.setForeground(QBrush(QColor(status_color)))
             self.table.setItem(row, 4, status_item)
             
             # Kalp atışı
             hr_item = QTableWidgetItem(f"{person['heart_rate']} bpm")
             if person['heart_rate'] > 100:
-                hr_item.setForeground(QBrush(QColor(MineTrackerTheme.DANGER)))
+                hr_item.setForeground(QBrush(QColor(AicoMadenTakipTheme.DANGER)))
             elif person['heart_rate'] > 90:
-                hr_item.setForeground(QBrush(QColor(MineTrackerTheme.WARNING)))
+                hr_item.setForeground(QBrush(QColor(AicoMadenTakipTheme.WARNING)))
             self.table.setItem(row, 5, hr_item)
             
             # Batarya
             battery_item = QTableWidgetItem(f"{person['battery']}%")
             if person['battery'] < 20:
-                battery_item.setForeground(QBrush(QColor(MineTrackerTheme.DANGER)))
+                battery_item.setForeground(QBrush(QColor(AicoMadenTakipTheme.DANGER)))
             elif person['battery'] < 50:
-                battery_item.setForeground(QBrush(QColor(MineTrackerTheme.WARNING)))
+                battery_item.setForeground(QBrush(QColor(AicoMadenTakipTheme.WARNING)))
             else:
-                battery_item.setForeground(QBrush(QColor(MineTrackerTheme.SUCCESS)))
+                battery_item.setForeground(QBrush(QColor(AicoMadenTakipTheme.SUCCESS)))
             self.table.setItem(row, 6, battery_item)
             
             # Son güncelleme
@@ -231,13 +231,13 @@ class PeopleListScreen(QWidget):
         locate_btn.setToolTip(self.i18n.t('locate'))
         locate_btn.setStyleSheet(f"""
             QPushButton {{
-                background: {MineTrackerTheme.PRIMARY};
+                background: {AicoMadenTakipTheme.PRIMARY};
                 border: none;
                 border-radius: 6px;
                 font-size: 16px;
             }}
             QPushButton:hover {{
-                background: {MineTrackerTheme.PRIMARY_LIGHT};
+                background: {AicoMadenTakipTheme.PRIMARY_LIGHT};
             }}
         """)
         
@@ -247,7 +247,7 @@ class PeopleListScreen(QWidget):
         sos_btn.setToolTip('SOS')
         sos_btn.setStyleSheet(f"""
             QPushButton {{
-                background: {MineTrackerTheme.DANGER};
+                background: {AicoMadenTakipTheme.DANGER};
                 border: none;
                 border-radius: 6px;
                 font-size: 16px;
@@ -263,7 +263,7 @@ class PeopleListScreen(QWidget):
         detail_btn.setToolTip('Detayları Gör')
         detail_btn.setStyleSheet(f"""
             QPushButton {{
-                background: {MineTrackerTheme.SUCCESS};
+                background: {AicoMadenTakipTheme.SUCCESS};
                 border: none;
                 border-radius: 6px;
                 font-size: 16px;

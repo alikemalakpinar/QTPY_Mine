@@ -3,7 +3,7 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from datetime import datetime, timedelta
 import random
-from theme.theme import MineTrackerTheme
+from theme.theme import AicoMadenTakipTheme
 
 class PersonDetailScreen(QWidget):
     back_requested = pyqtSignal()
@@ -67,15 +67,15 @@ class PersonDetailScreen(QWidget):
         
         back_btn = QPushButton("← Geri")
         back_btn.setFixedSize(100, 40)
-        back_btn.setStyleSheet(MineTrackerTheme.get_button_style('primary'))
+        back_btn.setStyleSheet(AicoMadenTakipTheme.get_button_style('primary'))
         back_btn.clicked.connect(self.back_requested.emit)
         
         title_layout = QVBoxLayout()
         title = QLabel(f"👤 {self.person['full_name']}")
-        title.setStyleSheet(f"font-size: 32px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        title.setStyleSheet(f"font-size: 32px; font-weight: 700; color: {AicoMadenTakipTheme.TEXT_PRIMARY};")
         
         subtitle = QLabel(self.person['position'])
-        subtitle.setStyleSheet(f"font-size: 16px; color: {MineTrackerTheme.TEXT_SECONDARY}; margin-top: 5px;")
+        subtitle.setStyleSheet(f"font-size: 16px; color: {AicoMadenTakipTheme.TEXT_SECONDARY}; margin-top: 5px;")
         
         title_layout.addWidget(title)
         title_layout.addWidget(subtitle)
@@ -92,12 +92,12 @@ class PersonDetailScreen(QWidget):
     def create_status_badge(self):
         status = self.person['status']
         status_colors = {
-            'active': (MineTrackerTheme.SUCCESS, '🟢 Aktif'),
-            'break': (MineTrackerTheme.WARNING, '🟡 Molada'),
-            'emergency': (MineTrackerTheme.DANGER, '🔴 Acil Durum')
+            'active': (AicoMadenTakipTheme.SUCCESS, '🟢 Aktif'),
+            'break': (AicoMadenTakipTheme.WARNING, '🟡 Molada'),
+            'emergency': (AicoMadenTakipTheme.DANGER, '🔴 Acil Durum')
         }
         
-        color, text = status_colors.get(status, (MineTrackerTheme.TEXT_SECONDARY, 'Bilinmiyor'))
+        color, text = status_colors.get(status, (AicoMadenTakipTheme.TEXT_SECONDARY, 'Bilinmiyor'))
         
         badge = QLabel(text)
         badge.setStyleSheet(f"""
@@ -112,12 +112,12 @@ class PersonDetailScreen(QWidget):
     
     def create_profile_card(self):
         card = QWidget()
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
         layout = QVBoxLayout(card)
         layout.setSpacing(15)
         
         title = QLabel("📋 Profil Bilgileri")
-        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {AicoMadenTakipTheme.TEXT_PRIMARY};")
         layout.addWidget(title)
         
         info_items = [
@@ -133,10 +133,10 @@ class PersonDetailScreen(QWidget):
         for label, value in info_items:
             row = QHBoxLayout()
             label_widget = QLabel(label)
-            label_widget.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 13px;")
+            label_widget.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 13px;")
             
             value_widget = QLabel(str(value))
-            value_widget.setStyleSheet(f"color: {MineTrackerTheme.TEXT_PRIMARY}; font-size: 14px; font-weight: 600;")
+            value_widget.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_PRIMARY}; font-size: 14px; font-weight: 600;")
             value_widget.setAlignment(Qt.AlignmentFlag.AlignRight)
             
             row.addWidget(label_widget)
@@ -148,16 +148,16 @@ class PersonDetailScreen(QWidget):
     
     def create_location_card(self):
         card = QWidget()
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
         layout = QVBoxLayout(card)
         layout.setSpacing(15)
         
         title = QLabel("📍 Konum Bilgisi")
-        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {AicoMadenTakipTheme.TEXT_PRIMARY};")
         layout.addWidget(title)
         
         zone_label = QLabel(f"Bölge: {self.person['zone_name']}")
-        zone_label.setStyleSheet(f"font-size: 16px; font-weight: 600; color: {MineTrackerTheme.PRIMARY};")
+        zone_label.setStyleSheet(f"font-size: 16px; font-weight: 600; color: {AicoMadenTakipTheme.PRIMARY};")
         layout.addWidget(zone_label)
         
         loc = self.person['location']
@@ -169,11 +169,11 @@ class PersonDetailScreen(QWidget):
             coord_layout.setSpacing(5)
             
             axis_label = QLabel(axis)
-            axis_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 12px;")
+            axis_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 12px;")
             axis_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             value_label = QLabel(f"{value:.1f}m")
-            value_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_PRIMARY}; font-size: 18px; font-weight: 700;")
+            value_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_PRIMARY}; font-size: 18px; font-weight: 700;")
             value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             coord_layout.addWidget(axis_label)
@@ -183,19 +183,19 @@ class PersonDetailScreen(QWidget):
         layout.addLayout(coords_layout)
         
         self.last_update_label = QLabel(f"Son Güncelleme: Az önce")
-        self.last_update_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_MUTED}; font-size: 12px;")
+        self.last_update_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_MUTED}; font-size: 12px;")
         layout.addWidget(self.last_update_label)
         
         return card
     
     def create_health_card(self):
         card = QWidget()
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
         layout = QVBoxLayout(card)
         layout.setSpacing(15)
         
         title = QLabel("💓 Sağlık & Durum")
-        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {AicoMadenTakipTheme.TEXT_PRIMARY};")
         layout.addWidget(title)
         
         metrics_layout = QHBoxLayout()
@@ -222,11 +222,11 @@ class PersonDetailScreen(QWidget):
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         label_widget = QLabel(label)
-        label_widget.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 12px;")
+        label_widget.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 12px;")
         label_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         value_widget = QLabel(f"{value}{unit}")
-        value_widget.setStyleSheet(f"color: {MineTrackerTheme.TEXT_PRIMARY}; font-size: 20px; font-weight: 700;")
+        value_widget.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_PRIMARY}; font-size: 20px; font-weight: 700;")
         value_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         layout.addWidget(icon_label)
@@ -237,38 +237,38 @@ class PersonDetailScreen(QWidget):
     
     def create_time_tracking_card(self):
         card = QWidget()
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
         layout = QVBoxLayout(card)
         layout.setSpacing(15)
         
         title = QLabel("⏱️ Zaman Takibi")
-        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {AicoMadenTakipTheme.TEXT_PRIMARY};")
         layout.addWidget(title)
         
         self.work_duration_label = QLabel()
-        self.work_duration_label.setStyleSheet(f"font-size: 32px; font-weight: 700; color: {MineTrackerTheme.PRIMARY};")
+        self.work_duration_label.setStyleSheet(f"font-size: 32px; font-weight: 700; color: {AicoMadenTakipTheme.PRIMARY};")
         self.work_duration_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.work_duration_label)
         
         work_label = QLabel("Toplam Çalışma Süresi")
-        work_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 13px;")
+        work_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 13px;")
         work_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(work_label)
         
         divider = QFrame()
         divider.setFrameShape(QFrame.Shape.HLine)
-        divider.setStyleSheet(f"background: {MineTrackerTheme.BORDER};")
+        divider.setStyleSheet(f"background: {AicoMadenTakipTheme.BORDER};")
         layout.addWidget(divider)
         
         stats_layout = QHBoxLayout()
         
         break_col = QVBoxLayout()
         self.break_time_label = QLabel()
-        self.break_time_label.setStyleSheet(f"font-size: 20px; font-weight: 700; color: {MineTrackerTheme.WARNING};")
+        self.break_time_label.setStyleSheet(f"font-size: 20px; font-weight: 700; color: {AicoMadenTakipTheme.WARNING};")
         self.break_time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         break_label = QLabel("Mola Süresi")
-        break_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 12px;")
+        break_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 12px;")
         break_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         break_col.addWidget(self.break_time_label)
@@ -276,11 +276,11 @@ class PersonDetailScreen(QWidget):
         
         active_col = QVBoxLayout()
         self.active_time_label = QLabel()
-        self.active_time_label.setStyleSheet(f"font-size: 20px; font-weight: 700; color: {MineTrackerTheme.SUCCESS};")
+        self.active_time_label.setStyleSheet(f"font-size: 20px; font-weight: 700; color: {AicoMadenTakipTheme.SUCCESS};")
         self.active_time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         active_label = QLabel("Aktif Çalışma")
-        active_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 12px;")
+        active_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 12px;")
         active_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         active_col.addWidget(self.active_time_label)
@@ -297,12 +297,12 @@ class PersonDetailScreen(QWidget):
     
     def create_activity_card(self):
         card = QWidget()
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
         layout = QVBoxLayout(card)
         layout.setSpacing(15)
         
         title = QLabel("📊 Son Aktiviteler")
-        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        title.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {AicoMadenTakipTheme.TEXT_PRIMARY};")
         layout.addWidget(title)
         
         scroll = QScrollArea()
@@ -349,10 +349,10 @@ class PersonDetailScreen(QWidget):
         text_layout.setSpacing(3)
         
         action_label = QLabel(action)
-        action_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_PRIMARY}; font-size: 13px; font-weight: 500;")
+        action_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_PRIMARY}; font-size: 13px; font-weight: 500;")
         
         time_label = QLabel(time)
-        time_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_MUTED}; font-size: 11px;")
+        time_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_MUTED}; font-size: 11px;")
         
         text_layout.addWidget(action_label)
         text_layout.addWidget(time_label)
@@ -363,11 +363,11 @@ class PersonDetailScreen(QWidget):
         
         item.setStyleSheet(f"""
             QWidget {{
-                background: {MineTrackerTheme.SURFACE_LIGHT};
+                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
                 border-radius: 8px;
             }}
             QWidget:hover {{
-                background: {MineTrackerTheme.SURFACE_HOVER};
+                background: {AicoMadenTakipTheme.SURFACE_HOVER};
             }}
         """)
         

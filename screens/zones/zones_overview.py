@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from theme.theme import MineTrackerTheme
+from theme.theme import AicoMadenTakipTheme
 
 class ZonesScreen(QWidget):
     """Maden bölgeleri yönetimi"""
@@ -57,7 +57,7 @@ class ZonesScreen(QWidget):
             QLabel {{
                 font-size: 28px;
                 font-weight: 700;
-                color: {MineTrackerTheme.TEXT_PRIMARY};
+                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
             }}
         """)
         
@@ -70,7 +70,7 @@ class ZonesScreen(QWidget):
         """Bölge kartı"""
         card = QWidget()
         card.setFixedHeight(180)
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=True))
+        card.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=True))
         
         layout = QVBoxLayout(card)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -85,7 +85,7 @@ class ZonesScreen(QWidget):
         zone_name = QLabel(zone['name'])
         zone_name.setStyleSheet(f"""
             QLabel {{
-                color: {MineTrackerTheme.TEXT_PRIMARY};
+                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
                 font-size: 18px;
                 font-weight: 600;
             }}
@@ -105,7 +105,7 @@ class ZonesScreen(QWidget):
         personnel_icon = QLabel('👥')
         personnel_icon.setFont(QFont('Arial', 16))
         personnel_label = QLabel(f"{personnel_count} Personel")
-        personnel_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 13px;")
+        personnel_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 13px;")
         personnel_layout.addWidget(personnel_icon)
         personnel_layout.addWidget(personnel_label)
         personnel_layout.addStretch()
@@ -115,7 +115,7 @@ class ZonesScreen(QWidget):
         gateway_icon = QLabel('📡')
         gateway_icon.setFont(QFont('Arial', 16))
         gateway_label = QLabel(f"Gateway Active")
-        gateway_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 13px;")
+        gateway_label.setStyleSheet(f"color: {AicoMadenTakipTheme.TEXT_SECONDARY}; font-size: 13px;")
         gateway_layout.addWidget(gateway_icon)
         gateway_layout.addWidget(gateway_label)
         gateway_layout.addStretch()
@@ -127,7 +127,7 @@ class ZonesScreen(QWidget):
         coords_label = QLabel(f"X: {zone['x']}, Y: {zone['y']}")
         coords_label.setStyleSheet(f"""
             QLabel {{
-                color: {MineTrackerTheme.TEXT_MUTED};
+                color: {AicoMadenTakipTheme.TEXT_MUTED};
                 font-size: 11px;
                 font-family: 'Courier New', monospace;
             }}
@@ -141,7 +141,7 @@ class ZonesScreen(QWidget):
         details_btn.setFixedHeight(35)
         details_btn.setStyleSheet(f"""
             QPushButton {{
-                background: {MineTrackerTheme.PRIMARY};
+                background: {AicoMadenTakipTheme.PRIMARY};
                 color: #000000;
                 border: none;
                 border-radius: 6px;
@@ -149,7 +149,7 @@ class ZonesScreen(QWidget):
                 font-weight: 600;
             }}
             QPushButton:hover {{
-                background: {MineTrackerTheme.PRIMARY_LIGHT};
+                background: {AicoMadenTakipTheme.PRIMARY_LIGHT};
             }}
         """)
         layout.addWidget(details_btn)
@@ -159,7 +159,7 @@ class ZonesScreen(QWidget):
     def create_stats_section(self):
         """İstatistikler bölümü"""
         section = QWidget()
-        section.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        section.setStyleSheet(AicoMadenTakipTheme.get_card_style(hover=False))
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -170,7 +170,7 @@ class ZonesScreen(QWidget):
             QLabel {{
                 font-size: 18px;
                 font-weight: 600;
-                color: {MineTrackerTheme.TEXT_PRIMARY};
+                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
             }}
         """)
         layout.addWidget(title)
@@ -182,7 +182,7 @@ class ZonesScreen(QWidget):
         
         self.zones_table.setStyleSheet(f"""
             QTableWidget {{
-                background: {MineTrackerTheme.BACKGROUND};
+                background: {AicoMadenTakipTheme.BACKGROUND};
                 border: none;
                 border-radius: 8px;
             }}
@@ -217,8 +217,8 @@ class ZonesScreen(QWidget):
             status = '✅ Aktif' if personnel_count > 0 else '⚫ İnaktif'
             status_item = QTableWidgetItem(status)
             status_item.setForeground(QBrush(QColor(
-                MineTrackerTheme.SUCCESS if personnel_count > 0 
-                else MineTrackerTheme.TEXT_MUTED
+                AicoMadenTakipTheme.SUCCESS if personnel_count > 0 
+                else AicoMadenTakipTheme.TEXT_MUTED
             )))
             self.zones_table.setItem(row, 2, status_item)
             

@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
-from theme.theme import MineTrackerTheme
+from theme.theme import AicoMadenTakipTheme
 
 class NavigationBar(QWidget):
     """Sol navigasyon sidebar"""
@@ -25,8 +25,8 @@ class NavigationBar(QWidget):
         self.setFixedWidth(260)
         self.setStyleSheet(f"""
             QWidget {{
-                background: {MineTrackerTheme.SURFACE};
-                border-right: 1px solid {MineTrackerTheme.BORDER};
+                background: {AicoMadenTakipTheme.SURFACE};
+                border-right: 1px solid {AicoMadenTakipTheme.BORDER};
             }}
         """)
         
@@ -71,8 +71,8 @@ class NavigationBar(QWidget):
         header.setFixedHeight(100)
         header.setStyleSheet(f"""
             QWidget {{
-                background: {MineTrackerTheme.SURFACE_LIGHT};
-                border-bottom: 1px solid {MineTrackerTheme.BORDER};
+                background: {AicoMadenTakipTheme.SURFACE_LIGHT};
+                border-bottom: 1px solid {AicoMadenTakipTheme.BORDER};
                 border-right: none;
             }}
         """)
@@ -82,12 +82,12 @@ class NavigationBar(QWidget):
         layout.setSpacing(5)
         
         # Logo
-        logo = QLabel("⛏️ MineTracker")
+        logo = QLabel("⛏️ AicoMadenTakip")
         logo.setStyleSheet(f"""
             QLabel {{
                 font-size: 24px;
                 font-weight: 700;
-                color: {MineTrackerTheme.PRIMARY};
+                color: {AicoMadenTakipTheme.PRIMARY};
             }}
         """)
         
@@ -96,7 +96,7 @@ class NavigationBar(QWidget):
         self.subtitle.setStyleSheet(f"""
             QLabel {{
                 font-size: 11px;
-                color: {MineTrackerTheme.TEXT_SECONDARY};
+                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
             }}
         """)
         self.subtitle.setWordWrap(True)
@@ -118,20 +118,20 @@ class NavigationBar(QWidget):
                 background: transparent;
                 border: none;
                 border-left: 3px solid transparent;
-                color: {MineTrackerTheme.TEXT_SECONDARY};
+                color: {AicoMadenTakipTheme.TEXT_SECONDARY};
                 font-size: 15px;
                 font-weight: 500;
                 text-align: left;
                 padding-left: 25px;
             }}
             QPushButton:hover {{
-                background: {MineTrackerTheme.SURFACE_HOVER};
-                color: {MineTrackerTheme.TEXT_PRIMARY};
+                background: {AicoMadenTakipTheme.SURFACE_HOVER};
+                color: {AicoMadenTakipTheme.TEXT_PRIMARY};
             }}
             QPushButton:checked {{
-                background: {MineTrackerTheme.SURFACE_HOVER};
-                border-left-color: {MineTrackerTheme.PRIMARY};
-                color: {MineTrackerTheme.PRIMARY};
+                background: {AicoMadenTakipTheme.SURFACE_HOVER};
+                border-left-color: {AicoMadenTakipTheme.PRIMARY};
+                color: {AicoMadenTakipTheme.PRIMARY};
                 font-weight: 600;
             }}
         """)
@@ -145,7 +145,7 @@ class NavigationBar(QWidget):
         self.emergency_btn.setFixedHeight(60)
         self.emergency_btn.setStyleSheet(f"""
             QPushButton {{
-                background: {MineTrackerTheme.DANGER};
+                background: {AicoMadenTakipTheme.DANGER};
                 border: none;
                 color: white;
                 font-size: 16px;

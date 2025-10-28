@@ -1,8 +1,8 @@
-# ⛏️ MineTracker - Yeraltı Madenci Takip Sistemi
+# ⛏️ Aico Maden Takip - Yeraltı Madenci Takip Sistemi
 
 ## 📋 Genel Bakış
 
-MineTracker, yeraltı madencilerinin gerçek zamanlı konumlarını takip eden, 3D görselleştirme sunan ve acil durum yönetimi sağlayan profesyonel bir masaüstü uygulamasıdır.
+Aico Maden Takip, yeraltı madencilerinin gerçek zamanlı konumlarını takip eden, 3D görselleştirme sunan ve acil durum yönetimi sağlayan profesyonel bir masaüstü uygulamasıdır.
 
 ### ✨ Özellikler
 
@@ -165,7 +165,7 @@ pip install PyQt6 PyQt6-WebEngine
 
 ## 👨‍💻 Geliştirici
 
-**MineTracker Development Team**
+**Aico Maden Takip Development Team**
 
 ---
 
@@ -175,4 +175,4 @@ Bu proje özel bir projedir. Tüm hakları saklıdır.
 
 ---
 
-**⛏️ MineTracker - Madencilerin Güvenliği İçin Teknoloji**
+**⛏️ Aico Maden Takip - Madencilerin Güvenliği İçin Teknoloji**

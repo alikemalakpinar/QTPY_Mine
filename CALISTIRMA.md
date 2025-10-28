@@ -1,4 +1,4 @@
-# 🚀 MineTracker - ÇALIŞTIRMA TALİMATLARI
+# 🚀 Aico Maden Takip - ÇALIŞTIRMA TALİMATLARI
 
 ## ⚠️ ÖNEMLİ NOTLAR
 
@@ -220,4 +220,4 @@ Sorun yaşarsanız:
 
 ---
 
-**⛏️ İyi Kullanımlar! - MineTracker Team**
+**⛏️ İyi Kullanımlar! - Aico Maden Takip Team**
