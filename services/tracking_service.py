@@ -1,30 +1,72 @@
-"""Gerçek zamanlı personel takip servisi - Gateway & Tag tabanlı"""
+"""Gerçek zamanlı personel takip servisi - Anchor & Tag tabanlı (ENTERPRISE)"""
 from PyQt6.QtCore import QObject, pyqtSignal, QTimer
 import random
 from datetime import datetime
 
 class TrackingService(QObject):
-    """Gateway tabanlı personel tag takip servisi"""
+    """Enterprise-grade tracking service - Anchor (Gateway) & Tag based"""
     
     # Signals
     location_updated = pyqtSignal(dict)  # Konum güncellemesi
     battery_alert = pyqtSignal(dict)  # Batarya uyarısı
     emergency_signal = pyqtSignal(dict)  # Acil durum sinyali
     status_changed = pyqtSignal(dict)  # Durum değişikliği
+    anchor_status_changed = pyqtSignal(dict)  # Anchor durum değişikliği
+    tag_status_changed = pyqtSignal(dict)  # Tag durum değişikliği
     
     def __init__(self):
         super().__init__()
         self.personnel = []
+        self.tags = []  # Personnel tracking tags
         
-        # Gateway'ler - Maden bölgelerinde yerleştirilmiş
-        self.gateways = [
-            {'id': 'GW001', 'name': 'Ana Şaft Gateway', 'zone': 'Ana Şaft', 'color': '#00D4FF', 'x': 0, 'y': 0, 'status': 'online'},
-            {'id': 'GW002', 'name': 'Sektör A Gateway', 'zone': 'Sektör A', 'color': '#00FF88', 'x': -350, 'y': -200, 'status': 'online'},
-            {'id': 'GW003', 'name': 'Sektör B Gateway', 'zone': 'Sektör B', 'color': '#FFB800', 'x': 350, 'y': -200, 'status': 'online'},
-            {'id': 'GW004', 'name': 'Sektör C Gateway', 'zone': 'Sektör C', 'color': '#9966FF', 'x': 0, 'y': 280, 'status': 'online'},
-            {'id': 'GW005', 'name': 'İşleme Gateway', 'zone': 'İşleme', 'color': '#FF3366', 'x': -250, 'y': 350, 'status': 'online'},
-            {'id': 'GW006', 'name': 'Atölye Gateway', 'zone': 'Atölye', 'color': '#00CCFF', 'x': 250, 'y': 350, 'status': 'online'}
+        # Anchors (Fixed position gateway devices)
+        self.anchors = [
+            {
+                'id': 'ANC001', 'name': 'Ana Şaft Anchor', 'zone': 'Ana Şaft', 
+                'color': '#00D4FF', 'x': 0, 'y': 0, 'z': -10,
+                'status': 'online', 'battery': 95, 'signal_strength': 98,
+                'firmware_version': '2.1.0', 'last_maintenance': '2025-01-15',
+                'coverage_radius': 100, 'type': 'anchor'
+            },
+            {
+                'id': 'ANC002', 'name': 'Sektör A Anchor', 'zone': 'Sektör A',
+                'color': '#00FF88', 'x': -350, 'y': -200, 'z': -25,
+                'status': 'online', 'battery': 88, 'signal_strength': 95,
+                'firmware_version': '2.1.0', 'last_maintenance': '2025-01-15',
+                'coverage_radius': 100, 'type': 'anchor'
+            },
+            {
+                'id': 'ANC003', 'name': 'Sektör B Anchor', 'zone': 'Sektör B',
+                'color': '#FFB800', 'x': 350, 'y': -200, 'z': -30,
+                'status': 'online', 'battery': 92, 'signal_strength': 96,
+                'firmware_version': '2.1.0', 'last_maintenance': '2025-01-15',
+                'coverage_radius': 100, 'type': 'anchor'
+            },
+            {
+                'id': 'ANC004', 'name': 'Sektör C Anchor', 'zone': 'Sektör C',
+                'color': '#9966FF', 'x': 0, 'y': 280, 'z': -20,
+                'status': 'online', 'battery': 78, 'signal_strength': 92,
+                'firmware_version': '2.0.5', 'last_maintenance': '2025-01-10',
+                'coverage_radius': 100, 'type': 'anchor'
+            },
+            {
+                'id': 'ANC005', 'name': 'İşleme Anchor', 'zone': 'İşleme',
+                'color': '#FF3366', 'x': -250, 'y': 350, 'z': -15,
+                'status': 'online', 'battery': 85, 'signal_strength': 94,
+                'firmware_version': '2.1.0', 'last_maintenance': '2025-01-15',
+                'coverage_radius': 100, 'type': 'anchor'
+            },
+            {
+                'id': 'ANC006', 'name': 'Atölye Anchor', 'zone': 'Atölye',
+                'color': '#00CCFF', 'x': 250, 'y': 350, 'z': -12,
+                'status': 'online', 'battery': 90, 'signal_strength': 97,
+                'firmware_version': '2.1.0', 'last_maintenance': '2025-01-15',
+                'coverage_radius': 100, 'type': 'anchor'
+            }
         ]
+        
+        # For backward compatibility
+        self.gateways = self.anchors
         
         # Bölgeler (Gateway konumlarıyla aynı)
         self.zones = [
