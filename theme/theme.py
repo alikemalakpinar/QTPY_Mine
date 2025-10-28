@@ -1,7 +1,7 @@
-"""Enterprise Grade Theme - Professional Design System"""
+"""Enterprise Grade Theme - Aico Design System"""
 
 class AicoTheme:
-    """Professional design system - Enterprise grade"""
+    """Aico Maden Takip - Professional design system"""
     
     # Core Colors - Professional Palette
     BACKGROUND = "#0a0b0d"          # Deep space
