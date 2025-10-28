@@ -135,7 +135,7 @@ class I18nService(QObject):
             },
             'en': {
                 # Navigation
-                'app_title': 'AicoMadenTakip',
+                'app_title': 'Aico Mining Track',
                 'app_subtitle': 'Underground Safety & Tracking System',
                 'dashboard': 'Dashboard',
                 'live_map': 'Live 3D Map',
