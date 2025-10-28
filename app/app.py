@@ -239,7 +239,7 @@ This will:
         )
         
         if reply == QMessageBox.StandardButton.Yes:
-            # Acil durum ekranına geç
+            # Acil durum ekranına geç (Equipment eklendi, index 4 oldu)
             self.nav_bar.select_page(4)
             
             QMessageBox.information(
