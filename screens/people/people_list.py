@@ -23,22 +23,23 @@ class PeopleListScreen(QWidget):
         self.update_timer.start(3000)
     
     def init_ui(self):
-        """UI'yi başlat"""
-        layout = QVBoxLayout(self)
-        layout.setSpacing(20)
-        layout.setContentsMargins(30, 30, 30, 30)
+        self.main_layout = QStackedLayout(self)
         
-        # Header ve arama
+        self.list_widget = QWidget()
+        list_layout = QVBoxLayout(self.list_widget)
+        list_layout.setSpacing(20)
+        list_layout.setContentsMargins(30, 30, 30, 30)
+        
         header = self.create_header()
-        layout.addWidget(header)
+        list_layout.addWidget(header)
         
-        # İstatistik kartları
         stats_layout = self.create_stats()
-        layout.addLayout(stats_layout)
+        list_layout.addLayout(stats_layout)
         
-        # Personel tablosu
         self.create_table()
-        layout.addWidget(self.table)
+        list_layout.addWidget(self.table)
+        
+        self.main_layout.addWidget(self.list_widget)
     
     def create_header(self):
         """Header oluştur"""
