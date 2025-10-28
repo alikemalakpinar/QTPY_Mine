@@ -33,9 +33,9 @@ def main():
     window = AicoMadenTakipApp()
     window.show()
     
-    print("✅ AicoMadenTakip başlatıldı!")
+    print("✅ Aico Maden Takip başlatıldı!")
     print("🗺️  3D Harita aktif")
-    print("📡 Real-time tracking aktif")
+    print("📡 Gerçek zamanlı takip aktif")
     print("🌍 Türkçe/English dil desteği hazır")
     
     sys.exit(app.exec())
