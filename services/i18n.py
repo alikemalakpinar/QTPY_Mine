@@ -19,6 +19,7 @@ class I18nService(QObject):
                 'dashboard': 'Kontrol Paneli',
                 'live_map': 'Canlı 3D Harita',
                 'personnel': 'Personel',
+                'equipment': 'Ekipman',
                 'emergency': 'Acil Durum',
                 'reports': 'Raporlar',
                 'zones': 'Bölgeler',
