@@ -22,6 +22,7 @@ from store.store import Store
 from screens.home.dashboard import DashboardScreen
 from screens.home.live_map import LiveMapScreen
 from screens.people.people_list import PeopleListScreen
+from screens.equipment.equipment_management import EquipmentScreen
 from screens.safety.sos import EmergencyScreen
 from screens.reports.reports_home import ReportsScreen
 from screens.zones.zones_overview import ZonesScreen
