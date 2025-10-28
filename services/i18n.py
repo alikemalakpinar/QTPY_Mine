@@ -14,8 +14,8 @@ class I18nService(QObject):
         self.translations = {
             'tr': {
                 # Navigasyon
-                'app_title': 'AicoMadenTakip',
-                'app_subtitle': 'Yer Altı Güvenlik ve Takip Sistemi',
+                'app_title': 'Aico Maden Takip',
+                'app_subtitle': 'Yeraltı Güvenlik ve Takip Sistemi',
                 'dashboard': 'Kontrol Paneli',
                 'live_map': 'Canlı 3D Harita',
                 'personnel': 'Personel',
