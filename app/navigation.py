@@ -82,7 +82,7 @@ class NavigationBar(QWidget):
         layout.setSpacing(5)
         
         # Logo
-        logo = QLabel("⛏️ AicoMadenTakip")
+        logo = QLabel("⛏️ Aico Maden Takip")
         logo.setStyleSheet(f"""
             QLabel {{
                 font-size: 24px;
