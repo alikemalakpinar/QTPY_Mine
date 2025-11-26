@@ -34,32 +34,36 @@ class DashboardScreen(QWidget):
         self.update_timer.start(3000)
     
     def init_ui(self):
-        """UI'yi başlat"""
-        layout = QVBoxLayout(self)
-        layout.setSpacing(20)
-        layout.setContentsMargins(30, 30, 30, 30)
+        """UI'yi başlat - Ultra Modern"""
+        main_layout = QVBoxLayout(self)
+        main_layout.setSpacing(25)
+        main_layout.setContentsMargins(35, 35, 35, 35)
         
-        # Header
+        # Header with mode selector
         header = self.create_header()
-        layout.addWidget(header)
+        main_layout.addWidget(header)
         
-        # İstatistik kartları
-        stats_layout = self.create_stats_cards()
-        layout.addLayout(stats_layout)
+        # Modern stat cards (gradient)
+        stats_layout = self.create_modern_stats_cards()
+        main_layout.addLayout(stats_layout)
         
-        # Ana içerik
-        content_layout = QHBoxLayout()
-        content_layout.setSpacing(20)
+        # Real-time charts row
+        charts_layout = self.create_charts_section()
+        main_layout.addLayout(charts_layout)
         
-        # Sol: Son aktiviteler
-        left_col = self.create_activity_section()
-        content_layout.addWidget(left_col, 2)
+        # Bottom row: Activity + Position Metrics
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setSpacing(25)
         
-        # Sağ: Bölge durumu
-        right_col = self.create_zones_section()
-        content_layout.addWidget(right_col, 1)
+        # Sol: Recent calculations & activity
+        left_section = self.create_recent_calculations_section()
+        bottom_layout.addWidget(left_section, 3)
         
-        layout.addLayout(content_layout, 1)
+        # Sağ: Anchor status & metrics
+        right_section = self.create_anchor_metrics_section()
+        bottom_layout.addWidget(right_section, 2)
+        
+        main_layout.addLayout(bottom_layout, 1)
     
     def create_header(self):
         """Header oluştur"""
