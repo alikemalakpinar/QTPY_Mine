@@ -66,31 +66,77 @@ class DashboardScreen(QWidget):
         main_layout.addLayout(bottom_layout, 1)
     
     def create_header(self):
-        """Header oluştur"""
+        """Header with tracking mode selector"""
         header = QWidget()
-        layout = QVBoxLayout(header)
-        layout.setSpacing(5)
+        layout = QHBoxLayout(header)
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(20)
         
-        self.title = QLabel(self.i18n.t('safety_dashboard'))
+        # Title section
+        title_section = QVBoxLayout()
+        title_section.setSpacing(5)
+        
+        self.title = QLabel("🎯 " + self.i18n.t('safety_dashboard'))
         self.title.setStyleSheet(f"""
             QLabel {{
-                font-size: 32px;
-                font-weight: 700;
+                font-size: 36px;
+                font-weight: 800;
                 color: {MineTrackerTheme.TEXT_PRIMARY};
+                letter-spacing: -1px;
             }}
         """)
         
-        self.subtitle = QLabel(f"{self.i18n.t('realtime_monitoring')} • {datetime.now().strftime('%d %B %Y')}")
+        self.subtitle = QLabel(f"{self.i18n.t('realtime_monitoring')} • {datetime.now().strftime('%d %B %Y, %H:%M')}")
         self.subtitle.setStyleSheet(f"""
             QLabel {{
-                font-size: 14px;
+                font-size: 15px;
                 color: {MineTrackerTheme.TEXT_SECONDARY};
             }}
         """)
         
-        layout.addWidget(self.title)
-        layout.addWidget(self.subtitle)
+        title_section.addWidget(self.title)
+        title_section.addWidget(self.subtitle)
+        
+        layout.addLayout(title_section)
+        layout.addStretch()
+        
+        # Mode selector
+        mode_group = QWidget()
+        mode_group.setStyleSheet(f"""
+            QWidget {{
+                background: {MineTrackerTheme.SURFACE};
+                border-radius: 10px;
+                border: 1px solid {MineTrackerTheme.BORDER};
+                padding: 8px;
+            }}
+        """)
+        mode_layout = QHBoxLayout(mode_group)
+        mode_layout.setSpacing(5)
+        mode_layout.setContentsMargins(5, 5, 5, 5)
+        
+        mode_label = QLabel("📡 Mode:")
+        mode_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-weight: 600;")
+        mode_layout.addWidget(mode_label)
+        
+        self.mode_combo = QComboBox()
+        self.mode_combo.addItems(['Hybrid', 'Simulation', 'TCP Only'])
+        self.mode_combo.setStyleSheet(f"""
+            QComboBox {{
+                background: {MineTrackerTheme.SURFACE_LIGHT};
+                border: 1px solid {MineTrackerTheme.BORDER};
+                border-radius: 6px;
+                padding: 8px 15px;
+                font-weight: 600;
+                min-width: 120px;
+            }}
+            QComboBox:hover {{
+                border-color: {MineTrackerTheme.PRIMARY};
+            }}
+        """)
+        self.mode_combo.currentTextChanged.connect(self.on_mode_changed)
+        mode_layout.addWidget(self.mode_combo)
+        
+        layout.addWidget(mode_group)
         
         return header
     
