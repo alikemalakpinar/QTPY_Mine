@@ -247,7 +247,6 @@ class DashboardScreen(QWidget):
         return layout
     
     def create_chart_container(self, title, badge_text=""):
-    def create_chart_container(self, title, badge_text=""):
         """Chart container with modern styling"""
         container = QWidget()
         container.setStyleSheet(f"""
