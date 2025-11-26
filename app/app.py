@@ -1,4 +1,4 @@
-"""Ana uygulama sınıfı - Modular Architecture"""
+"""Ana uygulama sınıfı - Modular Architecture + Advanced Tracking"""
 import sys
 
 # ⚠️ CRITICAL: Import QtWebEngine components FIRST!
@@ -15,7 +15,8 @@ from PyQt6.QtGui import *
 from app.navigation import NavigationBar
 from theme.theme import MineTrackerTheme
 from services.i18n import I18nService
-from services.tracking_service import TrackingService
+from services.advanced_tracking_service import AdvancedTrackingService
+from services.tcp_server_service import TCPServerService
 from store.store import Store
 
 # Screens
@@ -29,24 +30,36 @@ from screens.zones.zones_overview import ZonesScreen
 from screens.settings.settings import SettingsScreen
 
 class MineTrackerApp(QMainWindow):
-    """Ana MineTracker Uygulaması"""
+    """Ana MineTracker Uygulaması - Ultra Modern & Advanced"""
     
     def __init__(self):
         super().__init__()
         
         # Servisler
         self.i18n = I18nService()
-        self.tracking = TrackingService()
+        self.tracking = AdvancedTrackingService(mode='hybrid')  # Hybrid mode: simulation + TCP
         self.store = Store()
+        
+        # TCP Server (port 8888)
+        self.tcp_server = TCPServerService(host='0.0.0.0', port=8888)
+        self.tcp_server.data_received.connect(self.on_tcp_data_received)
+        self.tcp_server.connection_status.connect(self.on_tcp_connection_status)
+        self.tcp_server.error_occurred.connect(self.on_tcp_error)
+        self.tcp_server.start()
         
         # UI başlat
         self.init_ui()
         self.init_connections()
         
+        print("✅ MineTracker Ultra başlatıldı!")
+        print(f"📡 TCP Server: 0.0.0.0:8888")
+        print(f"🎯 Tracking Mode: {self.tracking.mode}")
+        print(f"🗺️  3D Harita: {'Aktif' if WEBENGINE_AVAILABLE else 'Kapalı'}")
+        
     def init_ui(self):
         """UI'yi başlat"""
-        self.setWindowTitle("MineTracker - Underground Safety System")
-        self.setGeometry(100, 100, 1600, 900)
+        self.setWindowTitle("MineTracker Ultra - Underground Safety System")
+        self.setGeometry(100, 100, 1700, 950)
         
         # Tema uygula
         self.setStyleSheet(MineTrackerTheme.get_app_style())
@@ -87,7 +100,7 @@ class MineTrackerApp(QMainWindow):
     
     def init_screens(self):
         """Tüm ekranları oluştur"""
-        # Dashboard
+        # Dashboard (ULTRA MODERN)
         self.dashboard = DashboardScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.dashboard)
         
@@ -129,6 +142,40 @@ class MineTrackerApp(QMainWindow):
         
         # Dil değişikliği
         self.i18n.language_changed.connect(self.update_window_title)
+        
+        # Position calculated
+        self.tracking.position_calculated.connect(self.on_position_calculated)
+    
+    def on_tcp_data_received(self, data):
+        """TCP'den veri geldiğinde"""
+        # Tracking service'e gönder
+        self.tracking.process_tcp_data(data)
+        
+        # Status bar güncelle
+        stats = self.tcp_server.get_statistics()
+        self.tcp_status_label.setText(
+            f"📡 TCP: {stats['connected_clients']} clients • {stats['total_messages']} msgs • {stats['messages_per_second']:.1f} msg/s"
+        )
+    
+    def on_tcp_connection_status(self, client_address, connected):
+        """TCP bağlantı durumu değiştiğinde"""
+        if connected:
+            print(f"🔌 TCP Client connected: {client_address}")
+        else:
+            print(f"🔌 TCP Client disconnected: {client_address}")
+    
+    def on_tcp_error(self, error_message):
+        """TCP hata oluştuğunda"""
+        print(f"❌ TCP Error: {error_message}")
+    
+    def on_position_calculated(self, data):
+        """Position hesaplandığında (trilateration + kalman)"""
+        tag_id = data.get('tag_id')
+        accuracy = data.get('accuracy', 0)
+        anchors_used = data.get('anchors_used', [])
+        
+        # Console log
+        print(f"🎯 Position calculated: {tag_id} → Accuracy: {accuracy:.3f}m [Anchors: {', '.join(anchors_used)}]")
     
     def create_status_bar(self):
         """Status bar oluştur"""
@@ -144,8 +191,22 @@ class MineTrackerApp(QMainWindow):
         """)
         
         # Sistem durumu
-        self.status_label = QLabel(self.i18n.t('system_online'))
+        self.status_label = QLabel("✅ " + self.i18n.t('system_online'))
+        self.status_label.setStyleSheet(f"color: {MineTrackerTheme.SUCCESS}; font-weight: 600;")
         status.addWidget(self.status_label)
+        
+        # TCP status
+        self.tcp_status_label = QLabel("📡 TCP: Waiting for connections...")
+        self.tcp_status_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY};")
+        status.addWidget(self.tcp_status_label)
+        
+        # Spacer
+        status.addWidget(QLabel(" | "), 0)
+        
+        # Tracking mode
+        self.mode_label = QLabel(f"🎯 Mode: {self.tracking.mode.upper()}")
+        self.mode_label.setStyleSheet(f"color: {MineTrackerTheme.PRIMARY}; font-weight: 600;")
+        status.addWidget(self.mode_label)
         
         # Saat
         self.time_label = QLabel()
