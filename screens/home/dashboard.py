@@ -140,29 +140,59 @@ class DashboardScreen(QWidget):
         
         return header
     
-    def create_stats_cards(self):
-        """İstatistik kartları oluştur"""
+    def create_modern_stats_cards(self):
+        """Ultra modern gradient stat cards"""
         layout = QHBoxLayout()
         layout.setSpacing(20)
         
         stats = self.tracking.get_statistics()
         
-        self.cards_data = [
-            ('active_personnel', '👷', str(stats['personnel']['active']), 
-             self.i18n.t('underground'), MineTrackerTheme.PRIMARY),
-            ('total_personnel', '👥', f"{stats['personnel']['total']}", 
-             'Total Personnel', MineTrackerTheme.SUCCESS),
-            ('gateways_online', '📡', f"{stats['gateways']['online']}/{stats['gateways']['total']}",
-             'Gateway Status', MineTrackerTheme.SUCCESS),
-            ('safety_incidents', '🛡️', '0', 
-             '24 ' + self.i18n.t('incident_free'), MineTrackerTheme.SUCCESS)
-        ]
+        # Active Personnel Card
+        self.card_active = ModernStatCard(
+            icon='👷',
+            title=self.i18n.t('active_personnel'),
+            value=str(stats['personnel']['active']),
+            subtitle=f"/{stats['personnel']['total']} " + self.i18n.t('underground'),
+            color=MineTrackerTheme.PRIMARY,
+            gradient=True
+        )
+        self.card_active.clicked.connect(lambda: print("Navigate to Personnel"))
         
-        self.cards = []
-        for title_key, icon, value, subtitle, color in self.cards_data:
-            card = self.create_stat_card(title_key, icon, value, subtitle, color)
-            self.cards.append((card, title_key, icon, subtitle, color))
-            layout.addWidget(card)
+        # Anchors Online Card
+        self.card_anchors = ModernStatCard(
+            icon='⚓',
+            title='Anchors',
+            value=f"{stats['anchors']['online']}/{stats['anchors']['total']}",
+            subtitle='Online • Coverage: 100%',
+            color=MineTrackerTheme.SUCCESS,
+            gradient=True
+        )
+        
+        # Tags Active Card
+        self.card_tags = ModernStatCard(
+            icon='🏷️',
+            title='Tags',
+            value=f"{stats['tags']['active']}/{stats['tags']['total']}",
+            subtitle=f"Active • Battery Avg: {stats['tags']['avg_battery']:.0f}%",
+            color=MineTrackerTheme.INFO,
+            gradient=True
+        )
+        
+        # Position Accuracy Card (average)
+        avg_accuracy = self.calculate_avg_accuracy()
+        self.card_accuracy = ModernStatCard(
+            icon='🎯',
+            title='Avg Accuracy',
+            value=f"{avg_accuracy:.2f}m",
+            subtitle='Trilateration + Kalman Filter',
+            color=MineTrackerTheme.WARNING if avg_accuracy > 1.0 else MineTrackerTheme.SUCCESS,
+            gradient=True
+        )
+        
+        layout.addWidget(self.card_active)
+        layout.addWidget(self.card_anchors)
+        layout.addWidget(self.card_tags)
+        layout.addWidget(self.card_accuracy)
         
         return layout
     
