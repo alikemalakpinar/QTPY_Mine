@@ -247,84 +247,67 @@ class DashboardScreen(QWidget):
         return layout
     
     def create_chart_container(self, title, badge_text=""):
-        """Tek bir istatistik kartı"""
-        card = QWidget()
-        card.setFixedHeight(130)
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=True))
-        
-        layout = QVBoxLayout(card)
-        layout.setContentsMargins(20, 15, 20, 15)
-        layout.setSpacing(8)
-        
-        # Üst kısım
-        top_layout = QHBoxLayout()
-        
-        icon_label = QLabel(icon)
-        icon_label.setFont(QFont('Arial', 24))
-        
-        title_label = QLabel(self.i18n.t(title_key))
-        title_label.setStyleSheet(f"""
-            QLabel {{
-                color: {MineTrackerTheme.TEXT_SECONDARY};
-                font-size: 12px;
-                font-weight: 500;
-                text-transform: uppercase;
+    def create_chart_container(self, title, badge_text=""):
+        """Chart container with modern styling"""
+        container = QWidget()
+        container.setStyleSheet(f"""
+            QWidget {{
+                background: {MineTrackerTheme.SURFACE};
+                border-radius: 12px;
+                border: 1px solid {MineTrackerTheme.BORDER};
             }}
         """)
-        
-        top_layout.addWidget(icon_label)
-        top_layout.addWidget(title_label)
-        top_layout.addStretch()
-        
-        # Değer
-        value_label = QLabel(value)
-        value_label.setStyleSheet(f"""
-            QLabel {{
-                color: {color};
-                font-size: 36px;
-                font-weight: 700;
-            }}
-        """)
-        value_label.setProperty('value_label', True)
-        
-        # Alt yazı
-        subtitle_label = QLabel(subtitle)
-        subtitle_label.setStyleSheet(f"""
-            QLabel {{
-                color: {MineTrackerTheme.TEXT_SECONDARY};
-                font-size: 11px;
-            }}
-        """)
-        
-        layout.addLayout(top_layout)
-        layout.addWidget(value_label)
-        layout.addWidget(subtitle_label)
-        
-        return card
+        return container
     
-    def create_activity_section(self):
-        """Son aktiviteler bölümü"""
+    def create_recent_calculations_section(self):
+        """Son trilateration hesaplamaları"""
         section = QWidget()
-        section.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        section.setStyleSheet(f"""
+            QWidget {{
+                background: {MineTrackerTheme.SURFACE};
+                border-radius: 12px;
+                border: 1px solid {MineTrackerTheme.BORDER};
+            }}
+        """)
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(15)
         
-        # Başlık
-        self.activity_title = QLabel(self.i18n.t('recent_activity'))
-        self.activity_title.setStyleSheet(f"""
+        # Header
+        header_layout = QHBoxLayout()
+        
+        title = QLabel("📐 Recent Position Calculations")
+        title.setStyleSheet(f"""
             QLabel {{
                 font-size: 18px;
-                font-weight: 600;
+                font-weight: 700;
                 color: {MineTrackerTheme.TEXT_PRIMARY};
             }}
         """)
-        layout.addWidget(self.activity_title)
         
-        # Aktivite listesi
-        self.activity_list = QListWidget()
-        self.activity_list.setStyleSheet(f"""
+        badge = QLabel("LIVE")
+        badge.setStyleSheet(f"""
+            QLabel {{
+                background: {MineTrackerTheme.SUCCESS};
+                color: white;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }}
+        """)
+        badge.setFixedHeight(22)
+        
+        header_layout.addWidget(title)
+        header_layout.addWidget(badge)
+        header_layout.addStretch()
+        
+        layout.addLayout(header_layout)
+        
+        # Recent calculations list
+        self.calculations_list = QListWidget()
+        self.calculations_list.setStyleSheet(f"""
             QListWidget {{
                 background: transparent;
                 border: none;
@@ -336,69 +319,57 @@ class DashboardScreen(QWidget):
                 padding: 12px;
                 margin-bottom: 8px;
                 color: {MineTrackerTheme.TEXT_PRIMARY};
-                font-size: 13px;
+                font-size: 12px;
+                font-family: 'Consolas', 'Monaco', monospace;
             }}
             QListWidget::item:hover {{
                 background: {MineTrackerTheme.SURFACE_HOVER};
             }}
         """)
         
-        self.populate_activities()
-        layout.addWidget(self.activity_list)
+        layout.addWidget(self.calculations_list)
         
         return section
     
-    def populate_activities(self):
-        """Aktiviteleri doldur"""
-        self.activity_list.clear()
-        
-        personnel = self.tracking.get_personnel()[:5]
-        for person in personnel:
-            time_diff = datetime.now() - person['last_update']
-            seconds = time_diff.total_seconds()
-            
-            if seconds < 60:
-                time_str = self.i18n.t('just_now')
-            elif seconds < 3600:
-                time_str = f"{int(seconds/60)} {self.i18n.t('min_ago')}"
-            else:
-                time_str = f"{int(seconds/3600)} {self.i18n.t('hour_ago')}"
-            
-            status_icon = '✅' if person['status'] == 'active' else '🚨' if person['status'] == 'emergency' else '⌛'
-            item_text = f"{status_icon} {person['full_name']} - {person['zone_name']} • {time_str}"
-            self.activity_list.addItem(item_text)
-    
-    def create_zones_section(self):
-        """Bölgeler bölümü"""
+    def create_anchor_metrics_section(self):
+        """Anchor durum ve metrikleri"""
         section = QWidget()
-        section.setStyleSheet(MineTrackerTheme.get_card_style(hover=False))
+        section.setStyleSheet(f"""
+            QWidget {{
+                background: {MineTrackerTheme.SURFACE};
+                border-radius: 12px;
+                border: 1px solid {MineTrackerTheme.BORDER};
+            }}
+        """)
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(15)
         
-        title = QLabel('📍 ' + self.i18n.t('zones'))
+        # Header
+        title = QLabel("⚓ Anchor Status")
         title.setStyleSheet(f"""
             QLabel {{
                 font-size: 18px;
-                font-weight: 600;
+                font-weight: 700;
                 color: {MineTrackerTheme.TEXT_PRIMARY};
             }}
         """)
         layout.addWidget(title)
         
-        # Bölge listesi
-        zones = self.tracking.get_zones()
-        for zone in zones:
-            zone_widget = self.create_zone_item(zone)
-            layout.addWidget(zone_widget)
+        # Anchor list
+        anchors = self.tracking.get_anchors()
+        
+        for anchor in anchors:
+            anchor_widget = self.create_anchor_status_widget(anchor)
+            layout.addWidget(anchor_widget)
         
         layout.addStretch()
         
         return section
     
-    def create_zone_item(self, zone):
-        """Bölge item'ı"""
+    def create_anchor_status_widget(self, anchor):
+        """Tek bir anchor durum widget'ı"""
         widget = QWidget()
         widget.setStyleSheet(f"""
             QWidget {{
@@ -409,61 +380,142 @@ class DashboardScreen(QWidget):
         """)
         
         layout = QHBoxLayout(widget)
-        layout.setContentsMargins(10, 8, 10, 8)
+        layout.setContentsMargins(12, 8, 12, 8)
+        layout.setSpacing(10)
         
-        # Renk göstergesi
-        color_indicator = QLabel('●')
-        color_indicator.setStyleSheet(f"color: {zone['color']}; font-size: 20px;")
+        # Status indicator
+        status_dot = QLabel("●")
+        status_dot.setStyleSheet(f"""
+            QLabel {{
+                color: {MineTrackerTheme.SUCCESS if anchor['status'] == 'online' else MineTrackerTheme.DANGER};
+                font-size: 20px;
+            }}
+        """)
         
-        # İsim
-        name_label = QLabel(zone['name'])
+        # Name
+        name_label = QLabel(anchor['name'])
         name_label.setStyleSheet(f"""
             QLabel {{
                 color: {MineTrackerTheme.TEXT_PRIMARY};
                 font-size: 13px;
-                font-weight: 500;
+                font-weight: 600;
             }}
         """)
         
-        # Personel sayısı
-        count = sum(1 for p in self.tracking.get_personnel() if p['zone_id'] == zone['id'])
-        count_label = QLabel(f"{count} 👤")
-        count_label.setStyleSheet(f"""
+        # Battery
+        battery = anchor['battery']
+        battery_label = QLabel(f"🔋 {battery}%")
+        if battery < 70:
+            color = MineTrackerTheme.DANGER
+        elif battery < 85:
+            color = MineTrackerTheme.WARNING
+        else:
+            color = MineTrackerTheme.SUCCESS
+        
+        battery_label.setStyleSheet(f"""
+            QLabel {{
+                color: {color};
+                font-size: 11px;
+                font-weight: 600;
+            }}
+        """)
+        
+        # Signal
+        signal_label = QLabel(f"📶 {anchor['signal_strength']}%")
+        signal_label.setStyleSheet(f"""
             QLabel {{
                 color: {MineTrackerTheme.TEXT_SECONDARY};
-                font-size: 12px;
+                font-size: 11px;
             }}
         """)
         
-        layout.addWidget(color_indicator)
+        layout.addWidget(status_dot)
         layout.addWidget(name_label)
         layout.addStretch()
-        layout.addWidget(count_label)
+        layout.addWidget(battery_label)
+        layout.addWidget(signal_label)
         
         return widget
     
-    def refresh_stats(self):
-        """İstatistikleri yenile"""
+    def calculate_avg_accuracy(self):
+        """Ortalama pozisyon doğruluğunu hesapla"""
+        personnel = self.tracking.get_personnel()
+        accuracies = [p.get('position_accuracy', 0) for p in personnel if p.get('position_accuracy', 0) > 0]
+        
+        if not accuracies:
+            return 0.5  # Default
+        
+        return sum(accuracies) / len(accuracies)
+    
+    def on_mode_changed(self, mode_text):
+        """Tracking mode değiştiğinde"""
+        mode_map = {
+            'Hybrid': 'hybrid',
+            'Simulation': 'simulation',
+            'TCP Only': 'tcp'
+        }
+        
+        mode = mode_map.get(mode_text, 'hybrid')
+        self.tracking.set_mode(mode)
+        print(f"📡 Tracking mode changed: {mode}")
+    
+    def on_location_updated(self, data):
+        """Konum güncellendiğinde"""
+        self.refresh_stats_quick()
+    
+    def on_position_calculated(self, data):
+        """Yeni pozisyon hesaplandığında"""
+        # Recent calculations listesine ekle
+        tag_id = data.get('tag_id')
+        accuracy = data.get('accuracy', 0)
+        final_pos = data.get('final')
+        anchors_used = data.get('anchors_used', [])
+        
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        
+        item_text = f"[{timestamp}] {tag_id} → ({final_pos[0]:.1f}, {final_pos[1]:.1f}) ± {accuracy:.2f}m [Anchors: {', '.join(anchors_used)}]"
+        
+        self.calculations_list.insertItem(0, item_text)
+        
+        # Limit list size
+        while self.calculations_list.count() > 15:
+            self.calculations_list.takeItem(self.calculations_list.count() - 1)
+    
+    def refresh_all(self):
+        """Tüm verileri yenile"""
         stats = self.tracking.get_statistics()
         
-        # Kartları güncelle
-        for card, title_key, icon, subtitle, color in self.cards:
-            value_label = card.findChild(QLabel, '', Qt.FindChildOption.FindDirectChildrenOnly)
-            for child in card.findChildren(QLabel):
-                if child.property('value_label'):
-                    if title_key == 'active_personnel':
-                        child.setText(str(stats['personnel']['active']))
-                    elif title_key == 'total_personnel':
-                        child.setText(str(stats['personnel']['total']))
-                    elif title_key == 'gateways_online':
-                        child.setText(f"{stats['gateways']['online']}/{stats['gateways']['total']}")
+        # Update cards
+        self.card_active.update_value(str(stats['personnel']['active']))
+        self.card_active.update_subtitle(f"/{stats['personnel']['total']} " + self.i18n.t('underground'))
         
-        # Aktiviteleri güncelle
-        self.populate_activities()
+        self.card_anchors.update_value(f"{stats['anchors']['online']}/{stats['anchors']['total']}")
+        
+        self.card_tags.update_value(f"{stats['tags']['active']}/{stats['tags']['total']}")
+        self.card_tags.update_subtitle(f"Active • Battery Avg: {stats['tags']['avg_battery']:.0f}%")
+        
+        avg_accuracy = self.calculate_avg_accuracy()
+        self.card_accuracy.update_value(f"{avg_accuracy:.2f}m")
+        self.card_accuracy.color = QColor(MineTrackerTheme.WARNING if avg_accuracy > 1.0 else MineTrackerTheme.SUCCESS)
+        
+        # Update charts
+        self.accuracy_chart.add_data_point(avg_accuracy)
+        self.battery_chart.add_data_point(stats['tags']['avg_battery'])
+        self.personnel_chart.add_data_point(stats['personnel']['active'])
+        
+        # Update time
+        self.subtitle.setText(f"{self.i18n.t('realtime_monitoring')} • {datetime.now().strftime('%d %B %Y, %H:%M:%S')}")
+    
+    def refresh_stats_quick(self):
+        """Hızlı stat güncelleme (ağır işlemler yok)"""
+        stats = self.tracking.get_statistics()
+        self.card_active.update_value(str(stats['personnel']['active']))
+        self.card_anchors.update_value(f"{stats['anchors']['online']}/{stats['anchors']['total']}")
+        self.card_tags.update_value(f"{stats['tags']['active']}/{stats['tags']['total']}")
     
     def update_texts(self):
         """Metinleri güncelle"""
-        self.title.setText(self.i18n.t('safety_dashboard'))
-        self.subtitle.setText(f"{self.i18n.t('realtime_monitoring')} • {datetime.now().strftime('%d %B %Y')}")
-        self.activity_title.setText(self.i18n.t('recent_activity'))
-        self.refresh_stats()
+        self.title.setText("🎯 " + self.i18n.t('safety_dashboard'))
+        self.subtitle.setText(f"{self.i18n.t('realtime_monitoring')} • {datetime.now().strftime('%d %B %Y, %H:%M')}")
+        self.refresh_all()
+
