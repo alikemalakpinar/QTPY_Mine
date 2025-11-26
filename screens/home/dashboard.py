@@ -196,7 +196,57 @@ class DashboardScreen(QWidget):
         
         return layout
     
-    def create_stat_card(self, title_key, icon, value, subtitle, color):
+    def create_charts_section(self):
+        """Real-time charts - Position accuracy, battery, active personnel"""
+        layout = QHBoxLayout()
+        layout.setSpacing(20)
+        
+        # Accuracy Chart
+        accuracy_container = self.create_chart_container("🎯 Position Accuracy (m)", "realtime")
+        accuracy_layout = QVBoxLayout()
+        accuracy_layout.setContentsMargins(15, 15, 15, 15)
+        
+        self.accuracy_chart = RealtimeChart("Accuracy (m)", max_points=30, y_range=(0, 2))
+        self.accuracy_chart.line_color = QColor(MineTrackerTheme.SUCCESS)
+        self.accuracy_chart.fill_color = QColor(MineTrackerTheme.SUCCESS)
+        self.accuracy_chart.fill_color.setAlpha(50)
+        
+        accuracy_layout.addWidget(self.accuracy_chart)
+        accuracy_container.setLayout(accuracy_layout)
+        
+        # Battery Chart
+        battery_container = self.create_chart_container("🔋 Avg Battery Level (%)", "realtime")
+        battery_layout = QVBoxLayout()
+        battery_layout.setContentsMargins(15, 15, 15, 15)
+        
+        self.battery_chart = RealtimeChart("Battery %", max_points=30, y_range=(0, 100))
+        self.battery_chart.line_color = QColor(MineTrackerTheme.WARNING)
+        self.battery_chart.fill_color = QColor(MineTrackerTheme.WARNING)
+        self.battery_chart.fill_color.setAlpha(50)
+        
+        battery_layout.addWidget(self.battery_chart)
+        battery_container.setLayout(battery_layout)
+        
+        # Active Personnel Chart
+        personnel_container = self.create_chart_container("👷 Active Personnel", "realtime")
+        personnel_layout = QVBoxLayout()
+        personnel_layout.setContentsMargins(15, 15, 15, 15)
+        
+        self.personnel_chart = RealtimeChart("Personnel", max_points=30, y_range=(0, 20))
+        self.personnel_chart.line_color = QColor(MineTrackerTheme.PRIMARY)
+        self.personnel_chart.fill_color = QColor(MineTrackerTheme.PRIMARY)
+        self.personnel_chart.fill_color.setAlpha(50)
+        
+        personnel_layout.addWidget(self.personnel_chart)
+        personnel_container.setLayout(personnel_layout)
+        
+        layout.addWidget(accuracy_container)
+        layout.addWidget(battery_container)
+        layout.addWidget(personnel_container)
+        
+        return layout
+    
+    def create_chart_container(self, title, badge_text=""):
         """Tek bir istatistik kartı"""
         card = QWidget()
         card.setFixedHeight(130)
