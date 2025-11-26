@@ -1,28 +1,37 @@
-"""Ana dashboard ekranı"""
+"""Ultra Modern Dashboard - Real-time Analytics & Trilateration Visualization"""
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from theme.theme import MineTrackerTheme
 from datetime import datetime
+from components.charts import RealtimeChart, ModernStatCard
+import random
 
 class DashboardScreen(QWidget):
-    """Ana dashboard"""
+    """Ultra modern dashboard - Gelişmiş tracking metrikleri"""
     
     def __init__(self, i18n, tracking, store):
         super().__init__()
         self.i18n = i18n
         self.tracking = tracking
         self.store = store
+        
+        # Chart data storage
+        self.avg_accuracy_history = []
+        self.active_personnel_history = []
+        self.avg_battery_history = []
+        
         self.init_ui()
         
         # Güncellemeleri dinle
-        self.tracking.location_updated.connect(self.refresh_stats)
+        self.tracking.location_updated.connect(self.on_location_updated)
+        self.tracking.position_calculated.connect(self.on_position_calculated)
         self.i18n.language_changed.connect(self.update_texts)
         
         # Periyodik güncelleme
         self.update_timer = QTimer()
-        self.update_timer.timeout.connect(self.refresh_stats)
-        self.update_timer.start(5000)
+        self.update_timer.timeout.connect(self.refresh_all)
+        self.update_timer.start(3000)
     
     def init_ui(self):
         """UI'yi başlat"""
