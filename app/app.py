@@ -320,6 +320,18 @@ This will:
     def update_window_title(self):
         """Pencere başlığını güncelle"""
         if self.i18n.current_language == 'tr':
-            self.setWindowTitle("AICO Maden Takip Sistemi - Yer Altı Güvenlik Sistemi")
+            self.setWindowTitle("AICO Maden Takip Sistemi Ultra - Yer Altı Güvenlik Sistemi")
         else:
-            self.setWindowTitle("AICO Maden Tracker System - Underground Safety System")
+            self.setWindowTitle("AICO MineTracker Ultra - Underground Safety System")
+    
+    def closeEvent(self, event):
+        """Pencere kapatılırken TCP sunucusunu durdur"""
+        print("⏸️  MineTracker kapatılıyor...")
+        
+        # TCP server'ı durdur
+        if hasattr(self, 'tcp_server') and self.tcp_server.running:
+            self.tcp_server.stop()
+            self.tcp_server.wait(2000)
+        
+        print("✅ Temiz kapanış tamamlandı!")
+        event.accept()
