@@ -1,7 +1,7 @@
-"""Ana uygulama sınıfı - Modular Architecture + Advanced Tracking"""
+"""MineTracker Ultra - Tesla-Grade Main Application with Animated Transitions"""
 import sys
 
-# ⚠️ CRITICAL: Import QtWebEngine components FIRST!
+# CRITICAL: Import QtWebEngine components FIRST!
 try:
     from PyQt6.QtWebEngineWidgets import QWebEngineView
     WEBENGINE_AVAILABLE = True
@@ -18,6 +18,8 @@ from services.i18n import I18nService
 from services.advanced_tracking_service import AdvancedTrackingService
 from services.tcp_server_service import TCPServerService
 from store.store import Store
+from components.animations import AnimatedStackedWidget
+from components.notification_island import DynamicIsland
 
 # Screens
 from screens.home.dashboard import DashboardScreen
@@ -28,310 +30,274 @@ from screens.safety.sos import EmergencyScreen
 from screens.reports.reports_home import ReportsScreen
 from screens.zones.zones_overview import ZonesScreen
 from screens.settings.settings import SettingsScreen
+from screens.analytics.analytics_screen import AnalyticsScreen
+
 
 class MineTrackerApp(QMainWindow):
-    """Ana MineTracker Uygulaması - Ultra Modern & Advanced"""
-    
+    """Tesla-Grade MineTracker with animated transitions and Dynamic Island alerts"""
+
     def __init__(self):
         super().__init__()
-        
-        # Servisler
+
+        # Services
         self.i18n = I18nService()
-        self.tracking = AdvancedTrackingService(mode='hybrid')  # Hybrid mode: simulation + TCP
+        self.tracking = AdvancedTrackingService(mode='hybrid')
         self.store = Store()
-        
-        # TCP Server (port 8888)
+
+        # TCP Server
         self.tcp_server = TCPServerService(host='0.0.0.0', port=8888)
         self.tcp_server.data_received.connect(self.on_tcp_data_received)
         self.tcp_server.connection_status.connect(self.on_tcp_connection_status)
         self.tcp_server.error_occurred.connect(self.on_tcp_error)
         self.tcp_server.start()
-        
-        # UI başlat
+
+        # Init UI
         self.init_ui()
         self.init_connections()
-        
-        print("✅ MineTracker Ultra başlatıldı!")
-        print(f"📡 TCP Server: 0.0.0.0:8888")
-        print(f"🎯 Tracking Mode: {self.tracking.mode}")
-        print(f"🗺️  3D Harita: {'Aktif' if WEBENGINE_AVAILABLE else 'Kapalı'}")
-        
+
+        print("MineTracker Ultra started!")
+        print(f"TCP Server: 0.0.0.0:8888")
+        print(f"Tracking Mode: {self.tracking.mode}")
+        print(f"3D Map: {'Active' if WEBENGINE_AVAILABLE else 'Disabled'}")
+
     def init_ui(self):
-        """UI'yi başlat"""
+        """Initialize Tesla-grade UI"""
         self.setWindowTitle("MineTracker Ultra - Underground Safety System")
         self.setGeometry(100, 100, 1700, 950)
-        
-        # Tema uygula
+
+        # Apply theme
         self.setStyleSheet(MineTrackerTheme.get_app_style())
-        
-        # Ana widget
+
+        # Central widget
         central_widget = QWidget()
+        central_widget.setStyleSheet(f"background: {MineTrackerTheme.BACKGROUND};")
         self.setCentralWidget(central_widget)
-        
-        # Ana layout
+
+        # Main layout
         main_layout = QHBoxLayout(central_widget)
         main_layout.setSpacing(0)
         main_layout.setContentsMargins(0, 0, 0, 0)
-        
+
         # Navigation sidebar
         self.nav_bar = NavigationBar(self.i18n)
         self.nav_bar.page_changed.connect(self.change_page)
         self.nav_bar.emergency_triggered.connect(self.handle_emergency_button)
         main_layout.addWidget(self.nav_bar)
-        
-        # Content area
-        self.stacked_widget = QStackedWidget()
+
+        # Content area with Dynamic Island overlay
+        content_container = QWidget()
+        content_container.setStyleSheet(f"background: {MineTrackerTheme.BACKGROUND};")
+        content_layout = QVBoxLayout(content_container)
+        content_layout.setSpacing(0)
+        content_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Dynamic Island notification
+        self.dynamic_island = DynamicIsland(content_container)
+        self.dynamic_island.set_status("System Online", MineTrackerTheme.SUCCESS)
+        self.dynamic_island.raise_()
+
+        # Animated stacked widget for smooth page transitions
+        self.stacked_widget = AnimatedStackedWidget()
+        self.stacked_widget.set_transition_duration(300)
         self.stacked_widget.setStyleSheet(f"""
-            QStackedWidget {{
+            AnimatedStackedWidget {{
                 background: {MineTrackerTheme.BACKGROUND};
             }}
         """)
-        
-        # Ekranları oluştur
+
+        # Create screens
         self.init_screens()
-        
-        main_layout.addWidget(self.stacked_widget, 1)
-        
+
+        content_layout.addWidget(self.stacked_widget, 1)
+
+        main_layout.addWidget(content_container, 1)
+
         # Status bar
         self.create_status_bar()
-        
-        # İlk sayfayı göster
+
+        # Show first page
         self.stacked_widget.setCurrentIndex(0)
-    
+
     def init_screens(self):
-        """Tüm ekranları oluştur"""
-        # Dashboard (ULTRA MODERN)
+        """Create all screens"""
         self.dashboard = DashboardScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.dashboard)
-        
-        # Live 3D Map
+
         self.live_map = LiveMapScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.live_map)
-        
-        # Personnel
+
         self.personnel = PeopleListScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.personnel)
-        
-        # Equipment (Anchor & Tag Management)
+
         self.equipment = EquipmentScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.equipment)
-        
-        # Emergency
+
         self.emergency = EmergencyScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.emergency)
-        
-        # Reports
+
         self.reports = ReportsScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.reports)
-        
-        # Zones
+
         self.zones = ZonesScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.zones)
-        
-        # Settings
+
         self.settings = SettingsScreen(self.i18n, self.tracking, self.store)
         self.stacked_widget.addWidget(self.settings)
-    
+
     def init_connections(self):
-        """Sinyal bağlantılarını kur"""
-        # Acil durum sinyali
+        """Setup signal connections"""
         self.tracking.emergency_signal.connect(self.handle_emergency)
-        
-        # Batarya uyarıları
         self.tracking.battery_alert.connect(self.handle_battery_alert)
-        
-        # Dil değişikliği
         self.i18n.language_changed.connect(self.update_window_title)
-        
-        # Position calculated
         self.tracking.position_calculated.connect(self.on_position_calculated)
-    
+
     def on_tcp_data_received(self, data):
-        """TCP'den veri geldiğinde"""
-        # Tracking service'e gönder
         self.tracking.process_tcp_data(data)
-        
-        # Status bar güncelle
         stats = self.tcp_server.get_statistics()
         self.tcp_status_label.setText(
-            f"📡 TCP: {stats['connected_clients']} clients • {stats['total_messages']} msgs • {stats['messages_per_second']:.1f} msg/s"
+            f"TCP: {stats['connected_clients']} clients  |  {stats['total_messages']} msgs  |  {stats['messages_per_second']:.1f} msg/s"
         )
-    
+
     def on_tcp_connection_status(self, client_address, connected):
-        """TCP bağlantı durumu değiştiğinde"""
         if connected:
-            print(f"🔌 TCP Client connected: {client_address}")
+            print(f"TCP Client connected: {client_address}")
         else:
-            print(f"🔌 TCP Client disconnected: {client_address}")
-    
+            print(f"TCP Client disconnected: {client_address}")
+
     def on_tcp_error(self, error_message):
-        """TCP hata oluştuğunda"""
-        print(f"❌ TCP Error: {error_message}")
-    
+        print(f"TCP Error: {error_message}")
+
     def on_position_calculated(self, data):
-        """Position hesaplandığında (trilateration + kalman)"""
         tag_id = data.get('tag_id')
         accuracy = data.get('accuracy', 0)
         anchors_used = data.get('anchors_used', [])
-        
-        # Console log
-        print(f"🎯 Position calculated: {tag_id} → Accuracy: {accuracy:.3f}m [Anchors: {', '.join(anchors_used)}]")
-    
+        print(f"Position calculated: {tag_id} Accuracy: {accuracy:.3f}m [Anchors: {', '.join(anchors_used)}]")
+
     def create_status_bar(self):
-        """Status bar oluştur"""
+        """Premium minimal status bar"""
         status = self.statusBar()
         status.setStyleSheet(f"""
             QStatusBar {{
-                background: {MineTrackerTheme.SURFACE};
-                color: {MineTrackerTheme.TEXT_SECONDARY};
+                background: {MineTrackerTheme.BACKGROUND};
+                color: {MineTrackerTheme.TEXT_MUTED};
                 border-top: 1px solid {MineTrackerTheme.BORDER};
-                font-size: 12px;
-                padding: 5px;
+                font-size: 11px;
+                padding: 4px 12px;
             }}
         """)
-        
-        # Sistem durumu
-        self.status_label = QLabel("✅ " + self.i18n.t('system_online'))
-        self.status_label.setStyleSheet(f"color: {MineTrackerTheme.SUCCESS}; font-weight: 600;")
+
+        self.status_label = QLabel("System Online")
+        self.status_label.setStyleSheet(f"color: {MineTrackerTheme.SUCCESS}; font-weight: 600; font-size: 11px;")
         status.addWidget(self.status_label)
-        
-        # TCP status
-        self.tcp_status_label = QLabel("📡 TCP: Waiting for connections...")
-        self.tcp_status_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY};")
+
+        self.tcp_status_label = QLabel("TCP: Waiting for connections...")
+        self.tcp_status_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_MUTED}; font-size: 11px;")
         status.addWidget(self.tcp_status_label)
-        
-        # Spacer
-        status.addWidget(QLabel(" | "), 0)
-        
-        # Tracking mode
-        self.mode_label = QLabel(f"🎯 Mode: {self.tracking.mode.upper()}")
-        self.mode_label.setStyleSheet(f"color: {MineTrackerTheme.PRIMARY}; font-weight: 600;")
+
+        separator = QLabel("  |  ")
+        separator.setStyleSheet(f"color: {MineTrackerTheme.BORDER}; font-size: 11px;")
+        status.addWidget(separator)
+
+        self.mode_label = QLabel(f"Mode: {self.tracking.mode.upper()}")
+        self.mode_label.setStyleSheet(f"color: {MineTrackerTheme.PRIMARY}; font-weight: 600; font-size: 11px;")
         status.addWidget(self.mode_label)
-        
-        # Saat
+
         self.time_label = QLabel()
-        self.time_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY};")
+        self.time_label.setStyleSheet(f"color: {MineTrackerTheme.TEXT_MUTED}; font-size: 11px;")
         status.addPermanentWidget(self.time_label)
-        
-        # Zaman güncelleyici
+
         self.time_timer = QTimer()
         self.time_timer.timeout.connect(self.update_time)
         self.time_timer.start(1000)
         self.update_time()
-    
+
     def update_time(self):
-        """Saati güncelle"""
         from datetime import datetime
         current_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-        self.time_label.setText(f"🕐 {current_time}")
-    
-    def change_page(self, index):
-        """Sayfa değiştir"""
-        self.stacked_widget.setCurrentIndex(index)
-    
-    def handle_emergency(self, data):
-        """Acil durum sinyalini işle"""
-        msg = QMessageBox(self)
-        msg.setWindowTitle("🚨 ACİL DURUM UYARISI" if self.i18n.current_language == 'tr' else "🚨 EMERGENCY ALERT")
-        
-        if data['type'] == 'personnel':
-            text = f"""
-ACİL DURUM SİNYALİ!
+        self.time_label.setText(current_time)
 
-Personel: {data['name']}
-Pozisyon: {data.get('position', 'Bilinmiyor')}
-Bölge: {data['zone']}
-Koordinatlar: X:{data['location']['x']:.1f}, Y:{data['location']['y']:.1f}
-Zaman: {data['timestamp']}
-            """ if self.i18n.current_language == 'tr' else f"""
-EMERGENCY SIGNAL!
+    def change_page(self, index):
+        """Smooth page transition"""
+        self.stacked_widget.slide_to(index)
+
+    def handle_emergency(self, data):
+        """Handle emergency with Dynamic Island alert and dialog"""
+        self.dynamic_island.show_alert(
+            'danger',
+            'EMERGENCY ALERT',
+            f"{data['name']} - {data['zone']}",
+            f"Coordinates: X:{data['location']['x']:.1f}, Y:{data['location']['y']:.1f}",
+            auto_dismiss_ms=15000
+        )
+
+        msg = QMessageBox(self)
+        msg.setWindowTitle("EMERGENCY ALERT")
+
+        if data['type'] == 'personnel':
+            text = f"""EMERGENCY SIGNAL!
 
 Personnel: {data['name']}
 Position: {data.get('position', 'Unknown')}
 Zone: {data['zone']}
 Coordinates: X:{data['location']['x']:.1f}, Y:{data['location']['y']:.1f}
-Time: {data['timestamp']}
-            """
+Time: {data['timestamp']}"""
         else:
-            text = f"""
-EKİPMAN ACİL DURUMU!
-
-Ekipman: {data['name']}
-Bölge: {data['zone']}
-Koordinatlar: X:{data['location']['x']:.1f}, Y:{data['location']['y']:.1f}
-Zaman: {data['timestamp']}
-            """ if self.i18n.current_language == 'tr' else f"""
-EQUIPMENT EMERGENCY!
+            text = f"""EQUIPMENT EMERGENCY!
 
 Equipment: {data['name']}
 Zone: {data['zone']}
 Coordinates: X:{data['location']['x']:.1f}, Y:{data['location']['y']:.1f}
-Time: {data['timestamp']}
-            """
-        
+Time: {data['timestamp']}"""
+
         msg.setText(text)
         msg.setIcon(QMessageBox.Icon.Critical)
         msg.setStyleSheet(MineTrackerTheme.get_app_style())
         msg.exec()
-    
+
     def handle_battery_alert(self, data):
-        """Batarya uyarısını işle"""
-        # Sessizce logla, her seferinde popup gösterme
-        print(f"⚠️ Low Battery: {data['id']} - {data['name']} - {data['battery']}%")
-    
+        self.dynamic_island.show_alert(
+            'warning',
+            'Low Battery Alert',
+            f"{data['name']} - Battery: {data['battery']}%",
+            f"Tag ID: {data['id']}",
+            auto_dismiss_ms=6000
+        )
+        print(f"Low Battery: {data['id']} - {data['name']} - {data['battery']}%")
+
     def handle_emergency_button(self):
-        """Acil durum butonuna basıldığında"""
         reply = QMessageBox.critical(
             self,
-            "🚨 Acil Durum Protokolü" if self.i18n.current_language == 'tr' else "🚨 Emergency Protocol",
-            """Acil durum protokolünü başlatmak istiyor musunuz?
-
-Bu işlem:
-• Tüm personeli uyaracak
-• Acil servisler bilgilendirilecek
-• Tahliye prosedürleri aktif olacak""" if self.i18n.current_language == 'tr' else """Activate emergency protocol?
+            "Emergency Protocol",
+            """Activate emergency protocol?
 
 This will:
-• Alert all personnel
-• Notify emergency services
-• Activate evacuation procedures""",
+- Alert all personnel
+- Notify emergency services
+- Activate evacuation procedures""",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No
         )
-        
+
         if reply == QMessageBox.StandardButton.Yes:
-            # Acil durum ekranına geç (Equipment eklendi, index 4 oldu)
             self.nav_bar.select_page(4)
-            
-            QMessageBox.information(
-                self,
-                "Protokol Aktif" if self.i18n.current_language == 'tr' else "Protocol Active",
-                """✅ Acil durum protokolü aktif edildi!
-
-• Tüm personel bilgilendirildi
-• Acil servisler arandı
-• Tahliye rotaları gösteriliyor""" if self.i18n.current_language == 'tr' else """✅ Emergency protocol activated!
-
-• All personnel notified
-• Emergency services contacted
-• Evacuation routes displayed"""
+            self.dynamic_island.show_alert(
+                'danger',
+                'EMERGENCY PROTOCOL ACTIVE',
+                'All personnel have been notified',
+                'Evacuation routes are now displayed',
+                auto_dismiss_ms=20000
             )
-    
+
     def update_window_title(self):
-        """Pencere başlığını güncelle"""
         if self.i18n.current_language == 'tr':
-            self.setWindowTitle("AICO Maden Takip Sistemi Ultra - Yer Altı Güvenlik Sistemi")
+            self.setWindowTitle("AICO Maden Takip Sistemi Ultra")
         else:
             self.setWindowTitle("AICO MineTracker Ultra - Underground Safety System")
-    
+
     def closeEvent(self, event):
-        """Pencere kapatılırken TCP sunucusunu durdur"""
-        print("⏸️  MineTracker kapatılıyor...")
-        
-        # TCP server'ı durdur
+        print("MineTracker shutting down...")
         if hasattr(self, 'tcp_server') and self.tcp_server.running:
             self.tcp_server.stop()
             self.tcp_server.wait(2000)
-        
-        print("✅ Temiz kapanış tamamlandı!")
+        print("Clean shutdown complete!")
         event.accept()

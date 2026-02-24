@@ -1,21 +1,25 @@
-"""Premium Modern Theme - Glass Morphism & Gradient Design System"""
+"""Tesla-Caliber Premium Theme - OLED Black, Glassmorphism & Cinematic Design System"""
+
 
 class MineTrackerTheme:
-    """Premium design system with glass morphism and modern aesthetics"""
+    """Premium design system with OLED blacks, glassmorphism and Tesla-grade aesthetics"""
 
-    # Core Colors - Deep Rich Palette
-    BACKGROUND = "#05070a"           # Ultra deep dark
-    BACKGROUND_GRADIENT = "#0a0e14"  # Gradient end
-    SURFACE = "#0d1117"              # GitHub dark style
-    SURFACE_LIGHT = "#161b22"        # Elevated cards
-    SURFACE_HOVER = "#21262d"        # Interactive hover
-    SURFACE_GLASS = "rgba(13, 17, 23, 0.8)"  # Glass effect
+    # Core Colors - OLED Deep Black Palette
+    BACKGROUND = "#000000"              # True OLED black
+    BACKGROUND_GRADIENT = "#030508"     # Near-black gradient
+    BACKGROUND_ELEVATED = "#060a10"     # Slightly elevated
+    SURFACE = "#0a0f16"                 # Card surface
+    SURFACE_LIGHT = "#111820"           # Elevated cards
+    SURFACE_HOVER = "#1a222d"           # Interactive hover
+    SURFACE_GLASS = "rgba(10, 15, 22, 0.75)"  # Glass effect
+    SURFACE_GLASS_HEAVY = "rgba(10, 15, 22, 0.92)"  # Heavier glass
 
     # Brand Colors - Vibrant Modern Palette
     PRIMARY = "#58a6ff"              # Bright blue
     PRIMARY_DARK = "#1f6feb"         # Deep blue
     PRIMARY_LIGHT = "#79c0ff"        # Light blue
     PRIMARY_GLOW = "#58a6ff40"       # Glow effect
+    PRIMARY_SUBTLE = "#58a6ff12"     # Very subtle tint
 
     # Accent Colors - Rich & Vibrant
     SUCCESS = "#3fb950"              # Vivid green
@@ -44,13 +48,13 @@ class MineTrackerTheme:
 
     # Text Colors - Crisp & Readable
     TEXT_PRIMARY = "#f0f6fc"         # Pure white-ish
-    TEXT_SECONDARY = "#8b949e"       # Soft gray
-    TEXT_MUTED = "#484f58"           # Subtle gray
+    TEXT_SECONDARY = "#7d8590"       # Softer gray
+    TEXT_MUTED = "#3d444d"           # Subtle gray
     TEXT_LINK = "#58a6ff"            # Link color
 
     # Borders & Shadows
-    BORDER = "#21262d"               # Subtle border
-    BORDER_LIGHT = "#30363d"         # Lighter border
+    BORDER = "#1a2030"               # Very subtle border
+    BORDER_LIGHT = "#252d38"         # Lighter border
     BORDER_ACTIVE = "#58a6ff"        # Active state
 
     # Gradients
@@ -59,40 +63,46 @@ class MineTrackerTheme:
     GRADIENT_DANGER = "qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #f85149, stop:1 #f778ba)"
     GRADIENT_WARM = "qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #d29922, stop:1 #f85149)"
 
+    # Animation Durations
+    ANIM_FAST = 150
+    ANIM_NORMAL = 250
+    ANIM_SLOW = 400
+    ANIM_CINEMATIC = 600
+
+    # Border Radius
+    RADIUS_SM = 8
+    RADIUS_MD = 14
+    RADIUS_LG = 20
+    RADIUS_XL = 28
+
     @staticmethod
     def get_app_style():
-        """Modern premium application style"""
+        """Tesla-grade premium application style with OLED blacks"""
         return f"""
         QMainWindow {{
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 {MineTrackerTheme.BACKGROUND},
-                stop:1 {MineTrackerTheme.BACKGROUND_GRADIENT});
+            background: {MineTrackerTheme.BACKGROUND};
         }}
 
         QWidget {{
             background: transparent;
             color: {MineTrackerTheme.TEXT_PRIMARY};
-            font-family: 'SF Pro Display', 'Inter', -apple-system, 'Segoe UI', sans-serif;
+            font-family: 'Inter', 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif;
             font-size: 14px;
         }}
 
         /* Premium Buttons */
         QPushButton {{
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 {MineTrackerTheme.SURFACE_LIGHT},
-                stop:1 {MineTrackerTheme.SURFACE});
+            background: {MineTrackerTheme.SURFACE_LIGHT};
             color: {MineTrackerTheme.TEXT_PRIMARY};
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 12px 24px;
             font-weight: 600;
             font-size: 14px;
         }}
 
         QPushButton:hover {{
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 {MineTrackerTheme.SURFACE_HOVER},
-                stop:1 {MineTrackerTheme.SURFACE_LIGHT});
+            background: {MineTrackerTheme.SURFACE_HOVER};
             border-color: {MineTrackerTheme.PRIMARY};
         }}
 
@@ -112,7 +122,7 @@ class MineTrackerTheme:
             background: {MineTrackerTheme.SURFACE};
             color: {MineTrackerTheme.TEXT_PRIMARY};
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 12px 16px;
             font-size: 14px;
             selection-background-color: {MineTrackerTheme.PRIMARY};
@@ -147,7 +157,7 @@ class MineTrackerTheme:
             background: {MineTrackerTheme.SURFACE_LIGHT};
             color: {MineTrackerTheme.TEXT_PRIMARY};
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 10px;
+            border-radius: 12px;
             selection-background-color: {MineTrackerTheme.PRIMARY_DARK};
             outline: none;
             padding: 5px;
@@ -155,7 +165,7 @@ class MineTrackerTheme:
 
         QComboBox QAbstractItemView::item {{
             padding: 10px 15px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 2px 5px;
         }}
 
@@ -188,30 +198,28 @@ class MineTrackerTheme:
         }}
 
         QHeaderView::section {{
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 {MineTrackerTheme.SURFACE_LIGHT},
-                stop:1 {MineTrackerTheme.SURFACE});
-            color: {MineTrackerTheme.TEXT_SECONDARY};
+            background: {MineTrackerTheme.SURFACE};
+            color: {MineTrackerTheme.TEXT_MUTED};
             border: none;
-            border-bottom: 2px solid {MineTrackerTheme.BORDER};
+            border-bottom: 1px solid {MineTrackerTheme.BORDER};
             padding: 14px 16px;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }}
 
-        /* Modern ScrollBars */
+        /* Ultra-thin ScrollBars */
         QScrollBar:vertical {{
             background: transparent;
-            width: 12px;
-            border-radius: 6px;
-            margin: 4px;
+            width: 6px;
+            border-radius: 3px;
+            margin: 4px 2px;
         }}
 
         QScrollBar::handle:vertical {{
-            background: {MineTrackerTheme.SURFACE_HOVER};
-            border-radius: 6px;
+            background: {MineTrackerTheme.BORDER_LIGHT};
+            border-radius: 3px;
             min-height: 40px;
         }}
 
@@ -221,14 +229,14 @@ class MineTrackerTheme:
 
         QScrollBar:horizontal {{
             background: transparent;
-            height: 12px;
-            border-radius: 6px;
-            margin: 4px;
+            height: 6px;
+            border-radius: 3px;
+            margin: 2px 4px;
         }}
 
         QScrollBar::handle:horizontal {{
-            background: {MineTrackerTheme.SURFACE_HOVER};
-            border-radius: 6px;
+            background: {MineTrackerTheme.BORDER_LIGHT};
+            border-radius: 3px;
             min-width: 40px;
         }}
 
@@ -255,25 +263,24 @@ class MineTrackerTheme:
         QProgressBar {{
             background: {MineTrackerTheme.SURFACE};
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             text-align: center;
             color: {MineTrackerTheme.TEXT_PRIMARY};
-            height: 10px;
+            height: 8px;
         }}
 
         QProgressBar::chunk {{
             background: {MineTrackerTheme.GRADIENT_PRIMARY};
-            border-radius: 8px;
+            border-radius: 6px;
         }}
 
         /* Status Bar */
         QStatusBar {{
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 {MineTrackerTheme.SURFACE},
-                stop:1 {MineTrackerTheme.BACKGROUND});
+            background: {MineTrackerTheme.BACKGROUND};
             color: {MineTrackerTheme.TEXT_SECONDARY};
             border-top: 1px solid {MineTrackerTheme.BORDER};
-            padding: 8px 16px;
+            padding: 6px 16px;
+            font-size: 11px;
         }}
 
         /* Elegant ToolTip */
@@ -281,7 +288,7 @@ class MineTrackerTheme:
             background: {MineTrackerTheme.SURFACE_LIGHT};
             color: {MineTrackerTheme.TEXT_PRIMARY};
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 8px 12px;
             font-size: 13px;
         }}
@@ -289,48 +296,44 @@ class MineTrackerTheme:
         /* Premium Tab Widget */
         QTabWidget::pane {{
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 12px;
+            border-radius: 14px;
             background: {MineTrackerTheme.SURFACE};
             top: -1px;
         }}
 
         QTabBar::tab {{
-            background: {MineTrackerTheme.SURFACE};
-            color: {MineTrackerTheme.TEXT_SECONDARY};
-            border: 1px solid {MineTrackerTheme.BORDER};
-            border-bottom: none;
+            background: transparent;
+            color: {MineTrackerTheme.TEXT_MUTED};
+            border: none;
+            border-bottom: 2px solid transparent;
             padding: 12px 24px;
             margin-right: 4px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
             font-weight: 600;
+            font-size: 13px;
         }}
 
         QTabBar::tab:selected {{
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 {MineTrackerTheme.PRIMARY},
-                stop:1 {MineTrackerTheme.PRIMARY_DARK});
-            color: {MineTrackerTheme.TEXT_PRIMARY};
-            border-color: {MineTrackerTheme.PRIMARY};
+            color: {MineTrackerTheme.PRIMARY};
+            border-bottom: 2px solid {MineTrackerTheme.PRIMARY};
         }}
 
         QTabBar::tab:hover:!selected {{
-            background: {MineTrackerTheme.SURFACE_HOVER};
-            color: {MineTrackerTheme.TEXT_PRIMARY};
+            color: {MineTrackerTheme.TEXT_SECONDARY};
+            border-bottom: 2px solid {MineTrackerTheme.BORDER_LIGHT};
         }}
 
         /* List Widget */
         QListWidget {{
             background: {MineTrackerTheme.SURFACE};
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 12px;
+            border-radius: 14px;
             outline: none;
         }}
 
         QListWidget::item {{
             padding: 12px 16px;
-            border-radius: 8px;
-            margin: 4px 8px;
+            border-radius: 10px;
+            margin: 3px 6px;
             color: {MineTrackerTheme.TEXT_PRIMARY};
         }}
 
@@ -347,7 +350,7 @@ class MineTrackerTheme:
             background: {MineTrackerTheme.SURFACE};
             color: {MineTrackerTheme.TEXT_PRIMARY};
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 12px;
             font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
         }}
@@ -360,7 +363,7 @@ class MineTrackerTheme:
         QGroupBox {{
             background: {MineTrackerTheme.SURFACE};
             border: 1px solid {MineTrackerTheme.BORDER};
-            border-radius: 12px;
+            border-radius: 14px;
             margin-top: 20px;
             padding-top: 15px;
             font-weight: 600;
@@ -377,16 +380,16 @@ class MineTrackerTheme:
         /* Slider */
         QSlider::groove:horizontal {{
             background: {MineTrackerTheme.SURFACE};
-            height: 8px;
-            border-radius: 4px;
+            height: 6px;
+            border-radius: 3px;
         }}
 
         QSlider::handle:horizontal {{
             background: {MineTrackerTheme.PRIMARY};
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             margin: -6px 0;
-            border-radius: 10px;
+            border-radius: 9px;
         }}
 
         QSlider::handle:horizontal:hover {{
@@ -395,7 +398,7 @@ class MineTrackerTheme:
 
         QSlider::sub-page:horizontal {{
             background: {MineTrackerTheme.GRADIENT_PRIMARY};
-            border-radius: 4px;
+            border-radius: 3px;
         }}
 
         /* CheckBox */
@@ -408,7 +411,7 @@ class MineTrackerTheme:
             width: 22px;
             height: 22px;
             border-radius: 6px;
-            border: 2px solid {MineTrackerTheme.BORDER};
+            border: 2px solid {MineTrackerTheme.BORDER_LIGHT};
             background: {MineTrackerTheme.SURFACE};
         }}
 
@@ -431,7 +434,7 @@ class MineTrackerTheme:
             width: 22px;
             height: 22px;
             border-radius: 11px;
-            border: 2px solid {MineTrackerTheme.BORDER};
+            border: 2px solid {MineTrackerTheme.BORDER_LIGHT};
             background: {MineTrackerTheme.SURFACE};
         }}
 
@@ -447,22 +450,17 @@ class MineTrackerTheme:
 
     @staticmethod
     def get_card_style(hover=True):
-        """Glass morphism card style"""
+        """Glass morphism card style with OLED depth"""
         hover_style = f"""
             QWidget:hover {{
-                border-color: {MineTrackerTheme.PRIMARY};
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {MineTrackerTheme.SURFACE_HOVER},
-                    stop:1 {MineTrackerTheme.SURFACE_LIGHT});
+                border-color: {MineTrackerTheme.BORDER_LIGHT};
             }}
         """ if hover else ""
 
         return f"""
             QWidget {{
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {MineTrackerTheme.SURFACE_LIGHT},
-                    stop:1 {MineTrackerTheme.SURFACE});
-                border-radius: 16px;
+                background: {MineTrackerTheme.SURFACE};
+                border-radius: 20px;
                 border: 1px solid {MineTrackerTheme.BORDER};
             }}
             {hover_style}
@@ -470,14 +468,14 @@ class MineTrackerTheme:
 
     @staticmethod
     def get_glass_card_style():
-        """Premium glass card with glow effect"""
+        """Premium glass card with deep OLED background"""
         return f"""
             QWidget {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(22, 27, 34, 0.95),
-                    stop:1 rgba(13, 17, 23, 0.95));
-                border-radius: 20px;
-                border: 1px solid {MineTrackerTheme.BORDER_LIGHT};
+                    stop:0 rgba(16, 22, 30, 0.95),
+                    stop:1 rgba(10, 15, 22, 0.95));
+                border-radius: 24px;
+                border: 1px solid {MineTrackerTheme.BORDER};
             }}
         """
 
@@ -529,7 +527,7 @@ class MineTrackerTheme:
                 background: {style['bg']};
                 color: {style['text']};
                 border: none;
-                border-radius: 12px;
+                border-radius: 14px;
                 padding: 14px 28px;
                 font-weight: 700;
                 font-size: 14px;
@@ -545,21 +543,15 @@ class MineTrackerTheme:
 
     @staticmethod
     def get_stat_card_style(color):
-        """Gradient stat card with glow"""
+        """Gradient stat card with glow on OLED black"""
         return f"""
             QWidget {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 {MineTrackerTheme.SURFACE_LIGHT},
-                    stop:0.5 {MineTrackerTheme.SURFACE},
-                    stop:1 {MineTrackerTheme.SURFACE_LIGHT});
+                background: {MineTrackerTheme.SURFACE};
                 border-radius: 20px;
                 border: 1px solid {MineTrackerTheme.BORDER};
-                border-left: 4px solid {color};
+                border-left: 3px solid {color};
             }}
             QWidget:hover {{
                 border-color: {color};
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 {MineTrackerTheme.SURFACE_HOVER},
-                    stop:1 {MineTrackerTheme.SURFACE_LIGHT});
             }}
         """

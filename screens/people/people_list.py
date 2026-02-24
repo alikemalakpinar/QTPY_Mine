@@ -47,7 +47,7 @@ class PeopleListScreen(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         
         self.title = QLabel(self.i18n.t('personnel_tracking'))
-        self.title.setStyleSheet(f"font-size: 28px; font-weight: 700; color: {MineTrackerTheme.TEXT_PRIMARY};")
+        self.title.setStyleSheet(f"font-size: 28px; font-weight: 800; color: {MineTrackerTheme.TEXT_PRIMARY}; letter-spacing: -1px;")
         
         self.search_box = QLineEdit()
         self.search_box.setPlaceholderText(self.i18n.t('search_personnel'))
@@ -84,25 +84,49 @@ class PeopleListScreen(QWidget):
     
     def create_stat_card(self, title_key, icon, value, color):
         card = QWidget()
-        card.setFixedHeight(100)
-        card.setStyleSheet(MineTrackerTheme.get_card_style(hover=True))
-        
+        card.setFixedHeight(110)
+        card.setStyleSheet(f"""
+            QWidget {{
+                background: {MineTrackerTheme.SURFACE};
+                border-radius: 16px;
+                border: 1px solid {MineTrackerTheme.BORDER};
+                border-left: 3px solid {color};
+            }}
+            QWidget:hover {{
+                border-color: {color};
+            }}
+        """)
+
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(20, 12, 20, 12)
-        layout.setSpacing(5)
-        
-        title = QLabel(f"{icon}  {self.i18n.t(title_key)}")
-        title.setStyleSheet(f"color: {MineTrackerTheme.TEXT_SECONDARY}; font-size: 12px; text-transform: uppercase;")
-        
+        layout.setContentsMargins(20, 14, 20, 14)
+        layout.setSpacing(4)
+
+        title = QLabel(f"{icon}  {self.i18n.t(title_key).upper()}")
+        title.setStyleSheet(f"""
+            QLabel {{
+                color: {MineTrackerTheme.TEXT_MUTED};
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }}
+        """)
+
         value_label = QLabel(value)
-        value_label.setStyleSheet(f"color: {color}; font-size: 32px; font-weight: 700;")
+        value_label.setStyleSheet(f"""
+            QLabel {{
+                color: {MineTrackerTheme.TEXT_PRIMARY};
+                font-size: 36px;
+                font-weight: 300;
+                letter-spacing: -1px;
+            }}
+        """)
         value_label.setProperty('value_label', True)
         value_label.setProperty('title_key', title_key)
-        
+
         layout.addWidget(title)
         layout.addWidget(value_label)
         layout.addStretch()
-        
+
         return card
     
     def create_table(self):
@@ -120,7 +144,7 @@ class PeopleListScreen(QWidget):
             self.i18n.t('actions')
         ])
         
-        self.table.setStyleSheet(f"QTableWidget {{ background: {MineTrackerTheme.SURFACE}; border: none; border-radius: 12px; }}")
+        self.table.setStyleSheet(f"QTableWidget {{ background: {MineTrackerTheme.SURFACE}; border: none; border-radius: 16px; }}")
         
         header = self.table.horizontalHeader()
         header.setStretchLastSection(True)
