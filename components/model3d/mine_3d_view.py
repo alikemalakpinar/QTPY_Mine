@@ -14,7 +14,7 @@ except ImportError:
 
 
 class Mine3DView(BaseClass):
-    """Premium cinematic 3D mine visualization"""
+    """Premium cinematic 3D mine visualization with SOS camera zoom"""
 
     def __init__(self, tracking_service):
         super().__init__()
@@ -26,6 +26,7 @@ class Mine3DView(BaseClass):
         else:
             self.load_3d_scene()
             self.tracking.location_updated.connect(self.update_position)
+            self.tracking.emergency_signal.connect(self.on_emergency)
             QTimer.singleShot(2000, self.load_all_positions)
 
     def show_placeholder(self):
@@ -987,6 +988,57 @@ class Mine3DView(BaseClass):
             document.getElementById('personnel-count').textContent = count;
         };
 
+        // Cinematic camera zoom to emergency location
+        window.cinematicZoomTo = function(x, y, z) {
+            const targetX = x || 0;
+            const targetZ = y || 0;  // y maps to z in 3D
+            const targetY = Math.abs(z || 0) + 50;
+
+            // Set camera target smoothly
+            const startTarget = { x: cameraTarget.x, z: cameraTarget.z };
+            const startDist = cameraDistance;
+            const startElev = targetElevation;
+            const duration = 1500; // ms
+            const startTime = Date.now();
+
+            function animateZoom() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease out cubic
+                const ease = 1 - Math.pow(1 - progress, 3);
+
+                cameraTarget.x = startTarget.x + (targetX - startTarget.x) * ease;
+                cameraTarget.z = startTarget.z + (targetZ - startTarget.z) * ease;
+                cameraDistance = startDist + (400 - startDist) * ease;
+                targetElevation = startElev + (0.35 - startElev) * ease;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateZoom);
+                }
+            }
+            animateZoom();
+
+            // Flash red warning overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(248, 81, 73, 0.2);
+                pointer-events: none; z-index: 999;
+                animation: emergencyFlash 0.6s ease-out 3;
+            `;
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes emergencyFlash {
+                    0% { opacity: 0; }
+                    30% { opacity: 1; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(overlay);
+            setTimeout(() => overlay.remove(), 2000);
+        };
+
         // ===============================
         // CAMERA CONTROLS
         // ===============================
@@ -1143,6 +1195,17 @@ class Mine3DView(BaseClass):
             'status': entity_data.get('status', 'active')
         }
         js_code = f"window.updateEntity({json.dumps(update_info)});"
+        self.page().runJavaScript(js_code)
+
+    def on_emergency(self, data):
+        """Cinematic camera zoom to emergency location"""
+        if not WEBENGINE_AVAILABLE:
+            return
+        location = data.get('location', {})
+        x = location.get('x', 0)
+        y = location.get('y', 0)
+        z = location.get('z', 0)
+        js_code = f"window.cinematicZoomTo({x}, {y}, {z});"
         self.page().runJavaScript(js_code)
 
     def load_all_positions(self):

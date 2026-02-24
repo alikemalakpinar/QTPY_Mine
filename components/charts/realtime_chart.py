@@ -1,4 +1,4 @@
-"""Premium Real-time Chart Widget with Smooth Animations"""
+"""Tesla-Grade Real-time Chart - Smooth Bezier Curves, Gradient Fill, Glow"""
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
@@ -8,7 +8,7 @@ import math
 
 
 class RealtimeChart(QWidget):
-    """Premium real-time line chart with gradient fill and smooth animations"""
+    """Premium real-time line chart with smooth bezier curves and cinematic gradient fill"""
 
     def __init__(self, title="Chart", max_points=50, y_range=(0, 100)):
         super().__init__()
@@ -27,7 +27,7 @@ class RealtimeChart(QWidget):
         # Animation
         self._animation_progress = 0.0
         self.animation = QPropertyAnimation(self, b"animation_progress")
-        self.animation.setDuration(300)
+        self.animation.setDuration(350)
         self.animation.setEasingCurve(QEasingCurve.Type.OutCubic)
 
     @pyqtProperty(float)
@@ -52,171 +52,162 @@ class RealtimeChart(QWidget):
         self.update()
 
     def paintEvent(self, event):
-        """Draw premium chart"""
+        """Draw premium chart with OLED black background"""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         rect = self.rect()
 
-        # Background with subtle gradient
+        # OLED black background with very subtle gradient
         bg_gradient = QLinearGradient(0, 0, 0, rect.height())
         bg_gradient.setColorAt(0, QColor(MineTrackerTheme.SURFACE))
-        bg_gradient.setColorAt(1, QColor(MineTrackerTheme.SURFACE_LIGHT))
+        bg_gradient.setColorAt(1, QColor(MineTrackerTheme.BACKGROUND_ELEVATED))
         painter.fillRect(rect, bg_gradient)
 
-        # Draw border
+        # Subtle border
         painter.setPen(QPen(QColor(MineTrackerTheme.BORDER), 1))
         painter.setBrush(Qt.BrushStyle.NoBrush)
-        painter.drawRoundedRect(rect.adjusted(0, 0, -1, -1), 12, 12)
+        painter.drawRoundedRect(rect.adjusted(0, 0, -1, -1), 16, 16)
 
         if len(self.data_series) < 2:
-            # No data message
             painter.setPen(QColor(MineTrackerTheme.TEXT_MUTED))
             font = painter.font()
-            font.setPointSize(11)
+            font.setPointSize(10)
+            font.setWeight(QFont.Weight.DemiBold)
             painter.setFont(font)
             painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, "Waiting for data...")
             return
 
-        # Chart area with padding
-        margin_left = 50
-        margin_right = 20
-        margin_top = 45
-        margin_bottom = 30
+        # Chart area
+        margin_left = 45
+        margin_right = 16
+        margin_top = 42
+        margin_bottom = 24
         chart_width = rect.width() - margin_left - margin_right
         chart_height = rect.height() - margin_top - margin_bottom
 
-        # Draw horizontal grid lines
-        painter.setPen(QPen(QColor(MineTrackerTheme.BORDER), 1, Qt.PenStyle.DotLine))
-        num_grid_lines = 4
+        # Horizontal grid lines - very subtle
+        num_grid_lines = 3
         for i in range(num_grid_lines + 1):
             y = margin_top + (chart_height * i / num_grid_lines)
+            painter.setPen(QPen(QColor(MineTrackerTheme.BORDER), 0.5, Qt.PenStyle.DotLine))
             painter.drawLine(int(margin_left), int(y), int(rect.width() - margin_right), int(y))
 
-            # Y-axis labels
             value = self.y_range[1] - (self.y_range[1] - self.y_range[0]) * i / num_grid_lines
             painter.setPen(QColor(MineTrackerTheme.TEXT_MUTED))
             font = painter.font()
-            font.setPointSize(9)
+            font.setPointSize(8)
+            font.setWeight(QFont.Weight.Normal)
             painter.setFont(font)
-            painter.drawText(5, int(y + 4), f"{value:.0f}")
-            painter.setPen(QPen(QColor(MineTrackerTheme.BORDER), 1, Qt.PenStyle.DotLine))
+            painter.drawText(4, int(y + 3), f"{value:.0f}")
 
         # Calculate points
         points = []
         num_points = len(self.data_series)
         for i, value in enumerate(self.data_series):
             x = margin_left + (chart_width * i / max(1, num_points - 1))
-
-            # Normalize value to chart range
             normalized = (value - self.y_range[0]) / max(0.001, self.y_range[1] - self.y_range[0])
             normalized = max(0, min(1, normalized))
             y = margin_top + chart_height - (chart_height * normalized)
-
             points.append(QPointF(x, y))
 
-        # Draw fill gradient
-        if len(points) >= 2:
-            fill_path = QPainterPath()
-            fill_path.moveTo(points[0].x(), margin_top + chart_height)
-            fill_path.lineTo(points[0])
+        if len(points) < 2:
+            return
 
-            # Smooth curve through points
-            for i in range(1, len(points)):
-                fill_path.lineTo(points[i])
+        # Build smooth bezier path
+        line_path = QPainterPath()
+        line_path.moveTo(points[0])
 
-            fill_path.lineTo(points[-1].x(), margin_top + chart_height)
-            fill_path.closeSubpath()
+        for i in range(1, len(points)):
+            prev = points[i - 1]
+            curr = points[i]
+            cp_x = (prev.x() + curr.x()) / 2
+            line_path.cubicTo(cp_x, prev.y(), cp_x, curr.y(), curr.x(), curr.y())
 
-            # Gradient fill
-            fill_gradient = QLinearGradient(0, margin_top, 0, margin_top + chart_height)
-            fill_start = QColor(self.line_color)
-            fill_start.setAlpha(60)
-            fill_end = QColor(self.line_color)
-            fill_end.setAlpha(5)
-            fill_gradient.setColorAt(0, fill_start)
-            fill_gradient.setColorAt(1, fill_end)
+        # Fill path
+        fill_path = QPainterPath(line_path)
+        fill_path.lineTo(points[-1].x(), margin_top + chart_height)
+        fill_path.lineTo(points[0].x(), margin_top + chart_height)
+        fill_path.closeSubpath()
 
-            painter.fillPath(fill_path, QBrush(fill_gradient))
+        # Gradient fill
+        fill_gradient = QLinearGradient(0, margin_top, 0, margin_top + chart_height)
+        fill_start = QColor(self.line_color)
+        fill_start.setAlpha(45)
+        fill_mid = QColor(self.line_color)
+        fill_mid.setAlpha(15)
+        fill_end = QColor(self.line_color)
+        fill_end.setAlpha(0)
+        fill_gradient.setColorAt(0, fill_start)
+        fill_gradient.setColorAt(0.4, fill_mid)
+        fill_gradient.setColorAt(1, fill_end)
+        painter.fillPath(fill_path, QBrush(fill_gradient))
 
-        # Draw smooth line
-        if len(points) >= 2:
-            line_path = QPainterPath()
-            line_path.moveTo(points[0])
+        # Line glow
+        glow_pen = QPen(self.line_color, 10)
+        glow_pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+        glow_color = QColor(self.line_color)
+        glow_color.setAlpha(18)
+        glow_pen.setColor(glow_color)
+        painter.setPen(glow_pen)
+        painter.drawPath(line_path)
 
-            for i in range(1, len(points)):
-                line_path.lineTo(points[i])
+        # Main line
+        line_pen = QPen(self.line_color, 2.5)
+        line_pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+        line_pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+        painter.setPen(line_pen)
+        painter.drawPath(line_path)
 
-            # Glow effect
-            glow_pen = QPen(self.line_color, 8)
-            glow_pen.setCapStyle(Qt.PenCapStyle.RoundCap)
-            glow_color = QColor(self.line_color)
-            glow_color.setAlpha(30)
-            glow_pen.setColor(glow_color)
-            painter.setPen(glow_pen)
-            painter.drawPath(line_path)
-
-            # Main line
-            line_pen = QPen(self.line_color, 3)
-            line_pen.setCapStyle(Qt.PenCapStyle.RoundCap)
-            line_pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
-            painter.setPen(line_pen)
-            painter.drawPath(line_path)
-
-        # Draw data points (only last few for clarity)
+        # Last point highlight
         if len(points) > 0:
-            # Last point highlight
             last_point = points[-1]
 
-            # Outer glow
             painter.setPen(Qt.PenStyle.NoPen)
             glow = QColor(self.line_color)
+            glow.setAlpha(30)
+            painter.setBrush(QBrush(glow))
+            painter.drawEllipse(last_point, 12, 12)
+
             glow.setAlpha(50)
             painter.setBrush(QBrush(glow))
-            painter.drawEllipse(last_point, 10, 10)
+            painter.drawEllipse(last_point, 7, 7)
 
-            # Inner dot
             painter.setBrush(QBrush(self.line_color))
-            painter.drawEllipse(last_point, 5, 5)
+            painter.drawEllipse(last_point, 4, 4)
 
-            # White center
             painter.setBrush(QBrush(QColor("#ffffff")))
-            painter.drawEllipse(last_point, 2, 2)
+            painter.drawEllipse(last_point, 1.5, 1.5)
 
-        # Draw title
-        painter.setPen(QColor(MineTrackerTheme.TEXT_PRIMARY))
+        # Title
+        painter.setPen(QColor(MineTrackerTheme.TEXT_SECONDARY))
         font = painter.font()
-        font.setPointSize(12)
-        font.setWeight(QFont.Weight.Bold)
+        font.setPointSize(10)
+        font.setWeight(QFont.Weight.DemiBold)
         painter.setFont(font)
-        painter.drawText(margin_left, 25, self.title)
+        painter.drawText(margin_left, 22, self.title)
 
-        # Draw current value badge
+        # Current value badge
         if self.data_series:
             current_value = self.data_series[-1]
-
-            # Badge background
             value_text = f"{current_value:.1f}"
             font_metrics = painter.fontMetrics()
             text_width = font_metrics.horizontalAdvance(value_text)
             badge_rect = QRectF(
-                rect.width() - margin_right - text_width - 24,
+                rect.width() - margin_right - text_width - 20,
                 8,
-                text_width + 20,
-                26
+                text_width + 16,
+                22
             )
 
-            badge_gradient = QLinearGradient(badge_rect.topLeft(), badge_rect.bottomRight())
-            badge_gradient.setColorAt(0, self.line_color)
-            badge_gradient.setColorAt(1, QColor(self.line_color).darker(120))
-
+            badge_color = QColor(self.line_color)
+            badge_color.setAlpha(30)
             painter.setPen(Qt.PenStyle.NoPen)
-            painter.setBrush(QBrush(badge_gradient))
-            painter.drawRoundedRect(badge_rect, 8, 8)
+            painter.setBrush(QBrush(badge_color))
+            painter.drawRoundedRect(badge_rect, 6, 6)
 
-            # Value text
-            painter.setPen(QColor("#ffffff"))
-            font.setPointSize(11)
+            painter.setPen(self.line_color)
+            font.setPointSize(10)
             font.setWeight(QFont.Weight.Bold)
             painter.setFont(font)
             painter.drawText(badge_rect, Qt.AlignmentFlag.AlignCenter, value_text)

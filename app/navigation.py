@@ -1,4 +1,4 @@
-"""Premium Modern Navigation Sidebar with Glass Morphism"""
+"""Tesla-Grade Navigation Sidebar - Frosted Glass with Animated Indicator"""
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
@@ -6,7 +6,7 @@ from theme.theme import MineTrackerTheme
 
 
 class NavigationBar(QWidget):
-    """Premium glass morphism navigation sidebar"""
+    """Premium frosted-glass navigation sidebar with animated active indicator"""
 
     page_changed = pyqtSignal(int)
     emergency_triggered = pyqtSignal()
@@ -16,19 +16,31 @@ class NavigationBar(QWidget):
         self.i18n = i18n
         self.current_page = 0
         self.nav_buttons = []
+        self._indicator_y = 0.0
         self.init_ui()
 
-        # Language change listener
         self.i18n.language_changed.connect(self.update_texts)
+
+        # Animated indicator
+        self._indicator_anim = QPropertyAnimation(self, b"indicator_y")
+        self._indicator_anim.setDuration(MineTrackerTheme.ANIM_NORMAL)
+        self._indicator_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+    @pyqtProperty(float)
+    def indicator_y(self):
+        return self._indicator_y
+
+    @indicator_y.setter
+    def indicator_y(self, val):
+        self._indicator_y = val
+        self.update()
 
     def init_ui(self):
         """Initialize premium UI"""
-        self.setFixedWidth(280)
+        self.setFixedWidth(260)
         self.setStyleSheet(f"""
-            QWidget {{
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {MineTrackerTheme.SURFACE_LIGHT},
-                    stop:1 {MineTrackerTheme.SURFACE});
+            NavigationBar {{
+                background: {MineTrackerTheme.SURFACE};
                 border-right: 1px solid {MineTrackerTheme.BORDER};
             }}
         """)
@@ -41,36 +53,45 @@ class NavigationBar(QWidget):
         header = self.create_header()
         layout.addWidget(header)
 
+        # Spacer
+        layout.addSpacing(8)
+
         # Navigation section label
         nav_label = QLabel("NAVIGATION")
         nav_label.setStyleSheet(f"""
             QLabel {{
                 color: {MineTrackerTheme.TEXT_MUTED};
-                font-size: 11px;
+                font-size: 10px;
                 font-weight: 700;
-                letter-spacing: 1.5px;
-                padding: 20px 28px 10px 28px;
+                letter-spacing: 2px;
+                padding: 16px 24px 8px 24px;
             }}
         """)
         layout.addWidget(nav_label)
 
-        # Navigation items with modern icons
+        # Navigation items
         self.nav_items = [
-            ('◉', 'dashboard', 0),        # Dashboard
-            ('◎', 'live_map', 1),          # Live Map
-            ('◈', 'personnel', 2),         # Personnel
-            ('⬡', 'equipment', 3),         # Equipment
-            ('⚠', 'emergency', 4),         # Emergency
-            ('▤', 'reports', 5),           # Reports
-            ('◇', 'zones', 6),             # Zones
-            ('⚙', 'settings', 7)           # Settings
+            ('◉', 'dashboard', 0),
+            ('◎', 'live_map', 1),
+            ('◈', 'personnel', 2),
+            ('⬡', 'equipment', 3),
+            ('⚠', 'emergency', 4),
+            ('▤', 'reports', 5),
+            ('◇', 'zones', 6),
+            ('⚙', 'settings', 7)
         ]
+
+        self._nav_container = QWidget()
+        self._nav_layout = QVBoxLayout(self._nav_container)
+        self._nav_layout.setContentsMargins(8, 0, 8, 0)
+        self._nav_layout.setSpacing(2)
 
         for icon, key, index in self.nav_items:
             btn = self.create_nav_button(icon, key, index)
             self.nav_buttons.append(btn)
-            layout.addWidget(btn)
+            self._nav_layout.addWidget(btn)
 
+        layout.addWidget(self._nav_container)
         layout.addStretch()
 
         # Status section
@@ -86,48 +107,41 @@ class NavigationBar(QWidget):
             self.nav_buttons[0].setChecked(True)
 
     def create_header(self):
-        """Create premium header with logo"""
+        """Create minimal premium header"""
         header = QWidget()
-        header.setFixedHeight(120)
+        header.setFixedHeight(80)
         header.setStyleSheet(f"""
             QWidget {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 {MineTrackerTheme.SURFACE_HOVER},
-                    stop:1 {MineTrackerTheme.SURFACE_LIGHT});
+                background: transparent;
                 border-bottom: 1px solid {MineTrackerTheme.BORDER};
-                border-right: none;
             }}
         """)
 
-        layout = QVBoxLayout(header)
-        layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(8)
+        layout = QHBoxLayout(header)
+        layout.setContentsMargins(20, 0, 20, 0)
+        layout.setSpacing(12)
 
-        # Logo container
-        logo_container = QHBoxLayout()
-        logo_container.setSpacing(12)
-
-        # Logo icon with gradient background
+        # Logo icon
         logo_icon = QLabel("⛏")
         logo_icon.setStyleSheet(f"""
             QLabel {{
-                font-size: 32px;
+                font-size: 24px;
                 background: {MineTrackerTheme.GRADIENT_PRIMARY};
-                border-radius: 12px;
-                padding: 8px 12px;
+                border-radius: 10px;
+                padding: 6px 10px;
             }}
         """)
-        logo_icon.setFixedSize(56, 56)
+        logo_icon.setFixedSize(44, 44)
         logo_icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Logo text
-        logo_text_layout = QVBoxLayout()
-        logo_text_layout.setSpacing(2)
+        text_layout = QVBoxLayout()
+        text_layout.setSpacing(0)
 
         logo_title = QLabel("MineTracker")
         logo_title.setStyleSheet(f"""
             QLabel {{
-                font-size: 22px;
+                font-size: 17px;
                 font-weight: 800;
                 color: {MineTrackerTheme.TEXT_PRIMARY};
                 letter-spacing: -0.5px;
@@ -137,33 +151,19 @@ class NavigationBar(QWidget):
         logo_version = QLabel("Pro v2.0")
         logo_version.setStyleSheet(f"""
             QLabel {{
-                font-size: 11px;
+                font-size: 10px;
                 font-weight: 600;
-                color: {MineTrackerTheme.PRIMARY};
-                letter-spacing: 0.5px;
+                color: {MineTrackerTheme.TEXT_MUTED};
+                letter-spacing: 1px;
             }}
         """)
 
-        logo_text_layout.addWidget(logo_title)
-        logo_text_layout.addWidget(logo_version)
+        text_layout.addWidget(logo_title)
+        text_layout.addWidget(logo_version)
 
-        logo_container.addWidget(logo_icon)
-        logo_container.addLayout(logo_text_layout)
-        logo_container.addStretch()
-
-        layout.addLayout(logo_container)
-
-        # Subtitle
-        self.subtitle = QLabel(self.i18n.t('app_subtitle'))
-        self.subtitle.setStyleSheet(f"""
-            QLabel {{
-                font-size: 12px;
-                color: {MineTrackerTheme.TEXT_SECONDARY};
-                margin-top: 4px;
-            }}
-        """)
-        self.subtitle.setWordWrap(True)
-        layout.addWidget(self.subtitle)
+        layout.addWidget(logo_icon)
+        layout.addLayout(text_layout)
+        layout.addStretch()
 
         return header
 
@@ -171,36 +171,28 @@ class NavigationBar(QWidget):
         """Create premium navigation button"""
         btn = QPushButton(f"  {icon}    {self.i18n.t(text_key)}")
         btn.setCheckable(True)
-        btn.setFixedHeight(52)
+        btn.setFixedHeight(44)
         btn.setProperty('text_key', text_key)
         btn.setProperty('icon', icon)
+        btn.setProperty('nav_index', index)
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent;
                 border: none;
-                border-left: 3px solid transparent;
-                border-radius: 0px;
+                border-radius: 10px;
                 color: {MineTrackerTheme.TEXT_SECONDARY};
-                font-size: 14px;
+                font-size: 13px;
                 font-weight: 500;
                 text-align: left;
-                padding-left: 25px;
-                margin: 2px 12px;
+                padding-left: 16px;
             }}
             QPushButton:hover {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 {MineTrackerTheme.SURFACE_HOVER},
-                    stop:1 transparent);
+                background: {MineTrackerTheme.SURFACE_HOVER};
                 color: {MineTrackerTheme.TEXT_PRIMARY};
-                border-radius: 10px;
             }}
             QPushButton:checked {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 {MineTrackerTheme.PRIMARY}25,
-                    stop:1 transparent);
-                border-left: 3px solid {MineTrackerTheme.PRIMARY};
-                border-radius: 0px;
+                background: {MineTrackerTheme.PRIMARY_SUBTLE};
                 color: {MineTrackerTheme.PRIMARY};
                 font-weight: 700;
             }}
@@ -214,31 +206,32 @@ class NavigationBar(QWidget):
         section = QWidget()
         section.setStyleSheet(f"""
             QWidget {{
-                background: {MineTrackerTheme.SURFACE};
-                border-radius: 12px;
-                margin: 16px;
+                background: {MineTrackerTheme.BACKGROUND_ELEVATED};
+                border-radius: 14px;
+                margin: 12px 12px 0 12px;
                 border: 1px solid {MineTrackerTheme.BORDER};
             }}
         """)
 
         layout = QVBoxLayout(section)
-        layout.setContentsMargins(16, 14, 16, 14)
-        layout.setSpacing(10)
+        layout.setContentsMargins(14, 12, 14, 12)
+        layout.setSpacing(8)
 
         # Status header
         header_layout = QHBoxLayout()
+        header_layout.setSpacing(8)
         status_dot = QLabel("●")
         status_dot.setStyleSheet(f"""
             QLabel {{
                 color: {MineTrackerTheme.SUCCESS};
-                font-size: 10px;
+                font-size: 8px;
             }}
         """)
         status_text = QLabel("System Online")
         status_text.setStyleSheet(f"""
             QLabel {{
                 color: {MineTrackerTheme.TEXT_SECONDARY};
-                font-size: 12px;
+                font-size: 11px;
                 font-weight: 600;
             }}
         """)
@@ -247,11 +240,11 @@ class NavigationBar(QWidget):
         header_layout.addStretch()
 
         # Connection info
-        connection_info = QLabel("TCP: 8888 • 6 Anchors")
+        connection_info = QLabel("TCP: 8888 · 6 Anchors")
         connection_info.setStyleSheet(f"""
             QLabel {{
                 color: {MineTrackerTheme.TEXT_MUTED};
-                font-size: 11px;
+                font-size: 10px;
             }}
         """)
 
@@ -261,15 +254,15 @@ class NavigationBar(QWidget):
         return section
 
     def create_emergency_button(self):
-        """Create premium emergency button with gradient"""
+        """Create premium emergency button"""
         container = QWidget()
         container.setStyleSheet("background: transparent;")
 
         container_layout = QVBoxLayout(container)
-        container_layout.setContentsMargins(16, 8, 16, 20)
+        container_layout.setContentsMargins(12, 10, 12, 16)
 
         self.emergency_btn = QPushButton("🚨  " + self.i18n.t('emergency_button'))
-        self.emergency_btn.setFixedHeight(56)
+        self.emergency_btn.setFixedHeight(48)
         self.emergency_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.emergency_btn.setStyleSheet(f"""
             QPushButton {{
@@ -278,9 +271,9 @@ class NavigationBar(QWidget):
                     stop:1 {MineTrackerTheme.PINK});
                 border: none;
                 color: white;
-                font-size: 15px;
+                font-size: 13px;
                 font-weight: 700;
-                border-radius: 14px;
+                border-radius: 12px;
                 letter-spacing: 0.5px;
             }}
             QPushButton:hover {{
@@ -298,7 +291,7 @@ class NavigationBar(QWidget):
         return container
 
     def select_page(self, index):
-        """Select navigation page"""
+        """Select navigation page with animated indicator"""
         for i, btn in enumerate(self.nav_buttons):
             btn.setChecked(i == index)
 
@@ -307,7 +300,6 @@ class NavigationBar(QWidget):
 
     def update_texts(self):
         """Update texts on language change"""
-        self.subtitle.setText(self.i18n.t('app_subtitle'))
         self.emergency_btn.setText("🚨  " + self.i18n.t('emergency_button'))
 
         for btn in self.nav_buttons:
